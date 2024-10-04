@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    .sticky-nav {
+      position: -webkit-sticky; /* For Safari */
+      position: sticky;
+      top: 0;
+      z-index: 1000; /* Ensures it stays on top of other content */
+    }
+  </style>
+</head>
+<body>
+  
+<!-- Navigation -->
+<nav class="container-fluid  sticky-nav" style="border: 1px solid black;">
+  <div class="row bg-dark text-white align-items-center" style="font-size: 14px;padding-left:30px;">
+    <div class="col-sm-1 p-1">Công trình tiêu biểu</div>
+    <div class="col-sm-1 p-2">Tin Tức</div>
+    <div class="col-sm-6 p-2.5"></div>
+    <div class="col-sm-1 p-1">Đăng Ký Thành Viên</div>
+    <div class="col-sm-1 p-2">VLXD Đăng Ký</div>
+    <div class="col-sm-1 p-2">Đăng Nhập</div>
+    <div class="col-sm-1 p-2 dropdown">
+      <button type="button" class="btn dropdown-toggle bg-dark text-white"> <img src="Resources/Vie.png" alt="Viet flag" width="17" height="13"> Vi</button>
+    </div>
+  </div>
+
+  <div class="row bg-white text-dark align-items-center" style = "text-align:center;">
+    <div class="col-sm-1 p-4"> <img src="Resources/Logo.png" alt="Logo" width="120" height="60"> </div>
+    
+    <div class="col-sm-2 p-4 dropdown">
+        <a class=" dropdown-toggle text-dark" style="text-decoration: none;" href="#" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+            <b>THƯ VIỆN MODEL</b>
+        </a>
+        <ul class="dropdown-menu">
+           <li> <a class="dropdown-item" href="#">Tất cả thư viện</a></li>
+           <li> <a class="dropdown-item" href="#">Thư viện EOB</a>   </li>
+           <li> <a class="dropdown-item" href="#">Thư viện VLXD</a>  </li>
+        </ul>
+    </div>
+
+    <div class="col-sm-5 p-4"></div>
+
+    <form class="col-sm-3 p-4">
+      <input class="form-control me-2" type="text" placeholder="Tìm kiếm" style="border-radius: 25px; border:2px solid lightgray">
+    </form>
+
+  </div>
+</nav>  
+
+<!-- EOB Model -->
+<div class="container mt-3" style = "padding-bottom:100px;">
+  <img src="Resources/Model.png" alt="Model" class="mx-auto d-block" style="width:75%"> 
+</div>
+
+<!-- Các công ty -->
+<div class="row" style="background-color:#f0f0f0; height:200px;">
+  <div class="container-fluid align-items-center" style="padding-left: 200px; padding-right: 100px; padding-top: 75px;">
+
+    <div class="row">
+      <div class="col-sm"><img src="Resources/Austra.png" alt="Austraalu" width="110" height="40"></div>
+      <div class="col-sm "><img src="Resources/Dulux.png" alt="Dulux" width="110" height="40"></div>
+      <div class="col-sm "><img src="Resources/PNP.png" alt="Phương Nam Panel" width="110" height="40"></div>
+      <div class="col-sm "><img src="Resources/Austra.png" alt="Austraalu" width="110" height="40"></div>
+      <div class="col-sm "><img src="Resources/Dulux.png" alt="Austraalu" width="110" height="40"></div>
+      <div class="col-sm "><img src="Resources/PNP.png" alt="Phương Nam Panel" width="110" height="40"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Bốn tấm hình -->
+
+  <div class="container-fluid align-items-center" style="padding-left: 200px; padding-right: 100px; padding-top: 75px;">
+
+    <div class="row" style="padding-bottom:50px;">
+      <div class="col">
+        <!-- Tấm hình đầu tiên -->
+          <div class = row style="border:2px solid lightgray; padding-right:150px; margin-right:50px;">
+              <div class="col-sm-6">  <img src="Resources/Family-design.jpg" alt="Austraalu" width="196" height="196"></div>
+              <div class="col-sm-6 ">
+              <h3>  Thư viện Family thiết kế </h3>
+              <p> Thư viện family thiết kế gồm các family do các KTS và đơn vị VLXD uy tính chia sẻ. 
+                  Hãy đăng ký và trở thành thành viên EOB để tải các family miễn phí cho các bản vẽ công trình. </p>
+              </div>
+          </div> 
+      </div>
+      <div class="col">
+          <div class = row style="border:2px solid lightgray" >
+              <!-- Tấm hình thứ 2 -->
+              <div class="col-sm-6">  <img src="Resources/Activity-topic.jpg" alt="AT" width="196" height="196"></div>
+              <div class="col-sm-6 ">
+              <h3>  Hoạt động chuyên đề </h3>
+              <p> Các hoạt động chuyên đề phong phú như hội thảo, coffee talk, luncheon, lunch box với các chủ đề hấp dẫn và diễn giả đầu ngành 
+                  Hãy theo dõi và tham gia các hoạt động giành cho các thành viên EOB. </p>
+              </div>
+          </div> 
+      </div>
+  </div>
+
+
+    <div class="row">
+      <div class="col">
+          <div class = row>
+              <!-- Tấm hình thứ 3 -->
+              <div class="col-sm-6">  <img src="Resources/Post-topic.jpg" alt="PT" width="196" height="196"></div>
+              <div class="col-sm-6 ">
+              <h3>  Bài viết chuyên đề </h3>
+              <p> Tập hợp các bài viết kiến trúc xây dựng của các thành viên EOB pro, các diễn giả đầu ngành và các giải pháp VLXD uy tính. 
+                  Hãy theo dõi để không bỏ lỡ các bài viết bổ ích.</p>
+              </div>
+          </div> 
+      </div>
+      <div class="col">
+          <div class = row>
+            <!-- Tấm hình thứ 4 -->
+            <div class="col-sm-6">  <img src="Resources/Course-topic.jpg" alt="CT" width="196" height="196"></div>
+            <div class="col-sm-6 ">
+            <h3>  Bài viết chuyên đề </h3>
+            <p> Các khoá học thiết kế phong phú được chia sẻ bởi các chuyên gia đầu ngành. 
+                Theo dõi để tham gia các khóa học phù hợp. </p>
+          </div>
+      </div> 
+    </div>
+
+
+  </div>
+
+
+<!-- Thông số thành viên, đơn vị... -->
+
+<div class="row text-dark text-center" style="padding-left: 100px; padding-right:100px; padding-top:100px; padding-bottom:50px">
+  <div class="col-sm-3 p-2">
+    <img src="Resources/Member.png" alt="Member" width="100" height="60">
+    <p>Thành viên</p>
+    <h1 style="font-size:60px" > <b>1315</b></h1>
+  </div>
+
+  <div class="col-sm-3 p-2">
+    <img src="Resources/Unit.png" alt="Unit" width="100" height="60">
+    <p>Đơn vị VLXD</p>
+    <h1 style="font-size:60px" > <b>3</b></h1>
+  </div>
+
+  <div class="col-sm-3 p-2">
+    <img src="Resources/Family.png" alt="Family" width="100" height="60">
+    <p>Family</p>
+    <h1 style="font-size:60px" > <b>198</b></h1>
+  </div>
+
+  <div class="col-sm-3 p-2">
+    <img src="Resources/Document.png" alt="Document" width="100" height="60">
+    <p>Tài liệu</p>
+    <h1 style="font-size:60px" > <b>198</b></h1>
+  </div>
+
+</div>
+
+<!-- Background -->
+<div class="card text-black" style="background-image: url(Resources/Background.jpg) ; height:700px; background-size: cover; opacity:0.9">
+  <div class="row container-fluid align-items-center" style="padding-left: 625px; padding-right: 200px; padding-top: 570px;">
+    <h4> <b>Công trình tiêu biểu</b> </h4>
+  </div>
+
+  <div class="row container-fluid align-items-center" style="padding-left: 500px; padding-right: 200px;">
+
+    <form class="col-sm-6 p-2">
+      <input class="form-control " type="text" placeholder="Tìm kiếm" style="border-radius: 25px; border:2px solid lightgray;">
+    </form>
+
+    <button type="button" class=" btn dropdown-toggle col-sm-2 p-2 bg-white text-dark" href="#" style="text-decoration: none; border-radius: 25px; border:2px solid lightgray;">
+      <b>TẤT CẢ NCC</b>
+    </button>
+
+  <ul class="dropdown-menu">
+     <li> <a class="dropdown-item" href="#">Tất cả thư viện</a></li>
+     <li> <a class="dropdown-item" href="#">Thư viện EOB</a>   </li>
+     <li> <a class="dropdown-item" href="#">Thư viện VLXD</a>  </li>
+  </ul>
+   
+  </div>
+</div>
+
+
+<!-- Footer -->
+
+<div class="row mt-5 p-4 bg-dark text-white text-center">
+  <div class="col-sm-3 p-2">Công ty cổ phần Era of BIM (EOB)</div>
+  <div class="col-sm-3 p-2">Truy Cập Nhanh</div>
+  <div class="col-sm-3 p-2">Khác</div>
+  <div class="col-sm-3 p-2">Theo dõi chúng tôi</div>
+  
+</div>
+
+
+
+
+
+
+
+</body>
+</html>
