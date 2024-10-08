@@ -20,6 +20,7 @@
       top: 0;
       z-index: 1000; /* Ensures it stays on top of other content */
     }
+    
   </style>
 </head>
 <body>
@@ -33,23 +34,26 @@
   
 <!-- Navigation -->
 <nav class="container-fluid  sticky-nav" style="border: 1px solid black;">
-  <div class="row bg-dark text-white align-items-center" style="font-size: 14px;padding-left:30px;">
+  <div class="row bg-dark text-white align-items-center" style="font-size: 14px; padding-left: 30px;">
     <div class="col-sm-1 p-1">Công trình tiêu biểu</div>
     <div class="col-sm-1 p-2">Tin Tức</div>
-    <div class="col-sm-6 p-2.5"></div>
+    <div class="col-sm-6 p-2"></div>
     <div class="col-sm-1 p-1">Đăng Ký Thành Viên</div>
     <div class="col-sm-1 p-2">VLXD Đăng Ký</div>
     <div class="col-sm-1 p-2">Đăng Nhập</div>
     <div class="col-sm-1 p-2 dropdown">
-      <button type="button" class="btn dropdown-toggle bg-dark text-white"> <img src="Resources/Vie.png" alt="Viet flag" width="17" height="13"> Vi</button>
+        <button type="button" class="btn dropdown-toggle bg-dark text-white w-100">
+            <img class="img-fluid" src="Resources/Vie.png" alt="Viet flag"> Vi
+        </button>
     </div>
-  </div>
+</div>
+
 
   <div class="row bg-white text-dark align-items-center" style = "text-align:center;">
     <div class="col-sm-1 p-4"> <img src="Resources/Logo.png" alt="Logo" width="120" height="60"> </div>
     
     <div class="col-sm-2 p-4 dropdown">
-        <a class=" dropdown-toggle text-dark" style="text-decoration: none;" href="#" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+        <a class=" dropdown-toggle text-dark " style="text-decoration: none;" href="#" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
             <b>THƯ VIỆN MODEL</b>
         </a>
         <ul class="dropdown-menu">
