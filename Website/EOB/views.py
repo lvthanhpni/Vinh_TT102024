@@ -27,19 +27,46 @@ def Signup_mem(request):
         r_password = request.POST.get("rpass")
         check_user = Member.objects.filter(username=name).exists()
 
+        
+        # Check for spaces in username and password
+        if ' ' in name or ' ' in password:
+            messages.error(request, 'Blanks (\' \') are not allowed in Username or Password')
+            return render(request, 'Signup_mem.html')
+
+        # Check if terms are accepted
+        if not check:
+            messages.error(request, "Please accept the terms")
+            return render(request, 'Signup_mem.html')
+
+        # Check if passwords match
+        if password != r_password:
+            messages.error(request, 'Passwords must match')
+            return render(request, 'Signup_mem.html')
+
+        # Check if username already exists
+        if check_user:
+            messages.error(request, 'Username existed, please choose another username')
+            return render(request, 'Signup_mem.html')
+
         # Create the user
         user = Member.objects.create_user(username=name, password=password)
         user.is_individual = True
         user.save()
         
         # Create the Individual profile
-        jf = Individual.objects.create(user=user, email=email)
-        jf.phone = phone
+        jf = Individual.objects.create(user=user, phone=phone, email=email)
+        jf.full_name = name
         jf.save()
 
         return redirect('EOB/Carousel')  # Redirect to Carousel.html after successful signup
 
     return render(request, 'Signup_mem.html')
+
+def Signup_idv(request):
+   return render(request, 'Signup_mem.html')
+
+def Signup_org(request):
+   return render(request, 'Signup_mem.html')
 
 
 
