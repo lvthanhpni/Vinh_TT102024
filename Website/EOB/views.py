@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from EOB.models import Individual, Organization, VLXD
@@ -41,3 +41,9 @@ def Login(request):
             messages.error(request, "Fail Login. User not existed")
     
     return render(request, 'Login.html')
+
+def Logout(request):
+    logout(request)
+    return render(request, 'Homepage.html')
+    
+    

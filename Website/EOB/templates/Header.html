@@ -11,26 +11,40 @@
         <a href = "/EOB" style="color:white;" > Tin Tức </a>    
     </div>
 
-
-    <div class="black_nav col-sm-1 p-1" style="margin-left: auto;">
-        <a href = "/EOB/Member" style="color:white;" > Đăng Ký Thành Viên </a>    
+{% if user.is_authenticated %}
+    <!-- Post-login -->
+    <div class="black_nav col-sm-1 p-2 text-center" style=" background-color:gray; margin-left: auto; margin-right:20px;">
+        <a href="/EOB/" style="color:black;"> <b>  {{ user.username }}   </b> </a>
     </div>
-    <div class="black_nav col-sm-1 p-2">
-        <a href = "/EOB/VLXD" style="color:white;" > VLXD Đăng Ký </a> 
+    <div class="black_nav col-sm-1 p-2 text-center"  style=" background-color:gray;">
+        <a href="/EOB/Logout" style="color:black;"> <b> Logout </b> </a>
     </div>
-    <div class="black_nav col-sm-1 p-2">
-        <a href = "/EOB/Login" style="color:white;" >  Đăng Nhập </a> 
-    </div>
-
-    
     <div class="black_nav col-sm-1 p-2 dropdown">
         <button type="button" class="btn dropdown-toggle bg-dark text-white w-100">
-            <img class="img-fluid" src= "{% static 'Resources/Vie.png'  %}" alt="Viet flag"> Vi
+            <img class="img-fluid" src="{% static 'Resources/Vie.png' %}" alt="Viet flag"> Vi
         </button>
     </div>
-  </div>
+    
+{% else %}
+    <!-- Pre-login -->
+    <div class="black_nav col-sm-1 p-1" style="margin-left: auto;">
+        <a href="/EOB/Member" style="color:white;"> Đăng Ký Thành Viên </a>
+    </div>
+    <div class="black_nav col-sm-1 p-2">
+        <a href="/EOB/VLXD" style="color:white;"> VLXD Đăng Ký </a>
+    </div>
+    <div class="black_nav col-sm-1 p-2">
+        <a href="/EOB/Login" style="color:white;"> Đăng Nhập </a>
+    </div>
+    <div class="black_nav col-sm-1 p-2 dropdown">
+        <button type="button" class="btn dropdown-toggle bg-dark text-white w-100">
+            <img class="img-fluid" src="{% static 'Resources/Vie.png' %}" alt="Viet flag"> Vi
+        </button>
+    </div>
+{% endif %}
 
 
+    
   <div class="row bg-white text-dark align-items-center" style="display: flex; justify-content: space-between;">
     <div class="white_nav col-sm-1 p-4"> 
         <img src="{% static 'Resources/Logo.png' %}" alt="Logo" width="120" height="60"> 

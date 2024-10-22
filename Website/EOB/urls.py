@@ -8,5 +8,6 @@ urlpatterns = [
     path('EOB/Member', views.Signup_mem, name='Signup_mem'),
     path('EOB/VLXD', views.Signup_VLXD, name='Signup_VLXD'),
     path('EOB/Login', views.Login, name='Login'),
+    path('EOB/Logout', views.Logout, name='Logout'),
     path('EOB/Test', views.Test, name='Test'),
 ]
