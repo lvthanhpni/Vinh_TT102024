@@ -3,6 +3,7 @@ from django.template import loader
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from EOB.models import Individual, Organization, VLXD
 
 def Test(request):
   return render(request, 'Test.html')
