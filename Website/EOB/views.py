@@ -3,7 +3,7 @@ from django.template import loader
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from EOB.models import Individual, Organization, VLXD
+from EOB.models import Member, Individual, Organization, VLXD
 
 def Test(request):
   return render(request, 'Test.html')
@@ -18,7 +18,30 @@ def Carousel(request):
   return render(request, 'Carousel.html')
 
 def Signup_mem(request):
-  return render(request, 'Signup_mem.html')
+    if request.method == "POST":
+        check = request.POST.get("checkbox", False)
+        name = request.POST.get("uname")
+        phone = request.POST.get("phone")
+        email = request.POST.get("email")
+        password = request.POST.get("pass")
+        r_password = request.POST.get("rpass")
+        check_user = Member.objects.filter(username=name).exists()
+
+        # Create the user
+        user = Member.objects.create_user(username=name, password=password)
+        user.is_individual = True
+        user.save()
+        
+        # Create the Individual profile
+        jf = Individual.objects.create(user=user, email=email)
+        jf.phone = phone
+        jf.save()
+
+        return redirect('EOB/Carousel')  # Redirect to Carousel.html after successful signup
+
+    return render(request, 'Signup_mem.html')
+
+
 
 def Signup_VLXD(request):
   return render(request, 'Signup_VLXD.html')

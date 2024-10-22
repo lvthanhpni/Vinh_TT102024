@@ -25,7 +25,7 @@ class Member(AbstractUser):
     )
     
 class Individual(models.Model):
-    full_name=models.OneToOneField(Member,on_delete=models.CASCADE, primary_key=True)
+    user=models.OneToOneField(Member,on_delete=models.CASCADE, primary_key=True)
     phone=models.CharField((""), max_length=50)
     email=models.EmailField()   
 
