@@ -90,12 +90,15 @@ def Login(request):
         user = authenticate(request, username=uname, password=password)
 
         if user is not None:
-            login(request, user)  # Log the user in
-            response = redirect('Carousel')  # Redirect to Carousel.html
-            if check:  # If 'Remember Me' checkbox is checked
-                response.set_cookie('uname', uname, max_age=30*24*60*60)  # Set username cookie for 30 days
-                response.set_cookie('password', password, max_age=30*24*60*60)  # Set password cookie for 30 days
-            return response
+            if isinstance(user, Member) and (user.is_individual or user.is_organization):
+                login(request, user)  # Log the user in
+                response = redirect('Carousel')  # Redirect to Carousel.html
+                if check:  # If 'Remember Me' checkbox is checked
+                    response.set_cookie('uname', uname, max_age=30*24*60*60)  # Set username cookie for 30 days
+                    response.set_cookie('password', password, max_age=30*24*60*60)  # Set password cookie for 30 days
+                return response
+            else:
+                messages.error(request, "This user is not authorized to log in.")
         else:
             messages.error(request, "Fail Login. User not existed")
     
