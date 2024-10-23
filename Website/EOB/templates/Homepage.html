@@ -24,13 +24,17 @@
         <div class="carousel-item  ">
           <div class="container mt-3 text-center" >
             <img src="{% static 'Resources/Star.png'  %}" alt="Star" class="mx-auto d-block" style="width:60%; max-width:100%;"> 
-            <button type =button class="btn btn-primary" > Đăng ký </button>
+            <button type =button class="btn btn-primary" > 
+              <a href = "/EOB/Member" style="color:white;"> Đăng ký  </a>
+            </button>
           </div>
         </div>
         <div class="carousel-item">
           <div class="container mt-3 text-center" >
             <img src="{% static 'Resources/Product.png'  %}" alt="Product" class="mx-auto d-block" style="width:60%; max-width:100%;"> 
-            <button type =button class="btn btn-primary" > Đăng ký VLXD</button>
+            <button type =button class="btn btn-primary" >
+              <a href = "/EOB/VLXD" style="color:white;"> Đăng ký  </a>
+            </button>
           </div>
         </div>
       </div>
@@ -121,7 +125,7 @@
     <div class="col-sm-3 p-2">
       <img src="{% static 'Resources/Member.png'  %}" alt="Member" width="100" height="60">
       <p>Thành viên</p>
-      <h1 style="font-size:60px" > <b>1334</b></h1>
+      <h1 style="font-size:60px" > <b>1353</b></h1>
     </div>
   
     <div class="col-sm-3 p-2">
@@ -183,63 +187,59 @@
 
 
 <!-- Tin tức -->
-<div class=" res_new container-fluid align-items-center" style="padding-left: 200px; padding-right: 100px; padding-top: 75px;">
-
-  <div class="row col d-flex justify-content-center align-items-center" style="padding-bottom:50px;">
-    <div class ="row">
-     <h5> <b> Tin tức cập nhật </b> </h5>
-    </div>
-    <!-- Tin tức đầu tiên -->
-    <div class="col " style="border:1px solid lightgray; width:300px; padding-bottom: 30px; margin-right: 40px; float: left;">   
-        <div>  <img src="{% static 'Resources/Festival.jpg'  %}" alt="Fes" width="104%" height="75%"></div>
-          
-        <h6 class = text-left style="padding-bottom:50px;">  FESTIVAL KTS TRẺ TOÀN QUỐC LẦN THỨ IX - YÊN BÁI 2023 </h6>
-        <p class = text-justify> Kỳ liên hoan sắc màu !!! <br>
-            Vượt qua bao gian khó, bao áp lực... ngày trở về trọn niềm vui.
-            Đi xin từng tấm hình cùng với anh em, bởi nhớ lắm từng nục cười giữa anh em. 
-        </p>
-        <div class="pt-5">
-          <span style= "float:right;"> <b>Xem thêm</b> </span>  
-        </div>
-    </div>
-    <!-- Tin tức thứ 2 -->
-    <div class="col" style="border:1px solid lightgray; width: 300px; padding-bottom: 30px; margin-right: 40px; float: left;">   
-      <div>  <img src="{% static 'Resources/Color.jpg'  %}" alt="Color" width="104%" height="75%"></div>
+<div class="res_new container-fluid align-items-center" style="padding-left: 200px; padding-right: 100px; padding-top: 75px;">
+  <div class="row d-flex justify-content-center align-items-stretch" style="padding-bottom: 50px;">
+      <div class="row">
+          <h5><b>Tin tức cập nhật</b></h5>
+      </div>
+      <!-- Tin tức đầu tiên -->
+      <div class="col d-flex flex-column" style="border: 1px solid lightgray; width: 300px; padding-bottom: 30px; margin-right: 40px;">
+          <div>
+              <img src="{% static 'Resources/Festival.jpg' %}" alt="Fes" style="width: 105%; height: auto;">
+          </div>
+          <h6 class="text-left" style="padding-bottom: 20px;">FESTIVAL KTS TRẺ TOÀN QUỐC LẦN THỨ IX - YÊN BÁI 2023</h6>
+          <p class="text-justify flex-grow-1">Kỳ liên hoan sắc màu !!! <br> Vượt qua bao gian khó, bao áp lực... ngày trở về trọn niềm vui. Đi xin từng tấm hình cùng với anh em, bởi nhớ lắm từng nục cười giữa anh em.</p>
+          <div class="mt-auto pt-3 text-right">
+            <span style="float: right;"><b>Xem thêm <i class="bi bi-chevron-right"></i> </b></span>
+          </div>
         
-        <h6 class = text-left style="padding-bottom:50px;">  Dulux kỷ niệm 20 năm ColourFutures - Màu Dulux Của Năm </h6>
-        <p class = text-justify> Năm 2023 đánh dấu một mốc quan trọng - kỷ niệm 20 năm chiến dịch Màu Dulux Của Năm. 
-            Tìm nguồn cảm hứng từ những câu chuyện mà sắc trong một ấn phẩm ColourFutures đặc biệt, và khám phá tất cả những màu sắc ra mắt trong hai thập kỷ qua. 
-            Hãy để màu sắc biến đổi cuộc sống của bạn.
-        </p>
-        <div class="pt-5">
-        <span style= "float:right;"> <b>Xem thêm</b> </span>  
-        </div>
-    </div>
-    <!-- Tin tức thứ 3 -->
-    <div class="col" style="border:1px solid lightgray; width: 300px; padding-bottom: 30px; margin-right: 40px; float: left;">   
-      <div>  <img src="{% static 'Resources/Top10.jpg'  %}" alt="Top10" width="104%" height="75%"></div>
+      </div>
+      <!-- Tin tức thứ 2 -->
+      <div class="col d-flex flex-column" style="border: 1px solid lightgray; width: 300px; padding-bottom: 30px; margin-right: 40px;">
+          <div>
+              <img src="{% static 'Resources/Color.jpg' %}" alt="Color" style="width: 105%; height: auto;">
+          </div>
+          <h6 class="text-left" style="padding-bottom: 20px;">Dulux kỷ niệm 20 năm ColourFutures - Màu Dulux Của Năm</h6>
+          <p class="text-justify flex-grow-1">Năm 2023 đánh dấu một mốc quan trọng - kỷ niệm 20 năm chiến dịch Màu Dulux Của Năm. Tìm nguồn cảm hứng từ những câu chuyện mà sắc trong một ấn phẩm ColourFutures đặc biệt, và khám phá tất cả những màu sắc ra mắt trong hai thập kỷ qua. Hãy để màu sắc biến đổi cuộc sống của bạn.</p>
+          <div class="mt-auto pt-3 text-right">
+            <span style="float: right;"><b>Xem thêm <i class="bi bi-chevron-right"></i> </b></span>
+          </div>
         
-        <h6 class = text-left style="padding-bottom:30px;">  LỘ DIỆN TOP 10 CHUNG KẾT AN CƯỜNG INTERIOR DESIGN AWARD 2023 </h6>
-        <p class = text-justify> Kỳ liên hoan sắc màu !!! <br>
-            Ngày 17 tháng 10 vừa qua, tại Sheraton Hotel, An Cường interior Design Award 2023 
-            đã cùng Hội đồng Giám khảo tiến hành chọn ra Top 10 dự án xuất sắc nhất trong 21 dự án vào Bán kết được công bố vào ngày 6 thánh 9 vừa qua.
-        </p>
-        <div class="pt-5">
-          <span style= "float:right;"> <b>Xem thêm</b> </span>  
-        </div> 
-    </div>
-    <!-- Tin tức thứ 4 -->
-    <div class="col" style="border:1px solid lightgray; width: 300px; padding-bottom: 30px; margin-right: 40px; float: left;">   
-      <div>  <img src="{% static 'Resources/Areus.jpg'  %}" alt="Areus" width="104%" height="75%"></div>
-        
-        <h6 class = text-left style="padding-bottom:50px;">  AREUS Atelier đối thoại với văn hóa bằng nội thất CHẤM </h6>
-        <p class = text-justify> Thiết kế của BST nội thất - Chấm Collection được lấy cảm hứng từ trạng thái của giọt mực và nét bút khi thi triển thư pháp. </p>
-        <div class="pt-5">
-          <span style= "float:right;"> <b>Xem thêm</b> </span>  
-        </div>
-    </div>
-
+      </div>
+      <!-- Tin tức thứ 3 -->
+      <div class="col d-flex flex-column" style="border: 1px solid lightgray; width: 300px; padding-bottom: 30px; margin-right: 40px;">
+          <div>
+              <img src="{% static 'Resources/Top10.jpg' %}" alt="Top10" style="width: 105%; height: auto;">
+          </div>
+          <h6 class="text-left" style="padding-bottom: 20px;">LỘ DIỆN TOP 10 CHUNG KẾT AN CƯỜNG INTERIOR DESIGN AWARD 2023</h6>
+          <p class="text-justify flex-grow-1">Kỳ liên hoan sắc màu !!! <br> Ngày 17 tháng 10 vừa qua, tại Sheraton Hotel, An Cường interior Design Award 2023 đã cùng Hội đồng Giám khảo tiến hành chọn ra Top 10 dự án xuất sắc nhất trong 21 dự án vào Bán kết được công bố vào ngày 6 thánh 9 vừa qua.</p>
+          <div class="mt-auto pt-3 text-right">
+            <span style="float: right;"><b>Xem thêm <i class="bi bi-chevron-right"></i> </b></span>
+          </div>        
+      </div>
+      <!-- Tin tức thứ 4 -->
+      <div class="col d-flex flex-column" style="border: 1px solid lightgray; width: 300px; padding-bottom: 30px; margin-right: 40px;">
+          <div>
+              <img src="{% static 'Resources/Areus.jpg' %}" alt="Areus" style="width: 105%; height: auto;">
+          </div>
+          <h6 class="text-left" style="padding-bottom: 20px;">AREUS Atelier đối thoại với văn hóa bằng nội thất CHẤM</h6>
+          <p class="text-justify flex-grow-1">Thiết kế của BST nội thất - Chấm Collection được lấy cảm hứng từ trạng thái của giọt mực và nét bút khi thi triển thư pháp.</p>
+          <div class="mt-auto pt-3 text-right">
+            <span style="float: right;"><b>Xem thêm <i class="bi bi-chevron-right"></i></b></span>
+          </div>        
+      </div>
   </div>
 </div>
+
 
 {%endblock main-content%}

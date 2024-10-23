@@ -47,7 +47,7 @@
     
   <div class="row bg-white text-dark align-items-center" style="display: flex; justify-content: space-between;">
     <div class="white_nav col-sm-1 p-4"> 
-        <img src="{% static 'Resources/Logo.png' %}" alt="Logo" width="120" height="60"> 
+        <a href = "/EOB/" > <img src="{% static 'Resources/Logo.png' %}" alt="Logo" width="120" height="60">   </a>
     </div>
     
     <div class="lib_model res_remove col-sm-2 p-4 dropdown" style="text-align: right">
@@ -62,8 +62,14 @@
     </div>
 
     <form class="white_nav col-sm-3 p-4" style="margin-left: auto;">
-        <input class="form-control me-2" type="text" placeholder="Tìm kiếm" style="border-radius: 25px; border: 2px solid lightgray;">
-    </form>
+    <div class="input-group">
+        <input class="form-control" type="text" placeholder="Tìm kiếm" style="border-radius: 25px 0 0 25px; border: 2px solid lightgray;">
+        <span class="input-group-text" style="border-radius: 0 25px 25px 0; border: 2px solid lightgray;">
+            <i class="bi bi-search"></i>
+        </span>
+    </div>
+</form>
+
   </div>
 
 </nav>
