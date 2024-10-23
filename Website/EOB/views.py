@@ -19,59 +19,68 @@ def Carousel(request):
 
 def Signup_mem(request):
     if request.method == "POST":
+        member_type = request.POST.get("member_type")
         check = request.POST.get("checkbox", False)
-        name = request.POST.get("uname")
         phone = request.POST.get("phone")
         email = request.POST.get("email")
         password = request.POST.get("pass")
         r_password = request.POST.get("rpass")
-        check_user = Member.objects.filter(username=name).exists()
 
-        
-        # Check for spaces in username and password
-        if ' ' in name or ' ' in password:
-            messages.error(request, 'Blanks (\' \') are not allowed in Username or Password')
-            return render(request, 'Signup_mem.html')
+        # Create the user based on member type
+        if member_type == "individual":
+            name = request.POST.get("uname")
+            if Member.objects.filter(username=name).exists():
+                messages.error(request, 'Username existed, please choose another username')
+                return render(request, 'Signup_mem.html')
 
-        # Check if terms are accepted
-        if not check:
-            messages.error(request, "Please accept the terms")
-            return render(request, 'Signup_mem.html')
+            user = Member.objects.create_user(username=name, password=password)
+            user.is_individual = True
+            user.save()
 
-        # Check if passwords match
-        if password != r_password:
-            messages.error(request, 'Passwords must match')
-            return render(request, 'Signup_mem.html')
+            # Create the Individual profile
+            Indv = Individual.objects.create(full_name=user, phone=phone, email=email)
+            Indv.save()
 
-        # Check if username already exists
-        if check_user:
-            messages.error(request, 'Username existed, please choose another username')
-            return render(request, 'Signup_mem.html')
+        elif member_type == "organization":
+            name = request.POST.get("c_name")
+            tax = request.POST.get("tax")
+            if Member.objects.filter(username=name).exists():
+                messages.error(request, 'Username existed, please choose another username')
+                return render(request, 'Signup_mem.html')
 
-        # Create the user
-        user = Member.objects.create_user(username=name, password=password)
-        user.is_individual = True
-        user.save()
-        
-        # Create the Individual profile
-        jf = Individual.objects.create(user=user, phone=phone, email=email)
-        jf.full_name = name
-        jf.save()
+            user = Member.objects.create_user(username=name, password=password)
+            user.is_organization = True
+            user.save()
 
-        return redirect('EOB/Carousel')  # Redirect to Carousel.html after successful signup
+            # Create the Organization profile
+            Org = Organization.objects.create(c_name=user, tax_num=tax, phone=phone, email=email)
+            Org.save()
+
+        return redirect('/EOB/Carousel')  # Redirect to Carousel.html after successful signup
 
     return render(request, 'Signup_mem.html')
 
-def Signup_idv(request):
-   return render(request, 'Signup_mem.html')
-
-def Signup_org(request):
-   return render(request, 'Signup_mem.html')
-
-
 
 def Signup_VLXD(request):
-  return render(request, 'Signup_VLXD.html')
+    if request.method == "POST":
+        check = request.POST.get("checkbox", False)
+        name = request.POST.get("cname")
+        phone = request.POST.get("phone")
+        email = request.POST.get("email")
+        job = request.POST.get("job")
+
+        # Create the user
+        user = Member.objects.create_user(username=name, password='temporarypassword')
+        user.is_vlxd = True
+        user.save()
+
+        # Create the VLXD profile
+        VLXD_User = VLXD.objects.create(c_name=user, phone=phone, email=email, job=job)
+        VLXD_User.save()
+
+        return redirect('/EOB/Carousel')  # Redirect to Carousel.html after successful signup
+
+    return render(request, 'Signup_VLXD.html' )
 
 def Login(request):
     if request.method == "POST":

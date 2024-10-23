@@ -1,13 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
-# Create your models here.
-
 # Member models
 class Member(AbstractUser):
-    is_indivdual = models.BooleanField(default=False)
+    is_individual = models.BooleanField(default=False)
     is_organization = models.BooleanField(default=False)
+    is_vlxd = models.BooleanField(default=False)
 
     groups = models.ManyToManyField(
         'auth.Group',
@@ -23,21 +21,20 @@ class Member(AbstractUser):
         help_text='Specific permissions for this user.',
         verbose_name='user permissions',
     )
-    
+
 class Individual(models.Model):
-    full_name=models.OneToOneField(Member,on_delete=models.CASCADE, primary_key=True)
-    phone=models.CharField((""), max_length=50)
-    email=models.EmailField()   
+    full_name = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True)
+    phone = models.CharField("Phone", max_length=50)
+    email = models.EmailField()
 
 class Organization(models.Model):
-    c_name=models.OneToOneField(Member,on_delete=models.CASCADE, primary_key=True)
-    tax_num=models.CharField(max_length=10)
-    phone=models.CharField((""), max_length=50)
-    email=models.EmailField() 
+    c_name = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True, verbose_name = 'Company Name')
+    tax_num = models.CharField(max_length=10, verbose_name = 'Tax Number')
+    phone = models.CharField("Phone", max_length=50)
+    email = models.EmailField()
 
-# VLXD models
 class VLXD(models.Model):
-    c_name=models.OneToOneField(Member,on_delete=models.CASCADE, primary_key=True)
-    phone=models.CharField((""), max_length=50)
-    email=models.EmailField() 
-    Job=models.CharField(max_length=50)
+    c_name = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True, verbose_name = 'Company Name'  )
+    phone = models.CharField("Phone", max_length=50)
+    email = models.EmailField()
+    job = models.CharField(max_length=50)
