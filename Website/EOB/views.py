@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from EOB.models import Member, Individual, Organization, VLXD
 
+
+
 def Test(request):
   return render(request, 'Test.html')
 
