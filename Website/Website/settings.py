@@ -32,7 +32,7 @@ AUTH_USER_MODEL = 'EOB.Member'
 
 # Application definition
 
-SITE_ID = 1
+SITE_ID = 2
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -56,7 +56,8 @@ SOCIALACCOUNT_PROVIDERS = {
             "email"
         ],
         "AUTH_PARAMS": {
-            "access_type": "online"
+            "access_type": "online",
+            'prompt': 'consent'
         }
     }
 }
@@ -160,3 +161,5 @@ AUTHENTICATION_BACKENDS = (
 
 LOGIN_DIRECT_URL = "/"
 LOGIN_REDIRECT_URL = "/"
+
+ACCOUNT_LOGOUT_ON_GET = True

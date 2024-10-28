@@ -109,5 +109,7 @@ def Login(request):
 def Logout(request):
     logout(request)
     return render(request, 'Homepage.html')
+
+
     
     
