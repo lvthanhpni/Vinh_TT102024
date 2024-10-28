@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    'allauth.socialaccount.providers.facebook',
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -59,7 +60,32 @@ SOCIALACCOUNT_PROVIDERS = {
             "access_type": "online",
             'prompt': 'consent'
         }
+    },
+
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': lambda request: 'en_US',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v7.0',
     }
+
 }
 
 
@@ -162,4 +188,5 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_DIRECT_URL = "/"
 LOGIN_REDIRECT_URL = "/"
 
-ACCOUNT_LOGOUT_ON_GET = True
+SOCIAL_AUTH_FACEBOOK_KEY = "1068398874662412"
+SOCIAL_AUTH_FACEBOOK_KEY_SECRET = "fe4d145239a6722bb5961366d3784a76"
