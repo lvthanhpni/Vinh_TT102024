@@ -4,7 +4,7 @@
 <!-- Navigation -->
 <nav class="sticky-nav" style="border: 1px solid black;">
   <div class="row bg-dark text-white align-items-center" style="display: flex; justify-content: space-between; font-size: 14px; padding-left: 30px;">
-    <div class="res_remove col-sm-1 p-1">
+    <div class="res_remove col-sm-2 p-1">
     <a href = "/EOB" style="color:white;" > Công trình tiêu biểu </a>
     </div>
     <div class="res_remove col-sm-1 p-2">
@@ -13,10 +13,10 @@
 
 {% if user.is_authenticated %}
     <!-- Post-login -->
-    <div class="black_nav col-sm-1 p-2 text-center" style=" background-color:gray; margin-left: auto; margin-right:20px;">
+    <div class="black_nav col-sm-2 p-2 text-center" style=" background-color:gray; margin-left: auto; margin-right:20px;">
         <a href="/EOB/" style="color:black;"> <b>  {{ user.username }}   </b> </a>
     </div>
-    <div class="black_nav col-sm-1 p-2 text-center"  style=" background-color:gray;">
+    <div class="black_nav col-sm-2 p-2 text-center"  style=" background-color:gray;">
         <a href="/EOB/Logout" style="color:black;"> <b> Logout </b> </a>
     </div>
     <div class="black_nav col-sm-1 p-2 dropdown">
