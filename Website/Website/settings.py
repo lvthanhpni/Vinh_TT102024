@@ -192,4 +192,9 @@ LOGIN_REDIRECT_URL = "/"
 SOCIAL_AUTH_FACEBOOK_KEY = "1068398874662412"
 SOCIAL_AUTH_FACEBOOK_KEY_SECRET = "fe4d145239a6722bb5961366d3784a76"
 
-
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_POST = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER ='vqvinh21@clc.fitus.edu.vn'
+EMAIL_HOST_PASSWORD ='Enter your password'

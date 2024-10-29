@@ -110,6 +110,9 @@ def Logout(request):
     logout(request)
     return render(request, 'Homepage.html')
 
+def Forget_pass(request):
+    return render(request, 'Forget_pass.html')
+
 
     
     
