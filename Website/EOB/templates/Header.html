@@ -3,46 +3,59 @@
 {% block main-content %}
 <!-- Navigation -->
 <nav class="sticky-nav" style="border: 1px solid black;">
-  <div class="row bg-dark text-white align-items-center" style="display: flex; justify-content: space-between; font-size: 14px; padding-left: 30px;">
-    <div class="res_remove col-sm-2 p-1">
-    <a href = "/EOB" style="color:white;" > Công trình tiêu biểu </a>
+  <div class="row bg-dark text-white align-items-center" style="font-size: 13px; padding-left: 30px; padding-right: 30px;">
+    <div class="res_remove col-6 d-flex align-items-center" style="text-align: left">
+      <div class="res_remove col-sm-3 p-1">
+        <a href="/EOB" style="color:white;">Công trình tiêu biểu</a>
+      </div>
+      <div class="res_remove col-sm-1 p-2">
+        <a href="/EOB" style="color:white;">Tin Tức</a>
+      </div>
     </div>
-    <div class="res_remove col-sm-1 p-2">
-        <a href = "/EOB" style="color:white;" > Tin Tức </a>    
-    </div>
-
-{% if user.is_authenticated %}
-    <!-- Post-login -->
-    <div class="black_nav col-sm-2 p-2 text-center" style=" background-color:gray; margin-left: auto; margin-right:20px;">
-        <a href="/EOB/" style="color:black;"> <b>  {{ user.username }}   </b> </a>
-    </div>
-    <div class="black_nav col-sm-2 p-2 text-center"  style=" background-color:gray;">
-        <a href="/EOB/Logout" style="color:black;"> <b> Logout </b> </a>
-    </div>
-    <div class="black_nav col-sm-1 p-2 dropdown">
-        <button type="button" class="btn dropdown-toggle bg-dark text-white w-100">
+    <div class="black_nav col-6 d-flex justify-content-end align-items-center" style="text-align: right">
+      {% if user.is_authenticated %}
+      <!-- Post-login -->
+      <div class="row col-12 d-flex justify-content-end align-items-center">
+        <div class="dropdown col-sm-3 p-2 text-center" style="margin-right:10px;">
+          <button class="btn dropdown-toggle custom_hover" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" 
+          style="color: white; border: none;">
+            <b>  {{ user.username }} </b>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item" href="/EOB/">Thông tin tài khoản</a></li>
+            <li><a class="dropdown-item" href="/EOB/Logout">Đăng xuất</a></li>
+          </ul>
+        </div>
+        
+        <div class="col-sm-2 p-2 dropdown">
+          <button type="button" class="btn dropdown-toggle bg-dark text-white w-100">
             <img class="img-fluid" src="{% static 'Resources/Vie.png' %}" alt="Viet flag"> Vi
-        </button>
-    </div>
-    
-{% else %}
-    <!-- Pre-login -->
-    <div class="black_nav col-sm-1 p-1" style="margin-left: auto;">
-        <a href="/EOB/Member" style="color:white;"> Đăng Ký Thành Viên </a>
-    </div>
-    <div class="black_nav col-sm-1 p-2">
-        <a href="/EOB/VLXD" style="color:white;"> VLXD Đăng Ký </a>
-    </div>
-    <div class="black_nav col-sm-1 p-2">
-        <a href="/EOB/Login" style="color:white;"> Đăng Nhập </a>
-    </div>
-    <div class="black_nav col-sm-1 p-2 dropdown">
-        <button type="button" class="btn dropdown-toggle bg-dark text-white w-100">
-            <img class="img-fluid" src="{% static 'Resources/Vie.png' %}" alt="Viet flag"> Vi
-        </button>
-    </div>
-{% endif %}
+          </button>
+        </div>
+      </div>
 
+      {% else %}
+      <!-- Pre-login -->
+      <div class="col-sm-3 p-1">
+        <a href="/EOB/Member" style="color:white;">Đăng Ký Thành Viên</a>
+      </div>
+      <div class="col-sm-2 p-2">
+        <a href="/EOB/VLXD" style="color:white;">VLXD Đăng Ký</a>
+      </div>
+      <div class="col-sm-2 p-2">
+        <a href="/EOB/Login" style="color:white;">Đăng Nhập</a>
+      </div>
+      <div class="col-sm-2 p-2 dropdown ">
+        <button type="button" class="btn dropdown-toggle bg-dark text-white w-100 ">
+          <img class="img-fluid " src="{% static 'Resources/Vie.png' %}" alt="Viet flag"> Vi
+        </button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+ 
+  
 
     
   <div class="row bg-white text-dark align-items-center" style="display: flex; justify-content: space-between;">
