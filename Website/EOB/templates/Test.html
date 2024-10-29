@@ -1,18 +1,74 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
+    <title>Company Logos Carousel</title>
+    <!-- Owl Carousel CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
+    <!-- jQuery (necessary for Owl Carousel) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Owl Carousel JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <style>
+        .carousel-container {
+            max-width: 1300px; /* Adjust the width as needed */
+            margin: 0 auto; /* Center horizontally */
+            background-color: #f0f0f0;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+        .owl-carousel .item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+        }
+    </style>
 </head>
 <body>
-    {% load socialaccount %}
-    <h1>Google sign in</h1> 
-    <a href="{% provider_login_url 'google' %}?next=/">Login with Google</a>
+<div class="row res_comp" style="background-color:#f0f0f0;">
+  <div class="carousel-container">
+    <div class="owl-carousel owl-theme">
+      <div class="item"><img src="{% static 'Resources/Austra.png' %}" alt="Austraalu" width="110" height="40"></div>
+      <div class="item"><img src="{% static 'Resources/Dulux.png' %}" alt="Dulux" width="110" height="40"></div>
+      <div class="item"><img src="{% static 'Resources/PNP.png' %}" alt="Phương Nam Panel" width="110" height="40"></div>
+      <div class="item"><img src="{% static 'Resources/Austra.png' %}" alt="Austraalu" width="110" height="40"></div>
+      <div class="item"><img src="{% static 'Resources/Dulux.png' %}" alt="Dulux" width="110" height="40"></div>
+      <div class="item"><img src="{% static 'Resources/PNP.png' %}" alt="Phương Nam Panel" width="110" height="40"></div>
+    </div>
+  </div>
+</div>
 
-    {% if user.is_authenticated %}
-    <p> You are signed in as {{ user.email }} </p>
-    <a href="/EOB/Logout">Logout</a>
-    {% endif %}
+<script>
+$(document).ready(function(){
+  $('.owl-carousel').owlCarousel({
+      loop: true,
+      margin: 10,
+      nav: true,
+      autoplay: true,
+      autoplayTimeout: 2000,
+      autoplaySpeed: 2000,
+      autoplayHoverPause: true,
+      responsive: {
+          0: {
+              items: 1
+          },
+          600: {
+              items: 3
+          },
+          1000: {
+              items: 6
+          }
+      }
+  });
+});
+</script>
+
 </body>
 </html>
+
+
