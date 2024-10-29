@@ -27,12 +27,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
 AUTH_USER_MODEL = 'EOB.Member'
 
 
 # Application definition
 
-SITE_ID = 2
+SITE_ID = 3
 
 INSTALLED_APPS = [
     "django.contrib.admin",
