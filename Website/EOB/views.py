@@ -119,6 +119,9 @@ def Profile(request):
 def Folder(request):
     return render(request, 'Folder.html')
 
+def Library(request):
+    return render(request, 'Library.html')
+
 
     
     

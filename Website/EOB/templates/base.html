@@ -1,237 +1,269 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <title>EOB IMITATE</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!--css-->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-  <!--js-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
- 
-  <!-- Owl Carousel CSS --> 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" /> 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" /> 
-  <!-- jQuery (necessary for Owl Carousel) --> 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
-  <!-- Owl Carousel JS --> 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <title>EOB IMITATE</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--css-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!--js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
 
-  <!--Google Login-->
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
-  
-  <style>
-    html,body
-    {
-      width:100%
-    }
+    <!-- Owl Carousel CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
+    <!-- jQuery (necessary for Owl Carousel) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Owl Carousel JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
-    a {
-      text-decoration: none;
-    }
+    <!--Google Login-->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
 
-    a:hover {
-      opacity:0.7;
-    }
-    
-    .custom_hover:hover{
-      background-color: #343a40;
-    }
+    <link rel="stylesheet" href="{% static 'path/to/owl.carousel.min.css' %}">
+<link rel="stylesheet" href="{% static 'path/to/owl.theme.default.min.css' %}">
+<script src="{% static 'path/to/jquery.min.js' %}"></script>
+<script src="{% static 'path/to/owl.carousel.min.js' %}"></script>
 
-    
-    .sticky-nav {
-      position: -webkit-sticky; /* For Safari */
-      position: sticky;
-      top: 0;
-      z-index: 1000; /* Ensures it stays on top of other content */
-    }
+    <style>
+        html,
+        body {
+            width: 100%
+        }
 
-    /* RESPONSIVE WEBSITE  */
-    @media (max-width: 1270px) {
-      .lib_model {
-          flex: 0 0 33.333333%;
-          max-width: 33.333333%;
-      }
-      .res_post {
-        padding-left: 45px !important;
-        padding-right: 0 !important;
-    }
+        a {
+            text-decoration: none;
+        }
 
-      .res_new {
-        padding-left: 45px !important;
-        padding-right: 0 !important;
-  }
-    }
+        a:hover {
+            opacity: 0.7;
+        }
 
-    @media (max-width: 750px) {
-      .white_nav{
-        flex: 0 0 50%;
-        max-width: 50%;
-      }
+        .custom_hover:hover {
+            background-color: #343a40;
+        }
 
-      .res_remove {
-        display: none;
-    }
-    
-    .black_nav{
-      flex: 0 0 100%; 
-      max-width: 100%;
-    }
-    
-    .res_post .row {
-      flex-direction: column;
-      margin-right: 0;
-    }
+        .sticky-nav {
+            position: -webkit-sticky;
+            /* For Safari */
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            /* Ensures it stays on top of other content */
+        }
 
-    .res_post .col-sm-5, .res_post .col-sm-7 {
-        width: 100%;
-        padding: 0;
-    }
+        /* RESPONSIVE WEBSITE  */
+        @media (max-width: 1270px) {
+            .lib_model {
+                flex: 0 0 33.333333%;
+                max-width: 33.333333%;
+            }
 
-    .res_comp .row {
-      flex-direction: column;
-      align-items: center;
-    }
-    .res_comp .col-sm {
-      width: 100%;
-      text-align: center;
-      margin-bottom: 10px;
-     }
+            .res_post {
+                padding-left: 45px !important;
+                padding-right: 0 !important;
+            }
 
-    .res_new .row {
-    flex-direction: column;
-    }
-  }
-    .carousel-container {
-      max-width: 1300px; /* Adjust the width as needed */
-      margin: 0 auto; /* Center horizontally */
-      background-color: #f0f0f0;
-      padding-top: 50px;
-      padding-bottom: 50px;
-  }
-  .owl-carousel .item {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 10px;
-  }
-  /* Basic styling for the folder tree */
-  .folder-tree {
-    list-style-type: none; /* Remove default bullet points */
-    font-family: Arial, sans-serif;
-  }
-  
-  .folder-item {
-    cursor: pointer;
-    margin-left: 15px;
-    position: relative;
-  }
-
-  .folder-item::before {
-    content: '📂'; /* Folder icon */
-    padding-right: 8px;
-  }
-
-  .subfolder {
-    margin-left: 20px; /* Indent subfolders */
-    display: none; /* Hide subfolders initially */
-  }
-
-  /* Toggle subfolder visibility */
-  .folder-item.open + .subfolder {
-    display: block;
-  }
-
-  
-  </style>
-</head>
-<body>
-
-<!--  Owl carousel -->
-<script>
-  $(document).ready(function(){
-    $('.owl-carousel').owlCarousel({
-        loop: true,
-        margin: 10,
-        nav: true,
-        autoplay: true,
-        autoplayTimeout: 4000,
-        autoplaySpeed: 1500,
-        autoplayHoverPause: true,
-        responsive: {
-            0: {
-                items: 1
-            },
-            600: {
-                items: 3
-            },
-            1000: {
-                items: 6
+            .res_new {
+                padding-left: 45px !important;
+                padding-right: 0 !important;
             }
         }
-    });
-  });
-  </script>
-    
-<!-- Hàm change button text -->
-<script>
-  function changeButtonText(text) {
-      document.getElementById('dropdownButton').innerHTML = '<b>' + text + '</b>';
-  }
-  
-  function setCookie(cname, cvalue, exdays) {
-    const d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
 
-function getCookie(cname) {
-    let name = cname + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
+        @media (max-width: 750px) {
+            .white_nav {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+
+            .res_remove {
+                display: none;
+            }
+
+            .black_nav {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            .res_post .row {
+                flex-direction: column;
+                margin-right: 0;
+            }
+
+            .res_post .col-sm-5,
+            .res_post .col-sm-7 {
+                width: 100%;
+                padding: 0;
+            }
+
+            .res_comp .row {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .res_comp .col-sm {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .res_new .row {
+                flex-direction: column;
+            }
         }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
+
+        .carousel-container {
+            max-width: 1300px;
+            /* Adjust the width as needed */
+            margin: 0 auto;
+            /* Center horizontally */
+            background-color: #f0f0f0;
+            padding-top: 50px;
+            padding-bottom: 50px;
         }
-    }
-    return "";
-}
 
-window.onload = function() {
-    const username = getCookie("uname");
-    const password = getCookie("password");
-    if (username !== "") {
-        document.getElementById("login_uname").value = username;
-        document.getElementById("login_pass").value = password;
-        document.getElementById("form2Example3c").checked = true;
-    }
-  };
+        .owl-carousel .item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+        }
 
-    // Function to toggle visibility of subfolders
-    function toggleFolder(element) {
-      element.classList.toggle('open'); // Add or remove 'open' class to toggle subfolder visibility
-    }
-  
-</script> 
+        /* Basic styling for the folder tree */
+        .folder-tree {
+            list-style-type: none;
+            /* Remove default bullet points */
+            font-family: Arial, sans-serif;
+        }
 
+        .folder-item {
+            cursor: pointer;
+            margin-left: 15px;
+            position: relative;
+        }
 
+        .folder-item::before {
+            content: '📂';
+            /* Folder icon */
+            padding-right: 8px;
+        }
 
-<!-- Header  -->
-{% include "Header.html" %}
+        .subfolder {
+            margin-left: 20px;
+            /* Indent subfolders */
+            display: none;
+            /* Hide subfolders initially */
+        }
 
-{% block main-content%}{% endblock main-content%}
+        /* Toggle subfolder visibility */
+        .folder-item.open + .subfolder {
+            display: block;
+        }
 
-<!-- Footer -->
-{% include "Footer.html" %}
+        .vertical-carousel-container {
+            max-width: 200px; /* Adjust as needed */
+            margin: 0 auto;
+        }
+        
+        .vertical-owl-carousel .item {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .item .d-flex a {
+            margin: 10px 0; /* Adds space between stacked logos */
+        }
+        
+
+    </style>
+</head>
+
+<body>
+
+    <!--  Owl carousel -->
+    <script>
+        $(document).ready(function () {
+            $('.owl-carousel').owlCarousel({
+                loop: true,
+                margin: 10,
+                nav: true,
+                autoplay: true,
+                autoplayTimeout: 4000,
+                autoplaySpeed: 1500,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    600: {
+                        items: 3
+                    },
+                    1000: {
+                        items: 6
+                    }
+                }
+            });
+        });
+
+    <!-- Hàm change button text -->
+        function changeButtonText(text) {
+            document.getElementById('dropdownButton').innerHTML = '<b>' + text + '</b>';
+        }
+
+        function setCookie(cname, cvalue, exdays) {
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            let expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        window.onload = function () {
+            const username = getCookie("uname");
+            const password = getCookie("password");
+            if (username !== "") {
+                document.getElementById("login_uname").value = username;
+                document.getElementById("login_pass").value = password;
+                document.getElementById("form2Example3c").checked = true;
+            }
+        };
+
+        // Function to toggle visibility of subfolders
+        function toggleFolder(element) {
+            element.classList.toggle('open'); // Add or remove 'open' class to toggle subfolder visibility
+        }
+        
+        
+    </script>
+
+    <!-- Header  -->
+    {% include "Header.html" %}
+
+    {% block main-content %}{% endblock main-content %}
+
+    <!-- Footer -->
+    {% include "Footer.html" %}
 </body>
+
 </html>

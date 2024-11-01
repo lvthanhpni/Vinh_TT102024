@@ -22,6 +22,8 @@ urlpatterns = [
     path('EOB/Profile', views.Profile, name='Profile'),
     #Library
     path('EOB/Folder', views.Folder, name='Folder'),
+    path('EOB/Library', views.Library, name='Library'),
+
 
     path('EOB/Test', views.Test, name='Test'),
 
