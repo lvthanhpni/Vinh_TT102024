@@ -113,6 +113,12 @@ def Logout(request):
 def Forget_pass(request):
     return render(request, 'Forget_pass.html')
 
+def Profile(request):
+    return render(request, 'Profile.html')
+
+def Folder(request):
+    return render(request, 'Folder.html')
+
 
     
     
