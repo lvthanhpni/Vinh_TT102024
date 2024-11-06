@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertical Carousel Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <style>
+        /* Vertical Carousel Container Styling */
+        .vertical-carousel-container {
+            max-width: 1300px; /* Adjust as needed */
+            margin: 0 auto; /* Center horizontally */
+            background-color: #f0f0f0; /* Container background */
+            padding: 50px 0; /* Top and bottom padding */
+        }
+
+        #vertical-carousel {
+            background-color: #f0f0f0; /* Maintain the same background */
+            padding: 20px; /* Adjust padding as needed */
+        }
+
+        /* Stack items vertically for the specific carousel */
+        #vertical-carousel.owl-carousel .owl-stage {
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+        }
+
+        /* Individual item styling */
+        #vertical-carousel.owl-carousel .item {
+            text-align: center;
+            margin: 10px 0; /* Margin between items */
+            opacity: 0; /* Start with hidden items */
+            transition: opacity 0.5s ease; /* Smooth transition for fade in */
+        }
+
+        /* Active item style */
+        #vertical-carousel.owl-carousel .owl-item.active .item {
+            opacity: 1; /* Show active item */
+        }
+    </style>
+</head>
+<body>
+    <div class="row res_comp" style="background-color:#f0f0f0;">
+        <div class="vertical-carousel-container">
+            <div id="vertical-carousel" class="owl-carousel owl-theme">
+                <div class="item">
+                    <a href="https://australu.com/">
+                        <img src="https://via.placeholder.com/170x70.png?text=Austraalu" alt="Austraalu" width="170" height="70">
+                    </a>
+                </div>
+                <div class="item">
+                    <a href="https://www.dulux.vn/">
+                        <img src="https://via.placeholder.com/110x40.png?text=Dulux" alt="Dulux" width="110" height="40">
+                    </a>
+                </div>
+                <div class="item">
+                    <a href="https://phuongnampanel.com/">
+                        <img src="https://via.placeholder.com/110x40.png?text=Ph%C6%B0%C6%9Dng+Nam+Panel" alt="Phương Nam Panel" width="110" height="40">
+                    </a>
+                </div>
+                <div class="item">
+                    <a href="https://australu.com/">
+                        <img src="https://via.placeholder.com/170x70.png?text=Austraalu" alt="Austraalu" width="170" height="70">
+                    </a>
+                </div>
+                <div class="item">
+                    <a href="https://www.dulux.vn/">
+                        <img src="https://via.placeholder.com/110x40.png?text=Dulux" alt="Dulux" width="110" height="40">
+                    </a>
+                </div>
+                <div class="item">
+                    <a href="https://phuongnampanel.com/">
+                        <img src="https://via.placeholder.com/110x40.png?text=Ph%C6%B0%C6%9Dng+Nam+Panel" alt="Phương Nam Panel" width="110" height="40">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#vertical-carousel').owlCarousel({
+                loop: true,
+                margin: 10,
+                nav: true,
+                autoplay: true,
+                autoplayTimeout: 4000,
+                autoplaySpeed: 1500,
+                autoplayHoverPause: true,
+                items: 1, // Show one item at a time
+                responsive: {
+                    0: {
+                        items: 1 // One item for small screens
+                    },
+                    600: {
+                        items: 1 // One item for medium screens
+                    },
+                    1000: {
+                        items: 1 // One item for large screens
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

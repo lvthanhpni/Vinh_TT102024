@@ -1,0 +1,40 @@
+{% extends 'Base.html'%}
+{% load static %}
+
+
+{% block main-content %}
+
+<!-- Carousel -->
+<div id="carousel" class="carousel slide" data-bs-ride="carousel">
+    <!-- Indicators/dots -->
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active" style="background-color: black; height: 16px; width: 16px; border-radius: 50%;"></button>
+      <button type="button" data-bs-target="#carousel" data-bs-slide-to="1" style="background-color: black; height: 16px; width: 16px; border-radius: 50%;"></button>
+      <button type="button" data-bs-target="#carousel" data-bs-slide-to="2" style="background-color: black; height: 16px; width: 16px; border-radius: 50%;"></button>
+    </div>
+    
+    <!-- The slideshow/carousel -->
+    <div class="row" style="height:700px; ">
+      <div class="carousel-inner">
+        <div class="carousel-item active" >
+          <div class="container mt-3 ">
+            <img src="{% static 'Resources/Model.png'  %}" alt="Model" class=" mx-auto d-block" style="width:75%;"> 
+          </div>
+        </div>
+        <div class="carousel-item  ">
+          <div class="container mt-3 text-center" >
+            <img src="{% static 'Resources/Star.png'  %}" alt="Star" class="mx-auto d-block" style="width:60%; max-width:100%;"> 
+            <button type =button class="btn btn-primary" > Đăng ký </button>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="container mt-3 text-center" >
+            <img src="{% static 'Resources/Product.png'  %}" alt="Product" class="mx-auto d-block" style="width:60%; max-width:100%;"> 
+            <button type =button class="btn btn-primary" > Đăng ký VLXD</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{%endblock main-content%}

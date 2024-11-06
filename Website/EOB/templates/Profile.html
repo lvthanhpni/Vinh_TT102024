@@ -1,0 +1,95 @@
+{% extends 'Base.html' %}
+{% load static %}
+
+{% block main-content %}
+
+<section style="background-color: #eee;">
+  <div class="container" style="padding-bottom: 50px; padding-top: 30px;">
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-lg-12 col-xl-11">
+        <div class="card text-black" style="border-radius: 25px;">
+          <div class="card-body">
+            <div class="d-flex justify-content-center">
+              <div class="col-md-10 col-lg-6 col-xl-5 d-flex flex-column align-items-center">
+                <img src="{% static 'Resources/Logo.png' %}" class="img-fluid" alt="Logo" style="width: 25%;">
+              </div>
+            </div>
+
+            <p class="text-center h4 fw-bold mb-5 mx-1 mx-md-4 mt-4">THÔNG TIN THÀNH VIÊN EOB CỦA TÔI</p>
+
+            <div class="row justify-content-between px-2">
+              <div class="col-md-10 col-lg-6 col-xl-5 order-1 order-lg-2">
+                <p><b style="padding-right:20px;">Thành viên Star</b> Yêu cầu thăng hạng đang chờ duyệt</p>
+
+                <div class="form-outline flex-fill mb-0">
+                  <label class="form-label" for="form3Example3c">Name</label>
+                  <input type="text" id="form3Example3c" class="form-control" name="uname" value="{{ user.username }}" />
+                </div>
+
+                <div class="form-outline flex-fill mb-0">
+                  <label class="form-label" for="form3Example3c">Đang là thành viên hội</label>
+                  <input type="text" id="form3Example3c" class="form-control" name="club" />
+                </div>
+
+                <div class="form-outline flex-fill mb-0">
+                  <label class="form-label" for="form3Example3c">Điện thoại*</label>
+                  <input type="text" id="form3Example3c" class="form-control" name="phone" />
+                </div>
+
+                <div class="form-outline flex-fill mb-0">
+                  <label class="form-label" for="form3Example3c">Lĩnh vực</label>
+                  <input type="text" id="form3Example3c" class="form-control" name="field" />
+                </div>
+
+                <div class="form-outline flex-fill mb-0">
+                  <label class="form-label" for="form3Example3c">Email</label>
+                  <input type="text" id="form3Example3c" class="form-control" name="email" value="{{ user.email }}" required />
+                </div>
+              </div>
+
+              <div class="col-md-10 col-lg-5 col-xl-6 order-1 order-lg-2 mt-4 ">
+                <div class="row pt-4">
+                  <label><b>Hình đại diện (W 350 x H 150 pixel)</b></label>
+                </div>
+                
+                <div class="row pt-4 justify-content-center" style="width: fit-content; position: relative;">
+                  <!-- Profile Picture Placeholder -->
+                  <img src="{% static 'Resources/Profile.jpg' %}" 
+                       class="img-fluid rounded-circle" 
+                       alt="PFP" 
+                       id="profilePic"
+                       style="width: 120px; height: 120px; background-color: #EE1D47;">
+
+                  <!-- Camera Icon Overlay -->
+                  <img src="{% static 'Resources/Camera.png' %}" 
+                       alt="camera" 
+                       class="position-absolute cursor-pointer" 
+                       style="width: 60px; bottom: 10px; right: 30px; cursor: pointer;" 
+                       onclick="document.getElementById('fileInput').click();">
+
+                  <!-- Hidden File Input for Image Upload -->
+                  <input type="file" id="fileInput" style="display: none;" accept="image/*" onchange="previewImage(event)">
+                </div>
+
+                <div class="row pt-4">
+                  <ul>
+                    <li>Điền đầy đủ thông tin để tham gia các hoạt động của EOB dành cho thành viên</li>
+                  </ul>
+                  <p>Tổng điểm: 0 (tải các family / tài liệu tính phí)</p>
+                  <p><b>Đổi mật khẩu</b></p>
+                </div>
+              </div>
+              <div class="d-flex justify-content-center order-3 mt-5">
+                <button type="submit" class="btn btn-primary ">Cập nhật</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="" async defer></script>
+
+{% endblock main-content %}
