@@ -16,14 +16,19 @@ const Header = () => {
                 <div className="black_nav col-6 d-flex justify-content-end align-items-center" style={{ textAlign: 'right' }}>
                     <>
                         <div className="col-sm-3 p-1">
-                            <Link to="/EOB/Member" style={{ color: 'white' }}>Thông tin tài khoản</Link>
+                            <Link to="/EOB/Member" style={{ color: 'white' }}>Đăng Ký Thành Viên</Link>
                         </div>
+
                         <div className="col-sm-2 p-1">
-                            <Link to="/EOB/Logout" style={{ color: 'white' }}>Đăng xuất</Link>
+                            <Link to="/EOB/VLXD" style={{ color: 'white' }}>VLXD Đăng Ký</Link>
+                        </div>
+
+                        <div className="col-sm-2 p-1">
+                            <Link to="/EOB/Login" style={{ color: 'white' }}>Đăng Nhập</Link>
                         </div>
                         <div className="col-sm-2 p-1 dropdown">
                             <button type="button" className="btn dropdown-toggle bg-dark text-white w-100">
-                                <img src="/static/Resources/PNP.png" alt="Phương Nam Panel" width="110" height="40" />
+                                <img src="/static/Resources/Vie.png" alt="Viet flag" /> Vi
                             </button>
                         </div>
                     </>
@@ -34,7 +39,7 @@ const Header = () => {
             <div className="row bg-white text-dark align-items-center" style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div className="white_nav col-sm-1 p-3" style={{ marginLeft: '20px' }}>
                     <Link to="/EOB/">
-                        ABC
+                        <img src="/static/Resources/Logo.png" alt="EOB logo" width="120" height="60" />
                     </Link>
                 </div>
 

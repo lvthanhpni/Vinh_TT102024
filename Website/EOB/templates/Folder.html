@@ -1,6 +1,11 @@
 {% load static %}
 {% block main-content %}
 
+<script>
+function toggleFolder(element) {
+  element.classList.toggle("open"); // Add or remove 'open' class to toggle subfolder visibility
+}
+</script>
 
 <ul class="folder-tree">
   <li class="folder-item" onclick="toggleFolder(this)">eob</li>

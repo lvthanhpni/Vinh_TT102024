@@ -157,28 +157,52 @@ a:hover {
   margin: 10px 0;
 }
 
-/* Folder Tree */
+/* Basic styling for folder tree */
 .folder-tree {
-  list-style-type: none;
   font-family: Arial, sans-serif;
+  padding: 10px;
 }
 
-.folder-item {
-  cursor: pointer;
-  margin-left: 15px;
-  position: relative;
-}
-
-.folder-item::before {
-  content: "📂";
-  padding-right: 8px;
-}
-
-.subfolder {
+/* Folder structure */
+.folder {
   margin-left: 20px;
-  display: none;
+  cursor: pointer;
 }
 
-.folder-item.open+.subfolder {
+/* Folder name styling */
+.folder-name {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Folder icon */
+.folder-name::before {
+  content: '\1F4C1';
+  /* Folder icon (can be replaced with any other icon) */
+  margin-right: 8px;
+  transition: transform 0.3s ease;
+}
+
+/* Subfolders are hidden by default */
+.subfolders {
+  display: none;
+  margin-left: 20px;
+}
+
+/* Show subfolders when the folder is open */
+.folder.open .subfolders {
   display: block;
+}
+
+/* Folder name hover effect */
+.folder-name:hover {
+  color: #007bff;
+}
+
+/* Spacing between folder items */
+.subfolders .folder-name {
+  margin-left: 20px;
 }

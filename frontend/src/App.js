@@ -6,6 +6,8 @@ import Homepage from './components/Homepage';
 import Carousel from './components/Carousel';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Folder from './components/Folder';
+import Library from './components/Library';
 
 const App = () => {
   return (
@@ -17,7 +19,9 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Base />} />
           <Route path="/EOB" element={<Homepage />} />
-          <Route path="/Carousel" element={<Carousel />} />
+          <Route path="/EOB/Carousel" element={<Carousel />} />
+          <Route path="/EOB/Folder" element={<Folder />} />
+          <Route path="/EOB/Library" element={<Library />} />
         </Routes>
 
         <Footer />
