@@ -1,0 +1,254 @@
+import React, { useState } from 'react';
+
+const SignupMem = () => {
+    const [memberType, setMemberType] = useState('individual');
+    const [messages, setMessages] = useState([]); // Assuming messages will be passed or managed
+    const [formData, setFormData] = useState({
+        uname: '',
+        c_name: '',
+        tax: '',
+        phone: '',
+        email: '',
+        pass: '',
+        rpass: '',
+        checkbox: false,
+    });
+
+    const handleRadioChange = (event) => {
+        setMemberType(event.target.value);
+    };
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        // handle form submission logic here
+    };
+
+    return (
+        <section style={{ backgroundColor: '#eee' }}>
+            <div className="container h-100">
+                <div className="row d-flex justify-content-center align-items-center h-100">
+                    <div className="col-lg-12 col-xl-11 my-5">
+                        <div className="card text-black" style={{ borderRadius: '25px' }}>
+                            <div className="card-body p-md-5">
+                                <div className="row justify-content-between px-2">
+                                    <div className="col-md-10 col-lg-6 col-xl-5 order-1 order-lg-2">
+                                        <p className="text-center h3 fw-bold mb-5 mx-1 mx-md-4 mt-4">
+                                            ĐĂNG KÝ THÀNH VIÊN EOB
+                                        </p>
+                                        <div className="text-center fw-bold">
+                                            {messages.length > 0 &&
+                                                messages.map((message, index) => (
+                                                    <div className="alert alert-danger" role="alert" key={index}>
+                                                        {message}
+                                                    </div>
+                                                ))}
+                                        </div>
+                                        <form onSubmit={handleSubmit} className="mx-1 mx-md-4">
+                                            <div className="d-flex flex-row align-items-center mb-4">
+                                                <i className="fas fa-user fa-lg me-3 fa-fw"></i>
+                                                <div className="form-outline flex-fill mb-0 d-flex">
+                                                    <div className="me-3">
+                                                        <input
+                                                            checked={memberType === 'individual'}
+                                                            id="individual"
+                                                            name="member_type"
+                                                            onChange={handleRadioChange}
+                                                            type="radio"
+                                                            value="individual"
+                                                        />
+                                                        <label htmlFor="individual">Cá nhân</label>
+                                                    </div>
+                                                    <div>
+                                                        <input
+                                                            id="organization"
+                                                            name="member_type"
+                                                            onChange={handleRadioChange}
+                                                            type="radio"
+                                                            value="organization"
+                                                        />
+                                                        <label htmlFor="organization">Tổ chức</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Individual Fields */}
+                                            {memberType === 'individual' && (
+                                                <div id="individual-fields">
+                                                    <div className="d-flex flex-row align-items-center mb-4">
+                                                        <i className="fas fa-user fa-lg me-3 fa-fw"></i>
+                                                        <div className="form-outline flex-fill mb-0">
+                                                            <input
+                                                                className="form-control"
+                                                                id="login_form"
+                                                                name="uname"
+                                                                placeholder="Họ và tên"
+                                                                type="text"
+                                                                value={formData.uname}
+                                                                onChange={handleChange}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Organization Fields */}
+                                            {memberType === 'organization' && (
+                                                <div id="organization-fields">
+                                                    <div className="d-flex flex-row align-items-center mb-4">
+                                                        <i className="fas fa-user fa-lg me-3 fa-fw"></i>
+                                                        <div className="form-outline flex-fill mb-0">
+                                                            <input
+                                                                className="form-control"
+                                                                id="login_form"
+                                                                name="c_name"
+                                                                placeholder="Tên công ty/ Tổ chức"
+                                                                type="text"
+                                                                value={formData.c_name}
+                                                                onChange={handleChange}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="d-flex flex-row align-items-center mb-4">
+                                                        <i className="fas fa-user fa-lg me-3 fa-fw"></i>
+                                                        <div className="form-outline flex-fill mb-0">
+                                                            <input
+                                                                className="form-control"
+                                                                id="login_form"
+                                                                name="tax"
+                                                                placeholder="Mã số thuế"
+                                                                type="text"
+                                                                value={formData.tax}
+                                                                onChange={handleChange}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Common Fields */}
+                                            <div className="d-flex flex-row align-items-center mb-4">
+                                                <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                                                <div className="form-outline flex-fill mb-0">
+                                                    <input
+                                                        className="form-control"
+                                                        id="login_form"
+                                                        name="phone"
+                                                        placeholder="Điện thoại *"
+                                                        type="text"
+                                                        value={formData.phone}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="d-flex flex-row align-items-center mb-4">
+                                                <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                                <div className="form-outline flex-fill mb-0">
+                                                    <input
+                                                        className="form-control"
+                                                        id="login_form"
+                                                        name="email"
+                                                        placeholder="Email"
+                                                        type="text"
+                                                        value={formData.email}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="d-flex flex-row align-items-center mb-4">
+                                                <i className="fas fa-key fa-lg me-3 fa-fw"></i>
+                                                <div className="form-outline flex-fill mb-0">
+                                                    <input
+                                                        className="form-control"
+                                                        id="login_form"
+                                                        name="pass"
+                                                        placeholder="Mật khẩu"
+                                                        type="password"
+                                                        value={formData.pass}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="d-flex flex-row align-items-center mb-4">
+                                                <i className="fas fa-key fa-lg me-3 fa-fw"></i>
+                                                <div className="form-outline flex-fill mb-0">
+                                                    <input
+                                                        className="form-control"
+                                                        id="login_form"
+                                                        name="rpass"
+                                                        placeholder="Xác nhận mật khẩu"
+                                                        type="password"
+                                                        value={formData.rpass}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Terms & Conditions */}
+                                            <div className="form-check d-flex justify-content-center mb-5">
+                                                <input
+                                                    className="form-check-input"
+                                                    id="form2Example3c"
+                                                    name="checkbox"
+                                                    style={{ borderWidth: '2px', borderColor: 'black', marginRight: '5px' }}
+                                                    type="checkbox"
+                                                    value="True"
+                                                    checked={formData.checkbox}
+                                                    onChange={handleChange}
+                                                />
+                                                <label className="form-check-label" htmlFor="form2Example3c">
+                                                    Đồng ý tất cả điều khoản trong điều khoản sử dụng
+                                                </label>
+                                            </div>
+
+                                            <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                                                <button className="btn btn-primary btn-lg" type="submit">
+                                                    Đăng Ký
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div className="col-md-10 col-lg-5 col-xl-6 order-1 order-lg-2">
+                                        <div className="row pt-4">
+                                            <img
+                                                alt="Logo"
+                                                className="img-fluid"
+                                                src="/static/Resources/Logo.png"
+                                                style={{ width: '35%' }}
+                                            />
+                                        </div>
+                                        <div className="row pt-4">
+                                            <h5>Đăng ký thành viên EOB</h5>
+                                            <p>
+                                                để bắt đầu trao đổi family thiết kế và kiến thức kiến trúc – xây dựng.
+                                            </p>
+                                        </div>
+                                        <div className="row pt-4">
+                                            <h6>Quyền lợi thành viên Star:</h6>
+                                            <ul>
+                                                <li>Tải và không giới hạn các family thiết kế chất lượng</li>
+                                                <li>Xem các bài viết chuyên ngành của các chuyên gia hàng đầu</li>
+                                                <li>Tham gia các hoạt động chuyên môn và giao lưu với các đơn vị VLXD</li>
+                                                <li>Tham gia chương trình tích điểm thành viên</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default SignupMem;

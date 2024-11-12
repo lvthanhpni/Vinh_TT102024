@@ -3,7 +3,7 @@ import { FaTwitter, FaFacebook, FaLinkedin, FaInstagram } from 'react-icons/fa';
 
 const Footer = () => {
     return (
-        <div className="row p-4 bg-dark text-white text-left">
+        <div className="row p-4 text-white text-left" style={{ backgroundColor: '#1c2d5a' }}>
             <div className="col-sm-4 p-2">
                 <h5>CÔNG TY CỔ PHẦN ERA OF BIMB (EOB)</h5>
                 <div>
