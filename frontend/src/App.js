@@ -13,6 +13,9 @@ import SignupVLXD from './components/Signup_VLXD';
 import ForgetPass from './components/Forget_pass';
 import Login from './components/Login';
 import Profile from './components/Profile';
+import Individual from './components/Individual';
+import Organization from './components/Organization';
+import VLXD from './components/VLXD';
 
 const App = () => {
   const [data, setData] = useState(null);
@@ -48,6 +51,11 @@ const App = () => {
           <Route path="/EOB/Login" element={<Login />} />
           <Route path="/EOB/Profile" element={<Profile />} />
           <Route path="/EOB/Forget" element={<ForgetPass />} />
+
+
+          <Route path="/Individual" element={<Individual />} />
+          <Route path="/Organization" element={<Organization />} />
+          <Route path="/VLXD" element={<VLXD />} />
 
           {/* New Route to Display Fetched Data */}
           <Route

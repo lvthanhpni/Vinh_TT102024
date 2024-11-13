@@ -132,7 +132,22 @@ def Signup_mem(request):
     # Handle non-POST requests
     return JsonResponse({'error': 'Invalid request method. Only POST is allowed.'}, status=400)
 
+@api_view(['POST'])
+def login_view(request):
+    uname = request.data.get('uname')
+    password = request.data.get('pass')
+    remember_me = request.data.get('checkbox', False)
 
+    # Authenticate the user
+    user = authenticate(request, username=uname, password=password)
+    if user is not None:
+        if hasattr(user, 'member') and (user.member.is_individual or user.member.is_organization):
+            login(request, user)
+            return Response({'success': True, 'message': 'Login successful.'})
+        else:
+            return Response({'success': False, 'message': 'This user is not authorized to log in.'}, status=403)
+    else:
+        return Response({'success': False, 'message': 'Login failed. User does not exist.'}, status=400)
 
 
 # Regular Django views
@@ -151,27 +166,7 @@ def Homepage(request):
 def Carousel(request):
     return render(request, 'Carousel.html')
 
-def Login(request):
-    if request.method == "POST":
-        uname = request.POST.get("uname")
-        password = request.POST.get("pass")
-        check = request.POST.get("checkbox", False)
-        user = authenticate(request, username=uname, password=password)
 
-        if user is not None:
-            if isinstance(user, Member) and (user.is_individual or user.is_organization):
-                login(request, user)
-                response = redirect('Carousel')  # Redirect to Carousel.html
-                if check:  # Set 'Remember Me' cookie
-                    response.set_cookie('uname', uname, max_age=30*24*60*60)  # 30 days
-                    response.set_cookie('password', password, max_age=30*24*60*60)
-                return response
-            else:
-                messages.error(request, "This user is not authorized to log in.")
-        else:
-            messages.error(request, "Login failed. User does not exist.")
-
-    return render(request, 'Login.html')
 
 
 def Logout(request):

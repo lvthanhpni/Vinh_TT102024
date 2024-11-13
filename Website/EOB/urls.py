@@ -17,7 +17,6 @@ urlpatterns = [
     path('EOB/Carousel', views.Carousel, name='Carousel'),
 
     #Login and Logout
-    path('EOB/Login', views.Login, name='Login'),
     path('EOB/Logout', views.Logout, name='Logout'),
 
     #Forget password  
@@ -35,5 +34,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api/signup_vlxd', views.Signup_VLXD, name='signup_vlxd'),
     path('api/signup_mem', views.Signup_mem, name='signup_mem'),
+    path('api/login', views.login_view, name='login'),
 
 ]

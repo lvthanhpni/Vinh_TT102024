@@ -161,6 +161,18 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+# settings.py
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']  # Adjust this to your frontend's origin
+
+# Optionally, disable CSRF for development
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',  # Only for development, not production
+    ],
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

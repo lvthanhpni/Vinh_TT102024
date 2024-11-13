@@ -1,10 +1,36 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function Login() {
     const [passwordVisible, setPasswordVisible] = useState(false);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
+    const [error, setError] = useState('');
 
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.post('/api/login', {
+                uname: username,
+                pass: password,
+                checkbox: rememberMe,
+            });
+
+            if (response.data.success) {
+                // Redirect or update state after successful login
+                window.location.href = '/'; // Or whatever the redirect URL is
+            } else {
+                setError('Login failed. User does not exist or is unauthorized.');
+            }
+        } catch (error) {
+            setError('An error occurred while logging in.');
+        }
     };
 
     return (
@@ -26,11 +52,10 @@ function Login() {
                                     </div>
                                 </div>
 
-                                <form className="mx-1 mx-md-4" method="POST" action="">
-                                    <div className="fw-bold d-flex flex-row justify-content-center mb-4">
-                                        {/* Error messages can be rendered here, using state or props */}
-                                    </div>
+                                {error && <div className="alert alert-danger">{error}</div>}
 
+                                <form onSubmit={handleSubmit} className="mx-1 mx-md-4">
+                                    {/* Social Login buttons */}
                                     <div className="d-flex flex-row mb-4">
                                         <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                                         <div
@@ -51,7 +76,7 @@ function Login() {
                                                 alt="Google logo"
                                                 style={{ marginRight: '20px' }}
                                             />
-                                            <a href="/accounts/google/login/?next=/" name="google" style={{ color: 'black' }}>
+                                            <a href="/accounts/google/login/?next=/" style={{ color: 'black' }}>
                                                 Đăng nhập bằng Google
                                             </a>
                                         </div>
@@ -77,19 +102,29 @@ function Login() {
                                                 alt="Facebook logo"
                                                 style={{ marginRight: '20px' }}
                                             />
-                                            <a href="/accounts/facebook/login/?next=/" name="facebook" style={{ color: 'black' }}>
+                                            <a href="/accounts/facebook/login/?next=/" style={{ color: 'black' }}>
                                                 Đăng nhập bằng Facebook
                                             </a>
                                         </div>
                                     </div>
 
+                                    {/* Username Input */}
                                     <div className="d-flex flex-row mb-4">
                                         <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
                                         <div className="form-outline flex-fill mb-0">
-                                            <input type="text" id="login_uname" placeholder="Tên đăng nhập" className="form-control" name="uname" />
+                                            <input
+                                                type="text"
+                                                id="login_uname"
+                                                placeholder="Tên đăng nhập"
+                                                className="form-control"
+                                                name="uname"
+                                                value={username}
+                                                onChange={(e) => setUsername(e.target.value)}
+                                            />
                                         </div>
                                     </div>
 
+                                    {/* Password Input */}
                                     <div className="d-flex flex-row mb-4">
                                         <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
                                         <div className="form-outline flex-fill mb-0 position-relative">
@@ -99,22 +134,31 @@ function Login() {
                                                 placeholder="Mật khẩu"
                                                 className="form-control"
                                                 name="pass"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
                                             />
                                             <i
                                                 className={`bi ${passwordVisible ? 'bi-eye' : 'bi-eye-slash'}`}
                                                 onClick={togglePasswordVisibility}
-                                                style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: '50%',
+                                                    right: '10px',
+                                                    transform: 'translateY(-50%)',
+                                                    cursor: 'pointer',
+                                                }}
                                             ></i>
                                         </div>
                                     </div>
 
+                                    {/* Remember Me Checkbox */}
                                     <div className="form-check d-flex justify-content-between mb-5">
                                         <div className="d-flex align-items-center">
                                             <input
                                                 className="form-check-input"
-                                                style={{ borderWidth: '2px', borderColor: 'black', marginRight: '5px' }}
                                                 type="checkbox"
-                                                value="True"
+                                                checked={rememberMe}
+                                                onChange={(e) => setRememberMe(e.target.checked)}
                                                 id="form2Example3c"
                                                 name="checkbox"
                                             />
@@ -130,10 +174,14 @@ function Login() {
                                         </label>
                                     </div>
 
+                                    {/* Submit Button */}
                                     <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                        <button type="submit" className="btn btn-primary btn-lg">Đăng nhập</button>
+                                        <button type="submit" className="btn btn-primary btn-lg">
+                                            Đăng nhập
+                                        </button>
                                     </div>
 
+                                    {/* Register Link */}
                                     <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                                         <a href="/EOB/VLXD" style={{ color: '#6c757d' }}>Đăng ký</a>
                                     </div>
