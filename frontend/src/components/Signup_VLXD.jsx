@@ -20,15 +20,54 @@ const SignupVLXD = () => {
         setFormData({ ...formData, checkbox: e.target.checked });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here, e.g., API call
+
         if (!formData.checkbox) {
             setMessages(['Bạn cần đồng ý với điều khoản sử dụng.']);
-        } else {
-            // Reset messages and proceed with form submission
-            setMessages([]);
-            // Implement further logic such as sending the form data to a server
+            return;
+        }
+
+        // Additional field validation
+        if (!formData.cname || !formData.phone || !formData.email || !formData.job) {
+            setMessages(['Vui lòng điền đầy đủ các trường.']);
+            return;
+        }
+
+        // Reset messages and proceed with form submission
+        setMessages([]);
+
+        try {
+            const response = await fetch('/api/signup_vlxd', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            // Check if response is ok (status code 200-299)
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+
+            // Check if response is JSON
+            const contentType = response.headers.get('Content-Type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Expected JSON response');
+            }
+
+            const data = await response.json();
+
+            // Handle success message or further actions here
+            if (data.error) {
+                setMessages([data.error]); // Display the error returned from the backend (e.g., "Company name or email already exists")
+            } else {
+                setMessages(['Đăng ký thành công!']);
+            }
+
+        } catch (error) {
+            setMessages([error.message || 'Đã có lỗi xảy ra khi gửi dữ liệu.']);
         }
     };
 
@@ -59,7 +98,6 @@ const SignupVLXD = () => {
                                                 <div className="form-outline flex-fill mb-0">
                                                     <input
                                                         type="text"
-                                                        id="login_form"
                                                         placeholder="Tên công ty"
                                                         className="form-control"
                                                         name="cname"
@@ -74,7 +112,6 @@ const SignupVLXD = () => {
                                                 <div className="form-outline flex-fill mb-0">
                                                     <input
                                                         type="text"
-                                                        id="login_form"
                                                         placeholder="Số điện thoại"
                                                         className="form-control"
                                                         name="phone"
@@ -89,7 +126,6 @@ const SignupVLXD = () => {
                                                 <div className="form-outline flex-fill mb-0">
                                                     <input
                                                         type="email"
-                                                        id="login_form"
                                                         placeholder="Email"
                                                         className="form-control"
                                                         name="email"
@@ -104,7 +140,6 @@ const SignupVLXD = () => {
                                                 <div className="form-outline flex-fill mb-0">
                                                     <input
                                                         type="text"
-                                                        id="login_form"
                                                         placeholder="Ngành nghề"
                                                         className="form-control"
                                                         name="job"
@@ -117,10 +152,7 @@ const SignupVLXD = () => {
                                             <div className="form-check d-flex justify-content-center mb-5">
                                                 <input
                                                     className="form-check-input"
-                                                    style={{ borderWidth: '2px', borderColor: 'black', marginRight: '5px' }}
                                                     type="checkbox"
-                                                    value="True"
-                                                    id="form2Example3c"
                                                     name="checkbox"
                                                     checked={formData.checkbox}
                                                     onChange={handleCheckboxChange}

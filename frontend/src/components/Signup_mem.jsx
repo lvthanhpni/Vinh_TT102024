@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const SignupMem = () => {
     const [memberType, setMemberType] = useState('individual');
-    const [messages, setMessages] = useState([]); // Assuming messages will be passed or managed
+    const [messages, setMessages] = useState([]);
     const [formData, setFormData] = useState({
         uname: '',
         c_name: '',
@@ -14,21 +14,58 @@ const SignupMem = () => {
         checkbox: false,
     });
 
-    const handleRadioChange = (event) => {
-        setMemberType(event.target.value);
+    const handleRadioChange = (e) => {
+        setMemberType(e.target.value);
+        setFormData({
+            ...formData,
+            uname: '',
+            c_name: '',
+            tax: '',
+        }); // Clear member-specific fields on type change
     };
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [name]: value,
+            [name]: type === 'checkbox' ? checked : value,
         }));
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        // handle form submission logic here
+        setMessages([]); // Clear previous messages
+
+        if (formData.pass !== formData.rpass) {
+            setMessages(['Passwords do not match.']);
+            return;
+        }
+
+        const memberData = {
+            member_type: memberType,
+            phone: formData.phone,
+            email: formData.email,
+            pass: formData.pass,
+            checkbox: formData.checkbox,
+            ...(memberType === 'individual' && { uname: formData.uname }),
+            ...(memberType === 'organization' && { c_name: formData.c_name, tax: formData.tax }),
+        };
+
+        const response = await fetch('/api/signup_mem', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.cookie.match(/csrftoken=([\w-]+)/)[1],
+            },
+            body: JSON.stringify(memberData),
+        });
+
+        const data = await response.json();
+        if (data.error) {
+            setMessages([data.error]);
+        } else {
+            setMessages(['Signup successful!']);
+        }
     };
 
     return (
@@ -230,15 +267,6 @@ const SignupMem = () => {
                                             <p>
                                                 để bắt đầu trao đổi family thiết kế và kiến thức kiến trúc – xây dựng.
                                             </p>
-                                        </div>
-                                        <div className="row pt-4">
-                                            <h6>Quyền lợi thành viên Star:</h6>
-                                            <ul>
-                                                <li>Tải và không giới hạn các family thiết kế chất lượng</li>
-                                                <li>Xem các bài viết chuyên ngành của các chuyên gia hàng đầu</li>
-                                                <li>Tham gia các hoạt động chuyên môn và giao lưu với các đơn vị VLXD</li>
-                                                <li>Tham gia chương trình tích điểm thành viên</li>
-                                            </ul>
                                         </div>
                                     </div>
                                 </div>

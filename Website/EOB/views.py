@@ -4,16 +4,25 @@ from django.template import loader
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.hashers import make_password
 
 # Django REST Framework imports
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
 
 # Model imports
 from EOB.models import Member, Individual, Organization, VLXD
 
 # Serializer imports
 from .serializers import MemberSerializer, IndividualSerializer, OrganizationSerializer, VLXDSerializer
+
+#Json import       
+import json
 
 # Use get_user_model to refer to your custom Member model
 Member = get_user_model()
@@ -38,6 +47,92 @@ class VLXDViewSet(viewsets.ModelViewSet):
     queryset = VLXD.objects.all()
     serializer_class = VLXDSerializer
 
+@api_view(['POST'])
+@csrf_exempt  # If needed, you can use csrf_exempt, but ensure CSRF protection is handled securely
+def Signup_VLXD(request):
+    if request.method == 'POST':
+        # Debug: Print the incoming data to verify it's correctly received
+        print("Received data:", request.data)
+
+        cname = request.data.get('cname')
+        phone = request.data.get('phone')
+        email = request.data.get('email')
+        job = request.data.get('job')
+        checkbox = request.data.get('checkbox')
+        try:
+            # Create user
+            user = Member.objects.create_user(username=cname, password=make_password('temporarypassword'), email=email)
+            user.is_vlxd = True
+            user.save()
+
+            # Create VLXD profile
+            VLXD_User = VLXD.objects.create(c_name=user, phone=phone, email=email, job=job)
+            VLXD_User.save()
+
+            # Return success response
+            return JsonResponse({'message': 'Đăng ký thành công!'}, status=201)  # 201 for created status
+
+        except Exception as e:
+            # Log the error details for debugging purposes
+            print(f"Error during signup: {e}")
+            return JsonResponse({"error": "Đã có lỗi xảy ra khi gửi dữ liệu. Vui lòng thử lại."}, status=500)
+
+    return JsonResponse({'error': 'Yêu cầu không hợp lệ'}, status=400)
+
+@api_view(['POST'])
+@csrf_exempt
+def Signup_mem(request):
+    if request.method == "POST":
+        # Debug: Print the incoming data to verify it's correctly received
+        print("Received data:", request.data)
+
+        # Extract common data
+        member_type = request.data.get("member_type")
+        phone = request.data.get("phone")
+        email = request.data.get("email")
+        password = request.data.get("pass")
+        r_password = request.data.get("rpass")
+
+        try:
+            # Set a default username depending on member type
+            if member_type == "individual":
+                print(f"Individual user") 
+                name = request.data.get("uname")
+                user = Member.objects.create_user(username=name, email=email, password=make_password(password))
+                user.is_individual = True
+                user.save()
+                print(f"Individual user created with ID: {user.id}")
+
+                # Create Individual profile
+                individual_profile = Individual.objects.create(full_name=user, phone=phone, email=email)
+                individual_profile.save()
+                print(f"Individual profile created with ID: {individual_profile.id}")
+
+            elif member_type == "organization":
+                name = request.data.get("c_name")
+                tax = request.data.get("tax")
+                user = Member.objects.create_user(username=name, email=email, password=make_password(password))
+                user.is_organization = True
+                user.save()
+                print(f"Organization user created with ID: {user.id}")
+
+                # Create Organization profile
+                organization_profile = Organization.objects.create(c_name=user, tax_num=tax, phone=phone, email=email)
+                organization_profile.save()
+                print(f"Organization profile created with ID: {organization_profile.id}")
+
+            # Return success response
+            return JsonResponse({'message': 'Signup successful!'}, status=201)
+
+        except Exception as e:
+            # Log error details for debugging purposes
+            print(f"Error during signup: {e}")
+            return JsonResponse({'success': False, 'errors': [str(e)]}, status=500)
+
+    # Handle non-POST requests
+    return JsonResponse({'error': 'Invalid request method. Only POST is allowed.'}, status=400)
+
+
 
 
 # Regular Django views
@@ -55,86 +150,6 @@ def Homepage(request):
 
 def Carousel(request):
     return render(request, 'Carousel.html')
-
-
-def Signup_mem(request):
-    if request.method == "POST":
-        member_type = request.POST.get("member_type")
-        check = request.POST.get("checkbox", False)
-        phone = request.POST.get("phone")
-        email = request.POST.get("email")
-        password = request.POST.get("pass")
-        r_password = request.POST.get("rpass")
-
-        # Validate password match
-        if password != r_password:
-            messages.error(request, 'Passwords do not match.')
-            return render(request, 'Signup_mem.html')
-
-        # Check for existing username and email
-        if Member.objects.filter(username=request.POST.get("uname" if member_type == "individual" else "c_name")).exists():
-            messages.error(request, 'Username exists, please choose another.')
-            return render(request, 'Signup_mem.html')
-
-        if Member.objects.filter(email=email).exists():
-            messages.error(request, 'Email already exists, please use a different email.')
-            return render(request, 'Signup_mem.html')
-
-        # Create user based on member type
-        if member_type == "individual":
-            name = request.POST.get("uname")
-            user = Member.objects.create_user(username=name, email=email, password=password)
-            user.is_individual = True
-            user.save()
-
-            # Create Individual profile
-            Individual.objects.create(full_name=user, phone=phone, email=email)
-
-        elif member_type == "organization":
-            name = request.POST.get("c_name")
-            tax = request.POST.get("tax")
-            user = Member.objects.create_user(username=name, email=email, password=password)
-            user.is_organization = True
-            user.save()
-
-            # Create Organization profile
-            Organization.objects.create(c_name=user, tax_num=tax, phone=phone, email=email)
-
-        return redirect('Carousel')  # Use named URL if defined in urls.py
-
-    return render(request, 'Signup_mem.html')
-
-
-def Signup_VLXD(request):
-    if request.method == "POST":
-        check = request.POST.get("checkbox", False)
-        name = request.POST.get("cname")
-        phone = request.POST.get("phone")
-        email = request.POST.get("email")
-        job = request.POST.get("job")
-
-        # Check if username or email already exists
-        if Member.objects.filter(username=name).exists():
-            messages.error(request, "Username already exists. Please choose a different username.")
-            return render(request, 'Signup_VLXD.html')
-
-        if Member.objects.filter(email=email).exists():
-            messages.error(request, "Email already exists. Please use a different email.")
-            return render(request, 'Signup_VLXD.html')
-
-        # Create user with email field
-        user = Member.objects.create_user(username=name, password='temporarypassword', email=email)
-        user.is_vlxd = True
-        user.save()
-
-        # Create VLXD profile
-        VLXD_User = VLXD.objects.create(c_name=user, phone=phone, email=email, job=job)
-        VLXD_User.save()
-
-        return redirect('Carousel')  # Use named URL if defined in urls.py
-
-    return render(request, 'Signup_VLXD.html')
-
 
 def Login(request):
     if request.method == "POST":

@@ -36,7 +36,6 @@ AUTH_USER_MODEL = 'EOB.Member'
 SITE_ID = 3
 
 INSTALLED_APPS = [
-    
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -55,7 +54,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    
+    'corsheaders.middleware.CorsMiddleware',  
+    'django.middleware.common.CommonMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -137,7 +137,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -155,6 +154,12 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React's default port
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Internationalization
