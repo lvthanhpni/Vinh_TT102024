@@ -36,6 +36,7 @@ AUTH_USER_MODEL = 'EOB.Member'
 SITE_ID = 3
 
 INSTALLED_APPS = [
+    
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -50,7 +51,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     'allauth.socialaccount.providers.facebook',
     'rest_framework',
-    
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
