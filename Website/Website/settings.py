@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     'allauth.socialaccount.providers.facebook',
     'rest_framework',
+    'rest_framework.authtoken'
     'corsheaders',
 ]
 
@@ -167,6 +168,7 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']  # Adjust this to your frontend
 # Optionally, disable CSRF for development
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [

@@ -17,7 +17,6 @@ import Individual from './components/Individual';
 import Organization from './components/Organization';
 import VLXD from './components/VLXD';
 
-
 const App = () => {
   const [data, setData] = useState(null);
 
@@ -57,8 +56,6 @@ const App = () => {
           <Route path="/Individual" element={<Individual />} />
           <Route path="/Organization" element={<Organization />} />
           <Route path="/VLXD" element={<VLXD />} />
-
-
 
           {/* New Route to Display Fetched Data */}
           <Route

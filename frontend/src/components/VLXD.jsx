@@ -1,35 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../App.css';
 
-const VLXD = () => {
-    const [vlxdCompanies, setVlxdCompanies] = useState([]);
+function VLXD() {
+    const [vlxds, setVlxds] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8000/vlxd/')
+        axios.get('http://localhost:8000/api/vlxd/')
             .then(response => {
-                setVlxdCompanies(response.data);
+                setVlxds(response.data);
             })
             .catch(error => {
-                console.error("There was an error fetching the VLXD companies!", error);
+                console.error('Error fetching VLXD data:', error);
             });
     }, []);
 
     return (
-        <div className="page-container">
-            <h2 className="page-title">VLXD Companies</h2>
+        <div>
+            <h1>VLXD List</h1>
             <ul>
-                {vlxdCompanies.map(vlxd => (
-                    <li className="list-item" key={vlxd.id}>
-                        <p><strong>Company Name:</strong> {vlxd.company_name}</p>
-                        <p><strong>Phone:</strong> {vlxd.phone}</p>
-                        <p><strong>Email:</strong> {vlxd.email}</p>
-                        <p><strong>Job:</strong> {vlxd.job}</p>
+                {vlxds.map(vlxd => (
+                    <li key={vlxd.id}>
+                        <p>Company Name: {vlxd.company_name}</p>
+                        <p>Job: {vlxd.job}</p>
+                        <p>Phone: {vlxd.phone}</p>
+                        <p>Email: {vlxd.email}</p>
                     </li>
                 ))}
             </ul>
         </div>
     );
-};
+}
 
 export default VLXD;

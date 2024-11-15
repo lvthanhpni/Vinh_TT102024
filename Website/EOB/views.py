@@ -137,22 +137,16 @@ def login_view(request):
     uname = request.data.get('uname')
     password = request.data.get('pass')
     remember_me = request.data.get('checkbox', False)
-    print(f"run 1")
+
     # Authenticate the user
     user = authenticate(request, username=uname, password=password)
-    print(user.is_individual)
-    print(user.is_individual)
     if user is not None:
-        print(f"run 2")
-        if (user.is_individual or user.is_organization):
+        if hasattr(user, 'member') and (user.member.is_individual or user.member.is_organization):
             login(request, user)
-            print(f"run 3")
             return Response({'success': True, 'message': 'Login successful.'})
         else:
-            print(f"run 4")
             return Response({'success': False, 'message': 'This user is not authorized to log in.'}, status=403)
     else:
-        print(f"run 5")
         return Response({'success': False, 'message': 'Login failed. User does not exist.'}, status=400)
 
 
