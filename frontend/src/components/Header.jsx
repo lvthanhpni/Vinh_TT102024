@@ -1,9 +1,61 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => {
-    // Simulate login status (you can replace this with actual logic or props)
-    const isLoggedIn = false; // Replace this with actual login status (e.g., state or context)
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [username, setUsername] = useState('');
+    const navigate = useNavigate();  // Use the useNavigate hook instead of useHistory
+
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            try {
+                const response = await fetch('/api/check-login', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setIsLoggedIn(true);
+                    setUsername(data.username); // Set username from the backend response
+                }
+            } catch (error) {
+                setIsLoggedIn(false);
+            }
+        };
+
+        checkLoginStatus();
+    }, []);
+
+    const handleLogout = async () => {
+        try {
+            const token = localStorage.getItem('authToken'); // Assuming you store the token in localStorage
+
+            const response = await fetch('/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Token ${token}`,  // Send the token in the Authorization header
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                setIsLoggedIn(false);
+                setUsername('');
+                localStorage.removeItem('authToken');  // Remove token from local storage
+                navigate('/EOB/Login');  // Redirect to login page after logout
+            } else {
+                console.error('Logout failed');
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
+
+
 
     return (
         <nav className="sticky-nav" style={{ border: '1px solid black' }}>
@@ -16,8 +68,8 @@ const Header = () => {
                         <Link to="/EOB" style={{ color: 'white' }}>Tin Tức</Link>
                     </div>
                 </div>
+
                 <div className="black_nav col-6 d-flex justify-content-end align-items-center" style={{ textAlign: 'right' }}>
-                    {/* Conditionally render based on login status */}
                     {!isLoggedIn ? (
                         <>
                             <div className="col-sm-3 p-1">
@@ -35,16 +87,20 @@ const Header = () => {
                     ) : (
                         <>
                             <div className="col-sm-3 p-1">
-                                <Link to="/EOB/Member" style={{ color: 'white' }}>Username</Link>
+                                <Link to="/EOB/Member" style={{ color: 'white' }}>{username}</Link>
                             </div>
 
                             <div className="col-sm-3 p-1">
-                                <Link to="/EOB/Member" style={{ color: 'white' }}>Logout</Link>
+                                <button
+                                    onClick={handleLogout}
+                                    style={{ color: 'white', background: 'none', border: 'none', cursor: 'pointer' }}
+                                >
+                                    Logout
+                                </button>
                             </div>
                         </>
                     )}
 
-                    {/* Shared feature */}
                     <div className="col-sm-2 p-1 dropdown">
                         <button type="button" className="btn dropdown-toggle text-white w-100" style={{ backgroundColor: '#1c2d5a' }}>
                             <img src="/static/Resources/Vie.png" alt="Viet flag" /> Vi

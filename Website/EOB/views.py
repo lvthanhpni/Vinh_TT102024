@@ -18,6 +18,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.permissions import IsAdminUser
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Model imports
 from EOB.models import Member, Individual, Organization, VLXD
@@ -186,6 +189,78 @@ def Login(request):
             'success': False,
             'message': 'Login failed. Invalid credentials or user does not exist.'
         }, status=status.HTTP_400_BAD_REQUEST)
+
+def check_login(request):
+    if request.user.is_authenticated:
+        return JsonResponse({'username': request.user.username})
+    return JsonResponse({'message': 'User not logged in'}, status=403)
+
+def logout_view(request):
+    print(f'test 1')
+    if request.user.is_authenticated:
+        logout(request)
+        return JsonResponse({'message': 'Logged out successfully'})
+    return JsonResponse({'error': 'Not authenticated'}, status=403)
+
+@csrf_exempt
+@api_view(['POST'])
+def Logout(request):
+    print(f'test 2')
+    try:
+        # Get the token from the request header (Authorization: Token <token_value>)
+        token = request.headers.get('Authorization')
+        print(token)
+        if token is None:
+            raise AuthenticationFailed('No token provided.')
+
+        token = token.split()[1]  # Extract the token from 'Token <token_value>'
+
+        # Find the Token object in the database
+        token_obj = Token.objects.get(key=token)
+
+        # Delete the token (this effectively logs the user out)
+        token_obj.delete()
+
+        return Response({
+            'success': True,
+            'message': 'Logout successful.'
+        }, status=status.HTTP_200_OK)
+
+    except Token.DoesNotExist:
+        return Response({
+            'success': False,
+            'message': 'Invalid token. You are not logged in or the token has expired.'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    except AuthenticationFailed as e:
+        return Response({
+            'success': False,
+            'message': str(e)
+        }, status=status.HTTP_401_UNAUTHORIZED)
+
+    except Exception as e:
+        return Response({
+            'success': False,
+            'message': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+# Token view
+class TokenListView(APIView):
+    def get(self, request):
+        users = Member.objects.all()
+        data = []
+
+        for user in users:
+            refresh = RefreshToken.for_user(user)
+            data.append({
+                'username': user.username,
+                'refresh_token': str(refresh),
+                'access_token': str(refresh.access_token),
+            })
+
+        return Response(data)
+
 
 
 # Regular Django views

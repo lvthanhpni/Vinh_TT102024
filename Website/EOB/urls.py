@@ -3,8 +3,14 @@ from . import views
 from django.contrib.auth import views as auth_views
 
 from rest_framework.routers import DefaultRouter
-from .views import MemberViewSet, IndividualViewSet, OrganizationViewSet, VLXDViewSet
+from .views import MemberViewSet, IndividualViewSet, OrganizationViewSet, VLXDViewSet, TokenListView
 
+
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 router = DefaultRouter()
 router.register(r'members', MemberViewSet)
 router.register(r'individuals', IndividualViewSet)
@@ -18,6 +24,13 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api/signup_vlxd', views.Signup_VLXD, name='signup_vlxd'),
     path('api/signup_mem', views.Signup_mem, name='signup_mem'),
-    path('api/login', views.Login, name='login'),
 
+    path('api/login', views.Login, name='login'),
+    path('api/logout', views.Logout, name='logout'),  # This should be the token-based logout
+    path('api/check-logout', views.logout_view, name='logout-view'),  # Session logout view (if needed)
+    path('api/check-login', views.check_login, name='check-login'),
+
+
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/list', TokenListView.as_view(), name='token_list'),
 ]
