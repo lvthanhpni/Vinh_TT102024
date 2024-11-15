@@ -23,8 +23,10 @@ function Login() {
             });
 
             if (response.data.success) {
-                // Redirect or update state after successful login
-                window.location.href = '/'; // Or whatever the redirect URL is
+                setError('');
+                localStorage.setItem('userLoggedIn', true); // Example to save login status
+
+                // You could also show a success message or redirect programmatically later if needed
             } else {
                 setError('Login failed. User does not exist or is unauthorized.');
             }

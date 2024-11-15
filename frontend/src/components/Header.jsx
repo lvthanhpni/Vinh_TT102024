@@ -2,10 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Header = () => {
+
+    const handleLogout = () => {
+        // Perform logout logic here (e.g., clearing session, calling API to log out, etc.)
+        localStorage.removeItem('authToken'); // Remove the auth token from localStorage
+        window.location.reload(); // Optionally reload the page to reflect logout
+    };
+
     return (
         <nav className="sticky-nav" style={{ border: '1px solid black' }}>
-            <div className="row text-white align-items-center" style={{ fontSize: '13px', paddingLeft: '30px', paddingRight: '30px', backgroundColor: '#1c2d5a' }}
-            >
+            <div className="row text-white align-items-center" style={{ fontSize: '13px', paddingLeft: '30px', paddingRight: '30px', backgroundColor: '#1c2d5a' }}>
                 <div className="res_remove col-6 d-flex align-items-center" style={{ textAlign: 'left' }}>
                     <div className="res_remove col-sm-3 p-1">
                         <Link to="/EOB" style={{ color: 'white' }}>Công trình tiêu biểu</Link>
@@ -15,25 +21,23 @@ const Header = () => {
                     </div>
                 </div>
                 <div className="black_nav col-6 d-flex justify-content-end align-items-center" style={{ textAlign: 'right' }}>
-                    <>
-                        <div className="col-sm-3 p-1">
-                            <Link to="/EOB/Member" style={{ color: 'white' }}>Đăng Ký Thành Viên</Link>
-                        </div>
-
-                        <div className="col-sm-2 p-1">
-                            <Link to="/EOB/VLXD" style={{ color: 'white' }}>VLXD Đăng Ký</Link>
-                        </div>
-
-                        <div className="col-sm-2 p-1">
-                            <Link to="/EOB/Login" style={{ color: 'white' }}>Đăng Nhập</Link>
-                        </div>
-                        <div className="col-sm-2 p-1 dropdown">
-                            <button type="button" className="btn dropdown-toggle text-white w-100" style={{ backgroundColor: '#1c2d5a' }}>
-                                <img src="/static/Resources/Vie.png" alt="Viet flag" /> Vi
-                            </button>
-                        </div>
-                    </>
-
+                    <div className="col-sm-3 p-1">
+                        <button onClick={handleLogout} style={{ color: 'white', background: 'none', border: 'none' }}>Logout</button>
+                    </div>
+                    <div className="col-sm-3 p-1">
+                        <Link to="/EOB/Member" style={{ color: 'white' }}>Đăng Ký Thành Viên</Link>
+                    </div>
+                    <div className="col-sm-2 p-1">
+                        <Link to="/EOB/VLXD" style={{ color: 'white' }}>VLXD Đăng Ký</Link>
+                    </div>
+                    <div className="col-sm-2 p-1">
+                        <Link to="/EOB/Login" style={{ color: 'white' }}>Đăng Nhập</Link>
+                    </div>
+                    <div className="col-sm-2 p-1 dropdown">
+                        <button type="button" className="btn dropdown-toggle text-white w-100" style={{ backgroundColor: '#1c2d5a' }}>
+                            <img src="/static/Resources/Vie.png" alt="Viet flag" /> Vi
+                        </button>
+                    </div>
                 </div>
             </div>
 

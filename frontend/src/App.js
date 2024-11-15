@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Base from './components/Base';
 import Homepage from './components/Homepage';
@@ -16,6 +16,7 @@ import Profile from './components/Profile';
 import Individual from './components/Individual';
 import Organization from './components/Organization';
 import VLXD from './components/VLXD';
+
 
 const App = () => {
   const [data, setData] = useState(null);
@@ -56,6 +57,8 @@ const App = () => {
           <Route path="/Individual" element={<Individual />} />
           <Route path="/Organization" element={<Organization />} />
           <Route path="/VLXD" element={<VLXD />} />
+
+
 
           {/* New Route to Display Fetched Data */}
           <Route

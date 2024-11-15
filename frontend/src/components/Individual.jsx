@@ -1,33 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../App.css';
 
-function Individual() {
+const Individual = () => {
     const [individuals, setIndividuals] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/individuals/')
+        axios.get('http://localhost:8000/individuals/')
             .then(response => {
                 setIndividuals(response.data);
             })
             .catch(error => {
-                console.error('Error fetching individuals:', error);
+                console.error("There was an error fetching the individuals!", error);
             });
     }, []);
 
     return (
-        <div>
-            <h1>Individuals List</h1>
+        <div className="page-container">
+            <h2 className="page-title">Individuals</h2>
             <ul>
-                {individuals.map(individual => (
-                    <li key={individual.id}>
-                        <p>Name: {individual.full_name}</p>
-                        <p>Email: {individual.email}</p>
-                        <p>Phone: {individual.phone}</p>
+                {individuals.map(ind => (
+                    <li className="list-item" key={ind.id}>
+                        <p><strong>Name:</strong> {ind.full_name}</p>
+                        <p><strong>Phone:</strong> {ind.phone}</p>
+                        <p><strong>Email:</strong> {ind.email}</p>
                     </li>
                 ))}
             </ul>
         </div>
     );
-}
+};
 
 export default Individual;

@@ -1,34 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../App.css';
 
-function Organization() {
+const Organization = () => {
     const [organizations, setOrganizations] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/organizations/')
+        axios.get('http://localhost:8000/organizations/')
             .then(response => {
                 setOrganizations(response.data);
             })
             .catch(error => {
-                console.error('Error fetching organizations:', error);
+                console.error("There was an error fetching the organizations!", error);
             });
     }, []);
 
     return (
-        <div>
-            <h1>Organizations List</h1>
+        <div className="page-container">
+            <h2 className="page-title">Organizations</h2>
             <ul>
-                {organizations.map(organization => (
-                    <li key={organization.id}>
-                        <p>Company Name: {organization.company_name}</p>
-                        <p>Tax Number: {organization.tax_num}</p>
-                        <p>Phone: {organization.phone}</p>
-                        <p>Email: {organization.email}</p>
+                {organizations.map(org => (
+                    <li className="list-item" key={org.id}>
+                        <p><strong>Company Name:</strong> {org.company_name}</p>
+                        <p><strong>Tax Number:</strong> {org.tax_num}</p>
+                        <p><strong>Phone:</strong> {org.phone}</p>
+                        <p><strong>Email:</strong> {org.email}</p>
                     </li>
                 ))}
             </ul>
         </div>
     );
-}
+};
 
 export default Organization;
