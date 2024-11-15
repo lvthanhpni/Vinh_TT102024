@@ -2,10 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Header = () => {
+    // Simulate login status (you can replace this with actual logic or props)
+    const isLoggedIn = false; // Replace this with actual login status (e.g., state or context)
+
     return (
         <nav className="sticky-nav" style={{ border: '1px solid black' }}>
-            <div className="row text-white align-items-center" style={{ fontSize: '13px', paddingLeft: '30px', paddingRight: '30px', backgroundColor: '#1c2d5a' }}
-            >
+            <div className="row text-white align-items-center" style={{ fontSize: '13px', paddingLeft: '30px', paddingRight: '30px', backgroundColor: '#1c2d5a' }}>
                 <div className="res_remove col-6 d-flex align-items-center" style={{ textAlign: 'left' }}>
                     <div className="res_remove col-sm-3 p-1">
                         <Link to="/EOB" style={{ color: 'white' }}>Công trình tiêu biểu</Link>
@@ -15,25 +17,39 @@ const Header = () => {
                     </div>
                 </div>
                 <div className="black_nav col-6 d-flex justify-content-end align-items-center" style={{ textAlign: 'right' }}>
-                    <>
-                        <div className="col-sm-3 p-1">
-                            <Link to="/EOB/Member" style={{ color: 'white' }}>Đăng Ký Thành Viên</Link>
-                        </div>
+                    {/* Conditionally render based on login status */}
+                    {!isLoggedIn ? (
+                        <>
+                            <div className="col-sm-3 p-1">
+                                <Link to="/EOB/Member" style={{ color: 'white' }}>Đăng Ký Thành Viên</Link>
+                            </div>
 
-                        <div className="col-sm-2 p-1">
-                            <Link to="/EOB/VLXD" style={{ color: 'white' }}>VLXD Đăng Ký</Link>
-                        </div>
+                            <div className="col-sm-2 p-1">
+                                <Link to="/EOB/VLXD" style={{ color: 'white' }}>VLXD Đăng Ký</Link>
+                            </div>
 
-                        <div className="col-sm-2 p-1">
-                            <Link to="/EOB/Login" style={{ color: 'white' }}>Đăng Nhập</Link>
-                        </div>
-                        <div className="col-sm-2 p-1 dropdown">
-                            <button type="button" className="btn dropdown-toggle text-white w-100" style={{ backgroundColor: '#1c2d5a' }}>
-                                <img src="/static/Resources/Vie.png" alt="Viet flag" /> Vi
-                            </button>
-                        </div>
-                    </>
+                            <div className="col-sm-2 p-1">
+                                <Link to="/EOB/Login" style={{ color: 'white' }}>Đăng Nhập</Link>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="col-sm-3 p-1">
+                                <Link to="/EOB/Member" style={{ color: 'white' }}>Username</Link>
+                            </div>
 
+                            <div className="col-sm-3 p-1">
+                                <Link to="/EOB/Member" style={{ color: 'white' }}>Logout</Link>
+                            </div>
+                        </>
+                    )}
+
+                    {/* Shared feature */}
+                    <div className="col-sm-2 p-1 dropdown">
+                        <button type="button" className="btn dropdown-toggle text-white w-100" style={{ backgroundColor: '#1c2d5a' }}>
+                            <img src="/static/Resources/Vie.png" alt="Viet flag" /> Vi
+                        </button>
+                    </div>
                 </div>
             </div>
 
