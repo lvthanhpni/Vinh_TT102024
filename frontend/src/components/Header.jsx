@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 const Header = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
-    const navigate = useNavigate();  // Use the useNavigate hook instead of useHistory
+    const navigate = useNavigate();
 
     useEffect(() => {
         const checkLoginStatus = async () => {
@@ -31,22 +31,18 @@ const Header = () => {
 
     const handleLogout = async () => {
         try {
-            const token = localStorage.getItem('authToken'); // Assuming you store the token in localStorage
-
             const response = await fetch('/api/logout', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Token ${token}`,  // Send the token in the Authorization header
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include',
+                credentials: 'include', // Include session cookies for logout
             });
 
             if (response.ok) {
                 setIsLoggedIn(false);
                 setUsername('');
-                localStorage.removeItem('authToken');  // Remove token from local storage
-                navigate('/EOB/Login');  // Redirect to login page after logout
+                navigate('/EOB/Login'); // Redirect to login page after logout
             } else {
                 console.error('Logout failed');
             }
@@ -54,8 +50,6 @@ const Header = () => {
             console.error('Error during logout:', error);
         }
     };
-
-
 
     return (
         <nav className="sticky-nav" style={{ border: '1px solid black' }}>
@@ -75,11 +69,9 @@ const Header = () => {
                             <div className="col-sm-3 p-1">
                                 <Link to="/EOB/Member" style={{ color: 'white' }}>Đăng Ký Thành Viên</Link>
                             </div>
-
                             <div className="col-sm-2 p-1">
                                 <Link to="/EOB/VLXD" style={{ color: 'white' }}>VLXD Đăng Ký</Link>
                             </div>
-
                             <div className="col-sm-2 p-1">
                                 <Link to="/EOB/Login" style={{ color: 'white' }}>Đăng Nhập</Link>
                             </div>
@@ -89,7 +81,6 @@ const Header = () => {
                             <div className="col-sm-3 p-1">
                                 <Link to="/EOB/Member" style={{ color: 'white' }}>{username}</Link>
                             </div>
-
                             <div className="col-sm-3 p-1">
                                 <button
                                     onClick={handleLogout}

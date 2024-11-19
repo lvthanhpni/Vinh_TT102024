@@ -27,9 +27,7 @@ urlpatterns = [
 
     path('api/login', views.Login, name='login'),
     path('api/logout', views.Logout, name='logout'),  # This should be the token-based logout
-    path('api/check-logout', views.logout_view, name='logout-view'),  # Session logout view (if needed)
     path('api/check-login', views.check_login, name='check-login'),
-
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/list', TokenListView.as_view(), name='token_list'),
