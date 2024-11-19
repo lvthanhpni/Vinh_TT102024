@@ -66,6 +66,7 @@ const Header = () => {
                 <div className="black_nav col-6 d-flex justify-content-end align-items-center" style={{ textAlign: 'right' }}>
                     {!isLoggedIn ? (
                         <>
+
                             <div className="col-sm-3 p-1">
                                 <Link to="/EOB/Member" style={{ color: 'white' }}>Đăng Ký Thành Viên</Link>
                             </div>
@@ -79,7 +80,7 @@ const Header = () => {
                     ) : (
                         <>
                             <div className="col-sm-3 p-1">
-                                <Link to="/EOB/Member" style={{ color: 'white' }}>{username}</Link>
+                                <Link to="/EOB/Profile" style={{ color: 'white' }}>{username}</Link>
                             </div>
                             <div className="col-sm-3 p-1">
                                 <button

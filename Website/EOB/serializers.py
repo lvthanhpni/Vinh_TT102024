@@ -34,33 +34,4 @@ class VLXDSerializer(serializers.ModelSerializer):
         model = VLXD
         fields = ['id', 'company_name', 'phone', 'email', 'job']
 
-# New UserSerializer for login (authentication)
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Member  # Directly reference the Member model as the user model
-        fields = ('email', 'password')
-        extra_kwargs = {'password': {'write_only': True}}  # Make password write-only
 
-# New SignupSerializer for registration
-class SignupSerializer(serializers.Serializer):
-    member_type = serializers.CharField(required=True)
-    phone = serializers.CharField(required=True)
-    email = serializers.EmailField(required=True)
-    pass1 = serializers.CharField(write_only=True, required=True)
-    pass2 = serializers.CharField(write_only=True, required=True)
-    uname = serializers.CharField(allow_blank=True)
-    c_name = serializers.CharField(allow_blank=True)
-    tax = serializers.CharField(allow_blank=True)
-
-    def validate(self, data):
-        # Check if passwords match
-        if data.get("pass1") != data.get("pass2"):
-            raise serializers.ValidationError("Passwords do not match.")
-        
-        # Validate password strength using Django's password validators
-        try:
-            validate_password(data.get("pass1"))
-        except ValidationError as e:
-            raise serializers.ValidationError({"password": list(e.messages)})
-        
-        return data

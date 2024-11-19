@@ -30,5 +30,7 @@ urlpatterns = [
     path('api/check-login', views.check_login, name='check-login'),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # Refresh token
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),  # Verify token
     path('api/token/list', TokenListView.as_view(), name='token_list'),
 ]

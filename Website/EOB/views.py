@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password # type: ignore
 from django.http import JsonResponse
 
 
@@ -27,7 +27,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from EOB.models import Member, Individual, Organization, VLXD
 
 # Serializer imports
-from .serializers import MemberSerializer, IndividualSerializer, OrganizationSerializer, VLXDSerializer, SignupSerializer, UserSerializer
+from .serializers import MemberSerializer, IndividualSerializer, OrganizationSerializer, VLXDSerializer
 
 #Json import       
 import json
@@ -162,8 +162,15 @@ def Login(request):
 
 def check_login(request):
     if request.user.is_authenticated:
-        return JsonResponse({'username': request.user.username})
+        # Replace 'phone_number' with the actual field name for the phone number in your model
+        phone_number = getattr(request.user, 'phone', '')  
+        return JsonResponse({
+            'username': request.user.username,
+            'email': request.user.email,
+            'phone': phone_number,
+        })
     return JsonResponse({'message': 'User not logged in'}, status=403)
+
 
 @csrf_exempt
 @api_view(['POST'])
