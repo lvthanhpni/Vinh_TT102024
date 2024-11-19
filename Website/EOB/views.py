@@ -104,9 +104,9 @@ def Signup_mem(request):
         try:
             # Set a default username depending on member type
             if member_type == "individual":
-                print(f"Individual user") 
+                print(f"Creating individual user")
                 name = request.data.get("uname")
-                user = Member.objects.create_user(username=name, email=email, password=make_password(password))
+                user = Member.objects.create_user(username=name, email=email, password=password)
                 user.is_individual = True
                 user.save()
                 print(f"Individual user created with ID: {user.id}")
@@ -117,9 +117,10 @@ def Signup_mem(request):
                 print(f"Individual profile created with ID: {individual_profile.id}")
 
             elif member_type == "organization":
+                print(f"Creating organization user")
                 name = request.data.get("c_name")
                 tax = request.data.get("tax")
-                user = Member.objects.create_user(username=name, email=email, password=make_password(password))
+                user = Member.objects.create_user(username=name, email=email, password=password)
                 user.is_organization = True
                 user.save()
                 print(f"Organization user created with ID: {user.id}")
@@ -139,19 +140,18 @@ def Signup_mem(request):
 
     # Handle non-POST requests
     return JsonResponse({'error': 'Invalid request method. Only POST is allowed.'}, status=400)
+
     
 @api_view(['POST'])
 def Login(request):
     uname = request.data.get('uname')
     password = request.data.get('pass')
     remember_me = request.data.get('checkbox', False)
-    print(f" run 1 ")
 
     # Authenticate the user
     user = authenticate(request, username=uname, password=password)
     print(user)
     if user is not None:
-        print(f" run 2 ")
         if (user.is_individual or user.is_organization):
             login(request, user)
             return Response({'success': True, 'message': 'Login successful.'})
@@ -162,24 +162,23 @@ def Login(request):
 
 def check_login(request):
     if request.user.is_authenticated:
-        # Replace 'phone_number' with the actual field name for the phone number in your model
-        phone_number = getattr(request.user, 'phone', '')  
         return JsonResponse({
             'username': request.user.username,
             'email': request.user.email,
-            'phone': phone_number,
         })
     return JsonResponse({'message': 'User not logged in'}, status=403)
 
 
-@csrf_exempt
 @api_view(['POST'])
 def Logout(request):
-    if request.method == "POST":
-        logout(request)  # Logs out the user and invalidates the session
-        return JsonResponse({"message": "Logout successful"}, status=200)
-    else:
-        return JsonResponse({"error": "Invalid request method"}, status=400)
+    refresh_token = request.data.get('refresh')
+    try:
+        logout(request)
+        token = RefreshToken(refresh_token)
+        token.blacklist()  # Blacklist the token
+        return Response({'success': True, 'message': 'Logged out successfully.'})
+    except Exception as e:
+        return Response({'success': False, 'message': 'Invalid token or logout failed.'}, status=400)
     
 
 # Token view
@@ -198,6 +197,10 @@ class TokenListView(APIView):
 
         return Response(data)
 
+
+@api_view(['GET'])
+def protected_view(request):
+    return Response({'message': 'This is a protected view!'})
 
 
 # Regular Django views

@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 const Header = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
-    const navigate = useNavigate();
+    const navigate = useNavigate();  // Use the useNavigate hook instead of useHistory
 
     useEffect(() => {
         const checkLoginStatus = async () => {
@@ -14,15 +14,19 @@ const Header = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    credentials: 'include',
+                    credentials: 'include',  // Ensure this includes cookies (such as the JWT token)
                 });
+
                 if (response.ok) {
                     const data = await response.json();
                     setIsLoggedIn(true);
-                    setUsername(data.username); // Set username from the backend response
+                    setUsername(data.username);  // Set username from the backend response
+                } else {
+                    setIsLoggedIn(false);  // Handle cases when the server responds with unauthorized
                 }
             } catch (error) {
                 setIsLoggedIn(false);
+                console.error('Error checking login status:', error);
             }
         };
 
@@ -36,13 +40,13 @@ const Header = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include', // Include session cookies for logout
+                credentials: 'include',  // Include cookies with the request
             });
 
             if (response.ok) {
                 setIsLoggedIn(false);
                 setUsername('');
-                navigate('/EOB/Login'); // Redirect to login page after logout
+                navigate('/EOB/Login');  // Redirect to login page after logout
             } else {
                 console.error('Logout failed');
             }
@@ -66,13 +70,14 @@ const Header = () => {
                 <div className="black_nav col-6 d-flex justify-content-end align-items-center" style={{ textAlign: 'right' }}>
                     {!isLoggedIn ? (
                         <>
-
                             <div className="col-sm-3 p-1">
                                 <Link to="/EOB/Member" style={{ color: 'white' }}>Đăng Ký Thành Viên</Link>
                             </div>
+
                             <div className="col-sm-2 p-1">
                                 <Link to="/EOB/VLXD" style={{ color: 'white' }}>VLXD Đăng Ký</Link>
                             </div>
+
                             <div className="col-sm-2 p-1">
                                 <Link to="/EOB/Login" style={{ color: 'white' }}>Đăng Nhập</Link>
                             </div>
@@ -80,8 +85,9 @@ const Header = () => {
                     ) : (
                         <>
                             <div className="col-sm-3 p-1">
-                                <Link to="/EOB/Profile" style={{ color: 'white' }}>{username}</Link>
+                                <Link to="/EOB/Member" style={{ color: 'white' }}>{username}</Link>
                             </div>
+
                             <div className="col-sm-3 p-1">
                                 <button
                                     onClick={handleLogout}

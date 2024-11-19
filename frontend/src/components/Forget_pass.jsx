@@ -21,18 +21,6 @@ function ForgetPass() {
                                 </div>
                                 <form className="mx-1 mx-md-4" method="POST" action="">
                                     {/* CSRF Token can be handled by adding it to headers in the request if using Axios or Fetch */}
-
-                                    <div className="fw-bold d-flex flex-row justify-content-center mb-4">
-                                        {/* Display error messages here, if using state to hold messages */}
-                                        {/* You might need to use a state variable for messages */}
-                                        {/* Example:
-                    {messages && messages.map((message, index) => (
-                      <div key={index} className="alert alert-danger" role="alert">
-                        {message}
-                      </div>
-                    ))} */}
-                                    </div>
-
                                     <div className="d-flex flex-row mb-4">
                                         <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
                                         <div className="form-outline flex-fill mb-0">

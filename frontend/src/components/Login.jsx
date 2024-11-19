@@ -23,8 +23,8 @@ function Login() {
             });
 
             if (response.data.success) {
-
-                window.location.href = '/';
+                // Redirect or update state after successful login
+                window.location.href = '/'; // Or whatever the redirect URL is
             } else {
                 setError('Login failed. User does not exist or is unauthorized.');
             }
