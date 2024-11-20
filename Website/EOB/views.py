@@ -13,7 +13,7 @@ from django.http import JsonResponse
 # Django REST Framework imports
 from rest_framework import viewsets, status  
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -22,6 +22,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAdminUser
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
+from datetime import timedelta
 
 # Model imports
 from EOB.models import Member, Individual, Organization, VLXD
@@ -147,19 +149,33 @@ def Login(request):
     uname = request.data.get('uname')
     password = request.data.get('pass')
     remember_me = request.data.get('checkbox', False)
+    print(f" run 1 ")
 
     # Authenticate the user
     user = authenticate(request, username=uname, password=password)
     print(user)
     if user is not None:
-        if (user.is_individual or user.is_organization):
-            login(request, user)
-            return Response({'success': True, 'message': 'Login successful.'})
+        print(f" run 2 ")
+        if user.is_individual or user.is_organization:  # Assuming these are valid attributes
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+
+            # Adjust token lifetime if "remember_me" is checked
+            if remember_me:
+                refresh.set_exp(lifetime=timedelta(days=7))  # Extend token lifetime
+
+            return Response({
+                'success': True,
+                'message': 'Login successful.',
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
+            })
         else:
             return Response({'success': False, 'message': 'This user is not authorized to log in.'}, status=403)
     else:
         return Response({'success': False, 'message': 'Login failed. User does not exist.'}, status=400)
 
+@permission_classes([IsAuthenticated])
 def check_login(request):
     if request.user.is_authenticated:
         return JsonResponse({
@@ -172,13 +188,20 @@ def check_login(request):
 @api_view(['POST'])
 def Logout(request):
     refresh_token = request.data.get('refresh')
+    if not refresh_token:
+            return Response({'success': False, 'message': 'Refresh token is required.'}, status=400)
+
     try:
-        logout(request)
-        token = RefreshToken(refresh_token)
-        token.blacklist()  # Blacklist the token
-        return Response({'success': True, 'message': 'Logged out successfully.'})
+            # Log out the user (this will remove session information)
+            logout(request)
+
+            # Handle the refresh token to blacklist it
+            token = RefreshToken(refresh_token)
+            token.blacklist()  # Blacklist the token
+
+            return Response({'success': True, 'message': 'Logged out successfully.'})
     except Exception as e:
-        return Response({'success': False, 'message': 'Invalid token or logout failed.'}, status=400)
+            return Response({'success': False, 'message': 'Invalid token or logout failed.'}, status=400)
     
 
 # Token view

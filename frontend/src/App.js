@@ -16,6 +16,8 @@ import Profile from './components/Profile';
 import Individual from './components/Individual';
 import Organization from './components/Organization';
 import VLXD from './components/VLXD';
+//import { AuthProvider } from './context/AuthContext';
+
 
 const App = () => {
   const [data, setData] = useState(null);
@@ -36,6 +38,7 @@ const App = () => {
   return (
     <Router>
       <div className="App">
+        {/* <AuthProvider>*/}
         <Header />
 
         <Routes>
@@ -77,7 +80,10 @@ const App = () => {
         </Routes>
 
         <Footer />
+        {/*</AuthProvider>*/}
+
       </div>
+
     </Router>
   );
 };

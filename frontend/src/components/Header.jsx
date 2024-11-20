@@ -1,51 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useCheckLogin } from '../ultility/Ulties';
 
 const Header = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [username, setUsername] = useState('');
-    const navigate = useNavigate();  // Use the useNavigate hook instead of useHistory
+    const navigate = useNavigate();  // For navigation after logout
+    const { isLoggedIn, username } = useCheckLogin();  // Using the custom hook to check login status
 
-    useEffect(() => {
-        const checkLoginStatus = async () => {
-            try {
-                const response = await fetch('/api/check-login', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',  // Ensure this includes cookies (such as the JWT token)
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setIsLoggedIn(true);
-                    setUsername(data.username);  // Set username from the backend response
-                } else {
-                    setIsLoggedIn(false);  // Handle cases when the server responds with unauthorized
-                }
-            } catch (error) {
-                setIsLoggedIn(false);
-                console.error('Error checking login status:', error);
-            }
-        };
-
-        checkLoginStatus();
-    }, []);
-
+    // Handle the logout action
     const handleLogout = async () => {
         try {
+            const token = localStorage.getItem('authToken'); // Assuming you store the token in localStorage
+
             const response = await fetch('/api/logout', {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Token ${token}`,  // Send the token in the Authorization header
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include',  // Include cookies with the request
+                credentials: 'include',
             });
 
             if (response.ok) {
-                setIsLoggedIn(false);
-                setUsername('');
+                localStorage.removeItem('authToken');  // Remove token from local storage
                 navigate('/EOB/Login');  // Redirect to login page after logout
             } else {
                 console.error('Logout failed');

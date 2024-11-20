@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useCheckLogin } from '../ultility/Ulties';
 
 function Login() {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -7,6 +8,7 @@ function Login() {
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
+    const { checkLoginStatus } = useCheckLogin(); // assuming useCheckLogin returns checkLoginStatus
 
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
@@ -16,23 +18,46 @@ function Login() {
         e.preventDefault();
 
         try {
-            const response = await axios.post('/api/login', {
-                uname: username,
-                pass: password,
-                checkbox: rememberMe,
-            });
+            // Make both the login and check-login requests
+            const [loginResponse, checkLoginResponse] = await Promise.all([
+                axios.post('/api/login', {
+                    uname: username,
+                    pass: password,
+                    checkbox: rememberMe,
+                }),
+                axios.get('/api/check-login'),  // Assuming the check-login request is a GET request
+            ]);
 
-            if (response.data.success) {
-                // Redirect or update state after successful login
-                window.location.href = '/'; // Or whatever the redirect URL is
+            // Handle login response
+            if (loginResponse.data.success) {
+                // Store tokens in localStorage
+                const accessToken = loginResponse.data.access;
+                const refreshToken = loginResponse.data.refresh;
+
+                localStorage.setItem('access_token', accessToken);
+                localStorage.setItem('refresh_token', refreshToken);
+
+                console.log('Login successful!');
+                console.log('Access Token:', accessToken);
             } else {
+                // Handle unsuccessful login
                 setError('Login failed. User does not exist or is unauthorized.');
+                return;
             }
+
+            // Handle check-login response
+            if (checkLoginResponse.data.loggedIn) {
+                console.log('User is already logged in.');
+            } else {
+                console.log('User is not logged in.');
+            }
+
         } catch (error) {
+            // Handle errors
+            console.error('Error:', error.response?.data || error.message);
             setError('An error occurred while logging in.');
         }
     };
-
     return (
         <section style={{ backgroundColor: '#eee' }}>
             <div className="container h-100" style={{ paddingBottom: '50px' }}>
