@@ -1,12 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCheckLogin } from '../ultility/Ulties';
+//import { useCheckLogin } from './utility/Ulties';
 
 const Header = () => {
-    const navigate = useNavigate();  // For navigation after logout
-    const { isLoggedIn, username } = useCheckLogin();  // Using the custom hook to check login status
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [username, setUsername] = useState('');
+    const navigate = useNavigate();  // Use the useNavigate hook instead of useHistory
 
-    // Handle the logout action
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            try {
+                const response = await fetch('/api/check-login', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setIsLoggedIn(true);
+                    setUsername(data.username); // Set username from the backend response
+                }
+            } catch (error) {
+                setIsLoggedIn(false);
+            }
+        };
+
+        checkLoginStatus();
+    }, []);
+
     const handleLogout = async () => {
         try {
             const token = localStorage.getItem('authToken'); // Assuming you store the token in localStorage
@@ -21,6 +44,8 @@ const Header = () => {
             });
 
             if (response.ok) {
+                setIsLoggedIn(false);
+                setUsername('');
                 localStorage.removeItem('authToken');  // Remove token from local storage
                 navigate('/EOB/Login');  // Redirect to login page after logout
             } else {
@@ -30,6 +55,8 @@ const Header = () => {
             console.error('Error during logout:', error);
         }
     };
+
+
 
     return (
         <nav className="sticky-nav" style={{ border: '1px solid black' }}>

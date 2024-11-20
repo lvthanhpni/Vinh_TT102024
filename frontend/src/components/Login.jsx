@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useCheckLogin } from '../ultility/Ulties';
+
 
 function Login() {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -8,7 +8,7 @@ function Login() {
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
-    const { checkLoginStatus } = useCheckLogin(); // assuming useCheckLogin returns checkLoginStatus
+    //const { checkLoginStatus } = useCheckLogin(); // assuming useCheckLogin returns checkLoginStatus
 
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
@@ -18,21 +18,19 @@ function Login() {
         e.preventDefault();
 
         try {
-            // Make both the login and check-login requests
-            const [loginResponse, checkLoginResponse] = await Promise.all([
-                axios.post('/api/login', {
-                    uname: username,
-                    pass: password,
-                    checkbox: rememberMe,
-                }),
-                axios.get('/api/check-login'),  // Assuming the check-login request is a GET request
-            ]);
+            // Step 1: Login and get tokens
+            const loginResponse = await axios.post('/api/login', {
+                uname: username,
+                pass: password,
+                checkbox: rememberMe,
+            });
 
-            // Handle login response
             if (loginResponse.data.success) {
                 // Store tokens in localStorage
                 const accessToken = loginResponse.data.access;
                 const refreshToken = loginResponse.data.refresh;
+                console.log('Stored Access Token:', accessToken);
+                console.log('Stored refresh Token:', refreshToken);
 
                 localStorage.setItem('access_token', accessToken);
                 localStorage.setItem('refresh_token', refreshToken);
@@ -40,24 +38,30 @@ function Login() {
                 console.log('Login successful!');
                 console.log('Access Token:', accessToken);
             } else {
-                // Handle unsuccessful login
                 setError('Login failed. User does not exist or is unauthorized.');
                 return;
             }
 
-            // Handle check-login response
+            // Step 2: Check login status with the stored token
+            const accessToken = localStorage.getItem('access_token'); // Retrieve token from storage
+            const checkLoginResponse = await axios.get('/api/check-login', {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
             if (checkLoginResponse.data.loggedIn) {
-                console.log('User is already logged in.');
+                console.log('User is logged in:', checkLoginResponse.data.username);
             } else {
                 console.log('User is not logged in.');
             }
-
         } catch (error) {
-            // Handle errors
             console.error('Error:', error.response?.data || error.message);
             setError('An error occurred while logging in.');
         }
+
     };
+
     return (
         <section style={{ backgroundColor: '#eee' }}>
             <div className="container h-100" style={{ paddingBottom: '50px' }}>

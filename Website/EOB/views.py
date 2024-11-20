@@ -175,7 +175,7 @@ def Login(request):
     else:
         return Response({'success': False, 'message': 'Login failed. User does not exist.'}, status=400)
 
-@permission_classes([IsAuthenticated])
+@api_view(['GET'])
 def check_login(request):
     if request.user.is_authenticated:
         return JsonResponse({
