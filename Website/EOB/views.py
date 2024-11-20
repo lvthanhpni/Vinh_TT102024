@@ -23,6 +23,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAdminUser
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework.authentication import TokenAuthentication
 from datetime import timedelta
 
 # Model imports
@@ -203,6 +204,21 @@ def Logout(request):
     except Exception as e:
             return Response({'success': False, 'message': 'Invalid token or logout failed.'}, status=400)
     
+class UserView(APIView):
+   
+
+    def get(self, request, *args, **kwargs):
+        """
+        Returns the current authenticated user's information
+        """
+        user = request.user  # The user is available in the request object after authentication
+        # You can customize the response to include only necessary user data
+        user_data = {
+            'username': user.username,
+            'email': user.email,
+            # Add any other fields you need here
+        }
+        return Response(user_data, status=status.HTTP_200_OK)
 
 # Token view
 class TokenListView(APIView):

@@ -1,61 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
 
 const Header = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [username, setUsername] = useState('');
+    const { isLoggedIn, user, logout } = useContext(AuthContext);  // Get values from AuthContext
     const navigate = useNavigate();  // Use the useNavigate hook instead of useHistory
 
-    useEffect(() => {
-        const checkLoginStatus = async () => {
-            try {
-                const response = await fetch('/api/check-login', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setIsLoggedIn(true);
-                    setUsername(data.username); // Set username from the backend response
-                }
-            } catch (error) {
-                setIsLoggedIn(false);
-            }
-        };
-
-        checkLoginStatus();
-    }, []);
+    console.log("User from context:", user); // Debug log to check user object
+    const username = user?.username || 'Tên người dùng';  // Default value if username is not set
 
     const handleLogout = async () => {
         try {
-            const token = localStorage.getItem('authToken'); // Assuming you store the token in localStorage
-
-            const response = await fetch('/api/logout', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Token ${token}`,  // Send the token in the Authorization header
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-            });
-
-            if (response.ok) {
-                setIsLoggedIn(false);
-                setUsername('');
-                localStorage.removeItem('authToken');  // Remove token from local storage
-                navigate('/EOB/Login');  // Redirect to login page after logout
-            } else {
-                console.error('Logout failed');
-            }
+            // Call the logout function from AuthContext
+            await logout();
+            navigate('/EOB/Login');  // Redirect to login page after logout
         } catch (error) {
             console.error('Error during logout:', error);
         }
     };
-
-
 
     return (
         <nav className="sticky-nav" style={{ border: '1px solid black' }}>
@@ -87,7 +49,9 @@ const Header = () => {
                     ) : (
                         <>
                             <div className="col-sm-3 p-1">
-                                <Link to="/EOB/Member" style={{ color: 'white' }}>{username}</Link>
+                                <Link to="/EOB/Member" style={{ color: 'white' }}>
+                                    {username} {/* Display username from context */}
+                                </Link>
                             </div>
 
                             <div className="col-sm-3 p-1">

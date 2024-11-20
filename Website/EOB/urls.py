@@ -26,8 +26,9 @@ urlpatterns = [
     path('api/signup_mem', views.Signup_mem, name='signup_mem'),
 
     path('api/login', views.Login, name='login'),
-    path('api/logout', views.Logout, name='logout'),  # This should be the token-based logout
+    path('api/logout', views.Logout, name='logout'),  
     path('api/check-login', views.check_login, name='check-login'),
+    path('api/user', views.UserView.as_view(), name='user'),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
      path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # Refresh token
