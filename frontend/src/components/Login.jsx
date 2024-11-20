@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
-
+import AuthContext from '../context/AuthContext'; // Import AuthContext
 
 function Login() {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -14,52 +14,23 @@ function Login() {
         setPasswordVisible(!passwordVisible);
     };
 
+    const { login, error: contextError } = useContext(AuthContext);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            // Step 1: Login and get tokens
-            const loginResponse = await axios.post('/api/login', {
-                uname: username,
-                pass: password,
-                checkbox: rememberMe,
-            });
+            // Use the login function directly
+            await login(username, password, rememberMe);
 
-            if (loginResponse.data.success) {
-                // Store tokens in localStorage
-                const accessToken = loginResponse.data.access;
-                const refreshToken = loginResponse.data.refresh;
-                console.log('Stored Access Token:', accessToken);
-                console.log('Stored refresh Token:', refreshToken);
-
-                localStorage.setItem('access_token', accessToken);
-                localStorage.setItem('refresh_token', refreshToken);
-
-                console.log('Login successful!');
-                console.log('Access Token:', accessToken);
-            } else {
-                setError('Login failed. User does not exist or is unauthorized.');
-                return;
-            }
-
-            // Step 2: Check login status with the stored token
-            const accessToken = localStorage.getItem('access_token'); // Retrieve token from storage
-            const checkLoginResponse = await axios.get('/api/check-login', {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
-
-            if (checkLoginResponse.data.loggedIn) {
-                console.log('User is logged in:', checkLoginResponse.data.username);
-            } else {
-                console.log('User is not logged in.');
+            // If the login process has set an error in AuthContext, handle it here
+            if (contextError) {
+                setError(contextError);
             }
         } catch (error) {
             console.error('Error:', error.response?.data || error.message);
             setError('An error occurred while logging in.');
         }
-
     };
 
     return (

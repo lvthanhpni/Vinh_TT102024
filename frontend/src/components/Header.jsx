@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-//import { useCheckLogin } from './utility/Ulties';
 
 const Header = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
