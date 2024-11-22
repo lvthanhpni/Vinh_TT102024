@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password # type: ignore
 from django.http import JsonResponse
+from django.db.models import Q
 
 
 # Django REST Framework imports
@@ -42,6 +43,7 @@ Member = get_user_model()
 class MemberViewSet(viewsets.ModelViewSet):
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
+    permission_classes = [IsAdminUser]
 
 
 class IndividualViewSet(viewsets.ModelViewSet):
@@ -144,7 +146,6 @@ def Signup_mem(request):
     # Handle non-POST requests
     return JsonResponse({'error': 'Invalid request method. Only POST is allowed.'}, status=400)
 
-    
 @api_view(['POST'])
 def Login(request):
     uname = request.data.get('uname')

@@ -30,27 +30,27 @@ class Member(AbstractUser):
             raise ValidationError("A member can only be one of: Individual, Organization, or VLXD.")
 
 class Individual(models.Model):
-    full_name = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True)
+    name = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True)
     phone = models.CharField("Phone", max_length=50)
     email = models.EmailField(unique=True)  # Enforce unique email if each account should be unique
 
     def __str__(self):
-        return f"Individual: {self.full_name}"
+        return f"Individual: {self.name}"
 
 class Organization(models.Model):
-    c_name = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True, verbose_name='Company Name')
+    name = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True, verbose_name='Company Name')
     tax_num = models.CharField(max_length=10, verbose_name='Tax Number')
     phone = models.CharField("Phone", max_length=50)
     email = models.EmailField(unique=True)
 
     def __str__(self):
-        return f"Organization: {self.c_name}"
+        return f"Organization: {self.name}"
 
 class VLXD(models.Model):
-    c_name = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True, verbose_name='Company Name')
+    name = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True, verbose_name='Company Name')
     phone = models.CharField("Phone", max_length=50)
     email = models.EmailField(unique=True)
     job = models.CharField("Job Title", max_length=50)
 
     def __str__(self):
-        return f"VLXD Company: {self.c_name}"
+        return f"VLXD Company: {self.name}"
