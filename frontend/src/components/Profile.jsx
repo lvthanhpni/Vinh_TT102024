@@ -1,88 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 
 const Profile = () => {
     const [image, setImage] = useState("/static/Resources/Profile.jpg");
-    const [user, setUser] = useState({
-        username: "",
-        email: "",
-        club: "",
-        phone: "",
-        field: "",
-    });
+
+    const { isLoggedIn, user, logout } = useContext(AuthContext); // Get values from AuthContext
     const navigate = useNavigate();
 
-    // Fetch user data on component mount
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await fetch('/api/check-login', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include', // Include cookies for session-based auth
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setUser({
-                        username: data.username || "",
-                        email: data.email || "",
-                        club: data.club || "",
-                        phone: data.phone || "",
-                        field: data.field || "",
-                    });
-                } else {
-                    console.error('Failed to fetch user data');
-                    // Optionally, redirect to login if not authenticated
-                    navigate('/EOB/Login');
-                }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
+    const username = user?.username || "Tên người dùng"; // Default value if username is not set
 
-        fetchUserData();
-    }, [navigate]);
+    const handleLogout = async () => {
+        try {
+            // Call the logout function from AuthContext
+            await logout();
+            navigate("/EOB/Login"); // Redirect to login page after logout
+        } catch (error) {
+            console.error("Error during logout:", error);
+        }
+    };
 
     // Handle image preview
     const previewImage = (event) => {
         const file = event.target.files[0];
         if (file) {
             setImage(URL.createObjectURL(file));
-        }
-    };
-
-    // Handle input changes
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setUser(prevUser => ({
-            ...prevUser,
-            [name]: value
-        }));
-    };
-
-    // Handle form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('/api/update-profile', { // Ensure this endpoint exists in your backend
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify(user),
-            });
-
-            if (response.ok) {
-                console.log('Profile updated successfully');
-                // Optionally, provide user feedback or redirect
-            } else {
-                console.error('Failed to update profile');
-            }
-        } catch (error) {
-            console.error('Error updating profile:', error);
         }
     };
 
@@ -95,83 +37,66 @@ const Profile = () => {
                             <div className="card-body">
                                 <div className="d-flex justify-content-center">
                                     <div className="col-md-10 col-lg-6 col-xl-5 d-flex flex-column align-items-center">
-                                        <img src="/static/Resources/Logo.png" className="img-fluid" alt="Logo" style={{ width: "25%" }} />
+                                        <img
+                                            src="/static/Resources/Logo.png"
+                                            className="img-fluid"
+                                            alt="Logo"
+                                            style={{ width: "25%" }}
+                                        />
                                     </div>
                                 </div>
                                 <p className="text-center h4 fw-bold mb-5 mx-1 mx-md-4 mt-4">
                                     THÔNG TIN THÀNH VIÊN EOB CỦA TÔI
                                 </p>
-                                <form onSubmit={handleSubmit}>
+                                <form>
                                     <div className="row justify-content-between px-2">
                                         <div className="col-md-10 col-lg-6 col-xl-5 order-1 order-lg-2">
                                             <p>
                                                 <b style={{ paddingRight: 20 }}>Thành viên Star</b> Yêu cầu thăng hạng đang chờ duyệt
                                             </p>
 
-                                            {/* Name Field */}
+                                            {/* Display User Information */}
                                             <div className="form-outline flex-fill mb-0">
                                                 <label className="form-label" htmlFor="uname">Name</label>
                                                 <input
                                                     type="text"
                                                     id="uname"
                                                     className="form-control"
-                                                    name="username"
-                                                    value={user.username}
-                                                    onChange={handleChange}
+                                                    value={username}
+                                                    readOnly
                                                 />
                                             </div>
 
-                                            {/* Club Field */}
-                                            <div className="form-outline flex-fill mb-0">
-                                                <label className="form-label" htmlFor="club">Đang là thành viên hội</label>
-                                                <input
-                                                    type="text"
-                                                    id="club"
-                                                    className="form-control"
-                                                    name="club"
-                                                    value={user.club}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-
-                                            {/* Phone Field */}
-                                            <div className="form-outline flex-fill mb-0">
-                                                <label className="form-label" htmlFor="phone">Điện thoại*</label>
-                                                <input
-                                                    type="text"
-                                                    id="phone"
-                                                    className="form-control"
-                                                    name="phone"
-                                                    value={user.phone}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
-                                            </div>
-
-                                            {/* Field Field */}
-                                            <div className="form-outline flex-fill mb-0">
-                                                <label className="form-label" htmlFor="field">Lĩnh vực</label>
-                                                <input
-                                                    type="text"
-                                                    id="field"
-                                                    className="form-control"
-                                                    name="field"
-                                                    value={user.field}
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-
-                                            {/* Email Field */}
                                             <div className="form-outline flex-fill mb-0">
                                                 <label className="form-label" htmlFor="email">Email</label>
                                                 <input
                                                     type="email"
                                                     id="email"
                                                     className="form-control"
-                                                    name="email"
-                                                    value={user.email}
-                                                    onChange={handleChange}
-                                                    required
+                                                    value={user?.email || ""}
+                                                    readOnly
+                                                />
+                                            </div>
+
+                                            <div className="form-outline flex-fill mb-0">
+                                                <label className="form-label" htmlFor="phone">Điện thoại*</label>
+                                                <input
+                                                    type="text"
+                                                    id="phone"
+                                                    className="form-control"
+                                                    value={user?.phone || ""}
+                                                    readOnly
+                                                />
+                                            </div>
+
+                                            <div className="form-outline flex-fill mb-0">
+                                                <label className="form-label" htmlFor="field">Lĩnh vực</label>
+                                                <input
+                                                    type="text"
+                                                    id="field"
+                                                    className="form-control"
+                                                    value={user?.field || ""}
+                                                    readOnly
                                                 />
                                             </div>
                                         </div>
@@ -181,13 +106,20 @@ const Profile = () => {
                                             <div className="row pt-4">
                                                 <label><b>Hình đại diện (W 350 x H 150 pixel)</b></label>
                                             </div>
-                                            <div className="row pt-4 justify-content-center" style={{ width: "fit-content", position: "relative" }}>
+                                            <div
+                                                className="row pt-4 justify-content-center"
+                                                style={{ width: "fit-content", position: "relative" }}
+                                            >
                                                 <img
                                                     src={image}
                                                     className="img-fluid rounded-circle"
                                                     alt="PFP"
                                                     id="profilePic"
-                                                    style={{ width: 120, height: 120, backgroundColor: "#EE1D47" }}
+                                                    style={{
+                                                        width: 120,
+                                                        height: 120,
+                                                        backgroundColor: "#EE1D47",
+                                                    }}
                                                 />
                                                 <img
                                                     src="/static/Resources/Camera.png"
@@ -215,9 +147,15 @@ const Profile = () => {
                                             </div>
                                         </div>
 
-                                        {/* Submit Button */}
+                                        {/* Logout Button */}
                                         <div className="d-flex justify-content-center order-3 mt-5">
-                                            <button type="submit" className="btn btn-primary">Cập nhật</button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-danger"
+                                                onClick={handleLogout}
+                                            >
+                                                Đăng xuất
+                                            </button>
                                         </div>
                                     </div>
                                 </form>

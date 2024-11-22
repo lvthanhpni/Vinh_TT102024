@@ -4,11 +4,11 @@ const AuthContext = createContext({
     user: null,
     token: null,
     isLoggedIn: false,  // Added isLoggedIn state
-    username: '',  // Removed email
+    username: '',
     login: () => { },
     logout: () => { },
     error: null,
-    setUsername: () => { },  // Removed setEmail
+    setUsername: () => { },
 });
 
 export default AuthContext;

@@ -170,6 +170,10 @@ def Login(request):
                 'message': 'Login successful.',
                 'access': str(refresh.access_token),
                 'refresh': str(refresh),
+                'user': {
+                'username': user.username,
+                'email': user.email,
+                }   
             })
         else:
             return Response({'success': False, 'message': 'This user is not authorized to log in.'}, status=403)
@@ -205,8 +209,6 @@ def Logout(request):
             return Response({'success': False, 'message': 'Invalid token or logout failed.'}, status=400)
     
 class UserView(APIView):
-   
-
     def get(self, request, *args, **kwargs):
         """
         Returns the current authenticated user's information

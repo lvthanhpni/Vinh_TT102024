@@ -4,9 +4,8 @@ import AuthContext from '../context/AuthContext';
 
 const Header = () => {
     const { isLoggedIn, user, logout } = useContext(AuthContext);  // Get values from AuthContext
-    const navigate = useNavigate();  // Use the useNavigate hook instead of useHistory
+    const navigate = useNavigate();
 
-    console.log("User from context:", user); // Debug log to check user object
     const username = user?.username || 'Tên người dùng';  // Default value if username is not set
 
     const handleLogout = async () => {
@@ -49,7 +48,7 @@ const Header = () => {
                     ) : (
                         <>
                             <div className="col-sm-3 p-1">
-                                <Link to="/EOB/Member" style={{ color: 'white' }}>
+                                <Link to="/EOB/Profile" style={{ color: 'white' }}>
                                     {username} {/* Display username from context */}
                                 </Link>
                             </div>

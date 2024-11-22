@@ -7,8 +7,6 @@ const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('access_token') || null);
     const [error, setError] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);  // Track logged-in status
-
-    // Removed email and setEmail
     const [username, setUsername] = useState('');
 
     const login = async (username, password, rememberMe) => {
@@ -66,8 +64,6 @@ const AuthProvider = ({ children }) => {
                     });
 
                     if (response.data.user) {
-                        setUser(response.data.user);  // Set user data from the response
-                        setUsername(response.data.user.username || '');  // Set the username
                         setIsLoggedIn(true);  // Set logged-in state to true
                     }
                 } catch (error) {
