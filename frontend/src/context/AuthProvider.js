@@ -6,7 +6,7 @@ const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('access_token') || null);
     const [error, setError] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);  // Track logged-in status
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState('');
 
     const login = async (username, password, rememberMe) => {
@@ -27,34 +27,61 @@ const AuthProvider = ({ children }) => {
                 console.log('Login successful!');
                 console.log('Access Token:', accessToken);
 
-                setUser(loginResponse.data.user || {});  // Set the user data from the login response
-                setUsername(loginResponse.data.user?.username || '');  // Set the username
+                const { user } = loginResponse.data; // Extract user data
+                setUser(user);  // Set the full user data
+                setUsername(user?.username || '');  // Set the username
                 setToken(accessToken);
-                setIsLoggedIn(true);  // Set logged-in state to true
+                setIsLoggedIn(true);
+
+                // Fetch additional user data (e.g., phone, email) from /individuals/
+                const fetchUserDetails = async () => {
+                    try {
+                        const response = await axios.get('/individuals/', {
+                            headers: {
+                                'Authorization': `Bearer ${accessToken}`,
+                            },
+                        });
+
+                        // Assuming the API returns a list of individuals, and we pick the first one or specific user
+                        const userData = response.data.find(individual => individual.full_name === user.username);
+
+                        if (userData) {
+                            const { phone, email } = userData;
+
+                            // Store phone and email in localStorage
+                            localStorage.setItem('phone', phone);
+                            localStorage.setItem('email', email);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user details:', error);
+                    }
+                };
+
+                fetchUserDetails();
             } else {
                 setError('Login failed. User does not exist or is unauthorized.');
-                setIsLoggedIn(false);  // In case login fails, ensure logged-in state is false
+                setIsLoggedIn(false);
             }
         } catch (error) {
             console.error('Login error:', error.response?.data || error.message);
             setError('An error occurred while logging in.');
-            setIsLoggedIn(false);  // Set logged-in state to false on error
+            setIsLoggedIn(false);
         }
     };
 
     const logout = () => {
         setUser(null);
-        setUsername('');  // Clear username
+        setUsername('');
         setToken(null);
-        setIsLoggedIn(false);  // Set logged-in state to false when logging out
+        setIsLoggedIn(false);
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
+        localStorage.removeItem('phone');
+        localStorage.removeItem('email');
     };
 
-    // Effect to check if a user is already logged in based on the token stored in localStorage
     useEffect(() => {
         if (token) {
-            // Make an API call to fetch the user's info using the stored token if needed
             const fetchUserData = async () => {
                 try {
                     const response = await axios.get('/api/user', {
@@ -64,22 +91,31 @@ const AuthProvider = ({ children }) => {
                     });
 
                     if (response.data.user) {
-                        setIsLoggedIn(true);  // Set logged-in state to true
+                        setIsLoggedIn(true);
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);
-                    setIsLoggedIn(false);  // Set logged-in state to false if the fetch fails
+                    setIsLoggedIn(false);
                 }
             };
 
             fetchUserData();
         } else {
-            setIsLoggedIn(false);  // Set logged-in state to false if no token is present
+            setIsLoggedIn(false);
         }
     }, [token]);
 
     return (
-        <AuthContext.Provider value={{ user, token, isLoggedIn, username, login, logout, error, setUsername }}>
+        <AuthContext.Provider value={{
+            user,
+            token,
+            isLoggedIn,
+            username,
+            login,
+            logout,
+            error,
+            setUsername
+        }}>
             {children}
         </AuthContext.Provider>
     );
