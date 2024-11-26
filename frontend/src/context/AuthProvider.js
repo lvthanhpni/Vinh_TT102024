@@ -56,21 +56,29 @@ const AuthProvider = ({ children }) => {
                         });
 
                         setId(response.data.id || '');
-                        setPhone(response.data.phone || '');
-                        setEmail(response.data.email || '');
                         localStorage.setItem('id', response.data.id || '');
-                        localStorage.setItem('phone', response.data.phone || '');
-                        localStorage.setItem('email', response.data.email || '');
 
                         // Handle `is_individual` and `is_organization` conditions
                         if (response.data.is_individual) {
+                            setPhone(response.data.phone || '');
+                            setEmail(response.data.email || '');
                             setIndividual(response.data.is_individual || '');
+
+
+                            localStorage.setItem('phone', response.data.phone || '');
+                            localStorage.setItem('email', response.data.email || '');
                             localStorage.setItem('is_individual', response.data.is_individual || '');
                         }
 
                         if (response.data.is_organization) {
+                            setPhone(response.data.phone || '');
+                            setEmail(response.data.email || '');
                             setOrganization(response.data.is_organization || '');
                             setTax_num(response.data.tax_num || '');
+
+                            localStorage.setItem('id', response.data.id || '');
+                            localStorage.setItem('phone', response.data.organization_phone || '');
+                            localStorage.setItem('email', response.data.organization_email || '');
                             localStorage.setItem('is_organization', response.data.is_organization || '');
                             localStorage.setItem('tax_num', response.data.tax_num || '');
                         }

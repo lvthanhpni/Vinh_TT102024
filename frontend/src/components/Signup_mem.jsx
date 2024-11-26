@@ -51,11 +51,15 @@ const SignupMem = () => {
             ...(memberType === 'organization' && { c_name: formData.c_name, tax: formData.tax }),
         };
 
+        // Safely get the CSRF token
+        const csrfTokenMatch = document.cookie.match(/csrftoken=([\w-]+)/);
+        const csrfToken = csrfTokenMatch ? csrfTokenMatch[1] : ''; // Default to empty string if not found
+
         const response = await fetch('/api/signup_mem', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': document.cookie.match(/csrftoken=([\w-]+)/)[1],
+                'X-CSRFToken': csrfToken, // Use the CSRF token if available
             },
             body: JSON.stringify(memberData),
         });
@@ -105,6 +109,7 @@ const SignupMem = () => {
                                                     </div>
                                                     <div>
                                                         <input
+                                                            checked={memberType === 'organization'}
                                                             id="organization"
                                                             name="member_type"
                                                             onChange={handleRadioChange}
@@ -124,7 +129,6 @@ const SignupMem = () => {
                                                         <div className="form-outline flex-fill mb-0">
                                                             <input
                                                                 className="form-control"
-                                                                id="login_form"
                                                                 name="uname"
                                                                 placeholder="Họ và tên"
                                                                 type="text"
@@ -144,7 +148,6 @@ const SignupMem = () => {
                                                         <div className="form-outline flex-fill mb-0">
                                                             <input
                                                                 className="form-control"
-                                                                id="login_form"
                                                                 name="c_name"
                                                                 placeholder="Tên công ty/ Tổ chức"
                                                                 type="text"
@@ -158,7 +161,6 @@ const SignupMem = () => {
                                                         <div className="form-outline flex-fill mb-0">
                                                             <input
                                                                 className="form-control"
-                                                                id="login_form"
                                                                 name="tax"
                                                                 placeholder="Mã số thuế"
                                                                 type="text"
@@ -176,7 +178,6 @@ const SignupMem = () => {
                                                 <div className="form-outline flex-fill mb-0">
                                                     <input
                                                         className="form-control"
-                                                        id="login_form"
                                                         name="phone"
                                                         placeholder="Điện thoại *"
                                                         type="text"
@@ -190,7 +191,6 @@ const SignupMem = () => {
                                                 <div className="form-outline flex-fill mb-0">
                                                     <input
                                                         className="form-control"
-                                                        id="login_form"
                                                         name="email"
                                                         placeholder="Email"
                                                         type="text"
@@ -204,7 +204,6 @@ const SignupMem = () => {
                                                 <div className="form-outline flex-fill mb-0">
                                                     <input
                                                         className="form-control"
-                                                        id="login_form"
                                                         name="pass"
                                                         placeholder="Mật khẩu"
                                                         type="password"
@@ -218,7 +217,6 @@ const SignupMem = () => {
                                                 <div className="form-outline flex-fill mb-0">
                                                     <input
                                                         className="form-control"
-                                                        id="login_form"
                                                         name="rpass"
                                                         placeholder="Xác nhận mật khẩu"
                                                         type="password"
@@ -232,11 +230,9 @@ const SignupMem = () => {
                                             <div className="form-check d-flex justify-content-center mb-5">
                                                 <input
                                                     className="form-check-input"
-                                                    id="form2Example3c"
                                                     name="checkbox"
                                                     style={{ borderWidth: '2px', borderColor: 'black', marginRight: '5px' }}
                                                     type="checkbox"
-                                                    value="True"
                                                     checked={formData.checkbox}
                                                     onChange={handleChange}
                                                 />
@@ -262,11 +258,12 @@ const SignupMem = () => {
                                                 style={{ width: '35%' }}
                                             />
                                         </div>
-                                        <div className="row pt-4">
-                                            <h5>Đăng ký thành viên EOB</h5>
-                                            <p>
-                                                để bắt đầu trao đổi family thiết kế và kiến thức kiến trúc – xây dựng.
-                                            </p>
+                                        <div className="row">
+                                            <img
+                                                alt="Alt text"
+                                                className="img-fluid"
+                                                src="/static/Resources/signup_img.png"
+                                            />
                                         </div>
                                     </div>
                                 </div>

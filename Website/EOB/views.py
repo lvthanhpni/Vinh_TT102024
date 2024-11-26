@@ -130,18 +130,22 @@ def Signup_mem(request):
         password = request.data.get("pass")
         r_password = request.data.get("rpass")
 
+        print(member_type, phone, email, password, r_password)
+
         try:
             # Set a default username depending on member type
             if member_type == "individual":
                 print(f"Creating individual user")
                 name = request.data.get("uname")
                 user = Member.objects.create_user(username=name, email=email, password=password)
+                print(name, email )
                 user.is_individual = True
                 user.save()
                 print(f"Individual user created with ID: {user.id}")
 
-                # Create Individual profile
-                individual_profile = Individual.objects.create(full_name=user, phone=phone, email=email)
+                # Create Individual profile and link to user
+                individual_profile = Individual.objects.create(name=user, phone=phone, email=email)
+                print(phone, email )
                 individual_profile.save()
                 print(f"Individual profile created with ID: {individual_profile.id}")
 
@@ -154,13 +158,14 @@ def Signup_mem(request):
                 user.save()
                 print(f"Organization user created with ID: {user.id}")
 
-                # Create Organization profile
-                organization_profile = Organization.objects.create(c_name=user, tax_num=tax, phone=phone, email=email)
+                # Create Organization profile and link to user
+                organization_profile = Organization.objects.create(name=user, tax_num=tax, phone=phone, email=email)
                 organization_profile.save()
                 print(f"Organization profile created with ID: {organization_profile.id}")
 
-            # Return success response
-            return JsonResponse({'message': 'Signup successful!'}, status=201)
+            # Serialize the user and return the response
+            user_serializer = MemberSerializer(user)
+            return Response({'message': 'Signup successful!', 'user': user_serializer.data}, status=201)
 
         except Exception as e:
             # Log error details for debugging purposes
