@@ -62,7 +62,6 @@ const Profile = () => {
                                                     id="uname"
                                                     className="form-control"
                                                     value={username}
-                                                    readOnly
                                                 />
                                             </div>
 
@@ -73,7 +72,6 @@ const Profile = () => {
                                                     id="email"
                                                     className="form-control"
                                                     value={email || ""}
-                                                    readOnly
                                                 />
                                             </div>
 
@@ -84,7 +82,6 @@ const Profile = () => {
                                                     id="phone"
                                                     className="form-control"
                                                     value={phone || ""}
-                                                    readOnly
                                                 />
                                             </div>
 
@@ -95,7 +92,6 @@ const Profile = () => {
                                                     id="field"
                                                     className="form-control"
                                                     value={""}
-                                                    readOnly
                                                 />
                                             </div>
                                         </div>

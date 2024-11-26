@@ -180,13 +180,11 @@ def Login(request):
     uname = request.data.get('uname')
     password = request.data.get('pass')
     remember_me = request.data.get('checkbox', False)
-    print(f" run 1 ")
 
     # Authenticate the user
     user = authenticate(request, username=uname, password=password)
     print(user)
     if user is not None:
-        print(f" run 2 ")
         if user.is_individual or user.is_organization:  # Assuming these are valid attributes
             # Generate JWT tokens
             refresh = RefreshToken.for_user(user)
@@ -209,16 +207,6 @@ def Login(request):
             return Response({'success': False, 'message': 'This user is not authorized to log in.'}, status=403)
     else:
         return Response({'success': False, 'message': 'Login failed. User does not exist.'}, status=400)
-
-@api_view(['GET'])
-def check_login(request):
-    if request.user.is_authenticated:
-        return JsonResponse({
-            'username': request.user.username,
-            'email': request.user.email,
-        })
-    return JsonResponse({'message': 'User not logged in'}, status=403)
-
 
 @api_view(['POST'])
 def Logout(request):

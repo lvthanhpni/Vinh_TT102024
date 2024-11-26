@@ -121,18 +121,19 @@ const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        if (token) {
+        const storedToken = localStorage.getItem('access_token'); // Get the token from localStorage
+
+        if (storedToken) {
             const fetchUserData = async () => {
                 try {
                     const response = await axios.get('/api/user', {
                         headers: {
-                            'Authorization': `Bearer ${token}`,
+                            'Authorization': `Bearer ${storedToken}`, // Use the token fetched from localStorage
                         },
                     });
 
-                    if (response.data.user) {
-                        setIsLoggedIn(true);
-                    }
+                    setIsLoggedIn(true)
+
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                     setIsLoggedIn(false);
@@ -143,7 +144,8 @@ const AuthProvider = ({ children }) => {
         } else {
             setIsLoggedIn(false);
         }
-    }, [token]);
+    }, []); // Empty dependency array means this effect runs once when the component mounts
+
 
     return (
         <AuthContext.Provider value={{

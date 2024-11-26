@@ -3,10 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 
 const Header = () => {
-    const { isLoggedIn, user, logout } = useContext(AuthContext);  // Get values from AuthContext
+    const { isLoggedIn, username, logout } = useContext(AuthContext);  // Get values from AuthContext
     const navigate = useNavigate();
 
-    const username = user?.username || 'Tên người dùng';  // Default value if username is not set
 
     const handleLogout = async () => {
         try {
