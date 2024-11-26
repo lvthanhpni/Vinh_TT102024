@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 import AuthContext from '../context/AuthContext'; // Import AuthContext
 
 function Login() {
@@ -8,7 +9,8 @@ function Login() {
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
-    //const { checkLoginStatus } = useCheckLogin(); // assuming useCheckLogin returns checkLoginStatus
+
+    const navigate = useNavigate();
 
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
@@ -22,6 +24,7 @@ function Login() {
         try {
             // Use the login function directly
             await login(username, password, rememberMe);
+            navigate("/EOB/")
 
             // If the login process has set an error in AuthContext, handle it here
             if (contextError) {

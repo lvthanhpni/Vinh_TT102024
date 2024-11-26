@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AuthContext from './AuthContext';
 
+
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('access_token') || null);
@@ -153,7 +154,13 @@ const AuthProvider = ({ children }) => {
             login,
             logout,
             error,
-            setUsername
+            setUsername,
+            phone,
+            email,
+            tax_num,
+            is_individual,
+            is_organization,
+            id,
         }}>
             {children}
         </AuthContext.Provider>

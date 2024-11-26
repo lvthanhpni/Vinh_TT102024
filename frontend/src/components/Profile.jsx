@@ -5,10 +5,9 @@ import AuthContext from "../context/AuthContext";
 const Profile = () => {
     const [image, setImage] = useState("/static/Resources/Profile.jpg");
 
-    const { isLoggedIn, user, logout } = useContext(AuthContext); // Get values from AuthContext
+    const { isLoggedIn, username, email, phone, logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const username = user?.username || "Tên người dùng"; // Default value if username is not set
 
     const handleLogout = async () => {
         try {
@@ -73,7 +72,7 @@ const Profile = () => {
                                                     type="email"
                                                     id="email"
                                                     className="form-control"
-                                                    value={user?.email || ""}
+                                                    value={email || ""}
                                                     readOnly
                                                 />
                                             </div>
@@ -84,7 +83,7 @@ const Profile = () => {
                                                     type="text"
                                                     id="phone"
                                                     className="form-control"
-                                                    value={user?.phone || ""}
+                                                    value={phone || ""}
                                                     readOnly
                                                 />
                                             </div>
@@ -95,7 +94,7 @@ const Profile = () => {
                                                     type="text"
                                                     id="field"
                                                     className="form-control"
-                                                    value={user?.field || ""}
+                                                    value={""}
                                                     readOnly
                                                 />
                                             </div>
