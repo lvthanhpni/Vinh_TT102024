@@ -1,7 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import AuthContext from '../context/AuthContext'; // Import AuthContext
+import Cookies from 'js-cookie';
 
 function Login() {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -17,6 +18,25 @@ function Login() {
     };
 
     const { login, error: contextError } = useContext(AuthContext);
+
+    // Set initial form data from cookies if available
+    useEffect(() => {
+        const savedUsername = Cookies.get('username');
+        const savedPassword = Cookies.get('password');
+        const savedRememberMe = Cookies.get('rememberMe') === 'true';
+
+        if (savedUsername) {
+            setUsername(savedUsername);
+        }
+
+        if (savedPassword) {
+            setPassword(savedPassword);
+        }
+
+        if (savedRememberMe) {
+            setRememberMe(savedRememberMe);
+        }
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

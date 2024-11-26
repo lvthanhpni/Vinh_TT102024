@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AuthContext from './AuthContext';
+import Cookies from 'js-cookie';
 
 
 const AuthProvider = ({ children }) => {
@@ -8,13 +9,15 @@ const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('access_token') || null);
     const [error, setError] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [username, setUsername] = useState(localStorage.getItem('username') || '');
+    const [username, setUsername] = useState(localStorage.getItem('username') || Cookies.get('username') || '');
+    const [password, setPassword] = useState('');
     const [id, setId] = useState(localStorage.getItem('id') || '');
     const [phone, setPhone] = useState(localStorage.getItem('phone') || '');
     const [email, setEmail] = useState(localStorage.getItem('email') || '');
     const [tax_num, setTax_num] = useState(localStorage.getItem('tax_num') || '');
     const [is_individual, setIndividual] = useState(localStorage.getItem('is_individual') || '');
     const [is_organization, setOrganization] = useState(localStorage.getItem('is_organization') || '');
+    const [rememberMe, setRememberMe] = useState(Cookies.get('rememberMe') === 'true');
     const login = async (username, password, rememberMe) => {
         try {
             const loginResponse = await axios.post('/api/login', {
@@ -46,6 +49,16 @@ const AuthProvider = ({ children }) => {
 
                 console.log('Stored Organization Data in localStorage:', user);
 
+                // If rememberMe is checked, store the credentials in cookies
+                if (rememberMe) {
+                    Cookies.set('username', username, { expires: 30 });  // Remember username for 30 days
+                    Cookies.set('password', password, { expires: 30 });  // Remember password for 30 days (hashed if needed)
+                    Cookies.set('rememberMe', true, { expires: 30 });  // Remember 'remember me' checkbox state
+                } else {
+                    Cookies.remove('username');  // Remove cookies if not checked
+                    Cookies.remove('password');
+                    Cookies.remove('rememberMe');
+                }
 
                 // Fetch authenticated user's details using the retrieve endpoint
                 const fetchUserDetails = async () => {
@@ -58,6 +71,7 @@ const AuthProvider = ({ children }) => {
 
                         setId(response.data.id || '');
                         localStorage.setItem('id', response.data.id || '');
+
 
                         // Handle `is_individual` and `is_organization` conditions
                         if (response.data.is_individual) {
@@ -121,6 +135,7 @@ const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
+
         const storedToken = localStorage.getItem('access_token'); // Get the token from localStorage
 
         if (storedToken) {
