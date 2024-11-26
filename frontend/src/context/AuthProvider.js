@@ -62,17 +62,18 @@ const AuthProvider = ({ children }) => {
                         localStorage.setItem('phone', response.data.phone || '');
                         localStorage.setItem('email', response.data.email || '');
 
+                        // Handle `is_individual` and `is_organization` conditions
+                        if (response.data.is_individual) {
+                            setIndividual(response.data.is_individual || '');
+                            localStorage.setItem('is_individual', response.data.is_individual || '');
+                        }
 
-
-
-                        setIndividual(response.data.is_individual || '');
-                        setOrganization(response.data.is_organization || '');
-                        setTax_num(response.data.tax_num || '');
-
-
-                        localStorage.setItem('is_individual', response.data.is_individual || '');
-                        localStorage.setItem('is_organization', response.data.is_organization || '');
-                        localStorage.setItem('tax_num', response.data.tax_num || '');
+                        if (response.data.is_organization) {
+                            setOrganization(response.data.is_organization || '');
+                            setTax_num(response.data.tax_num || '');
+                            localStorage.setItem('is_organization', response.data.is_organization || '');
+                            localStorage.setItem('tax_num', response.data.tax_num || '');
+                        }
 
                         console.log('Members API response:', response.data);
 
