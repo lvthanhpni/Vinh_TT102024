@@ -2,26 +2,22 @@
 from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password # type: ignore
 from django.http import JsonResponse
-from django.db.models import Q
 
 
 # Django REST Framework imports
-from rest_framework import viewsets, status  
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import viewsets, status , permissions, status
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.permissions import IsAdminUser
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.authentication import TokenAuthentication
@@ -39,11 +35,38 @@ import json
 # Use get_user_model to refer to your custom Member model
 Member = get_user_model()
 
-# DRF Viewsets
 class MemberViewSet(viewsets.ModelViewSet):
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
-    permission_classes = [IsAdminUser]
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'retrieve':
+            # Allow any authenticated user to retrieve a specific user
+            permission_classes = [IsAuthenticated]
+        else:
+            # Only allow admins to list all users
+            permission_classes = [IsAdminUser]
+
+        return [permission() for permission in permission_classes]
+
+    def list(self, request):
+        """
+        List all members, restricted to admin users only.
+        """
+        members = self.queryset
+        serializer = self.serializer_class(members, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        """
+        Retrieve a member by username (accessible to authenticated users).
+        """
+        member = get_object_or_404(self.queryset, username=pk)  # Assuming `username` is the lookup field
+        serializer = self.serializer_class(member)
+        return Response(serializer.data)
 
 
 class IndividualViewSet(viewsets.ModelViewSet):
@@ -59,6 +82,7 @@ class OrganizationViewSet(viewsets.ModelViewSet):
 class VLXDViewSet(viewsets.ModelViewSet):
     queryset = VLXD.objects.all()
     serializer_class = VLXDSerializer
+
 
 @api_view(['POST'])
 @csrf_exempt  # If needed, you can use csrf_exempt, but ensure CSRF protection is handled securely

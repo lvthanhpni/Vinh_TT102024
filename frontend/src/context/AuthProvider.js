@@ -30,15 +30,15 @@ const AuthProvider = ({ children }) => {
                 console.log('Refresh Token:', refreshToken);
 
                 const { user } = loginResponse.data; // Extract user data
-                setUser(user);  // Set the full user data
-                setUsername(user?.username || '');  // Set the username
+                setUser(user); // Set the full user data
+                setUsername(user?.username || ''); // Set the username
                 setToken(accessToken);
                 setIsLoggedIn(true);
 
-                // Fetch user details based on individual or organization
+                // Fetch authenticated user's details using the retrieve endpoint
                 const fetchUserDetails = async () => {
                     try {
-                        const response = await axios.get('/members/', {
+                        const response = await axios.get(`/members/${username}/`, {
                             headers: {
                                 'Authorization': `Bearer ${accessToken}`,
                             },
@@ -46,53 +46,38 @@ const AuthProvider = ({ children }) => {
 
                         console.log('Members API response:', response.data);
 
-                        // Assuming the response is an array and filtering the user by full_name
-                        const userData = response.data.find(item => item.full_name === user.full_name);
-
-                        console.log('Filtered User Data:', userData);  // Log the filtered userData
+                        // Assuming `name` in the API response maps to `username` of the related Member model
+                        const userData = response.data.find(item => item.name === username);
 
                         if (userData) {
                             if (userData.is_individual) {
-                                const { id, full_name, phone, email, is_individual } = userData;
+                                const { id, name, phone, email, is_individual } = userData;
                                 console.log('Individual user data:', userData);
 
                                 // Store individual data in localStorage
                                 localStorage.setItem('id', id);
-                                localStorage.setItem('full_name', full_name);
+                                localStorage.setItem('name', name); // This maps to Member's username
                                 localStorage.setItem('phone', phone);
                                 localStorage.setItem('email', email);
                                 localStorage.setItem('is_individual', is_individual);
 
-                                // Verify data in localStorage after setting it
-                                console.log('Stored Individual Data in localStorage:');
-                                console.log('id:', localStorage.getItem('id'));
-                                console.log('full_name:', localStorage.getItem('full_name'));
-                                console.log('phone:', localStorage.getItem('phone'));
-                                console.log('email:', localStorage.getItem('email'));
-                                console.log('is_individual:', localStorage.getItem('is_individual'));
+                                console.log('Stored Individual Data in localStorage:', { id, name, phone, email, is_individual });
                             } else if (userData.is_organization) {
-                                const { id, company_name, tax_num, phone, email, is_organization } = userData;
+                                const { id, name, tax_num, phone, email, is_organization } = userData;
                                 console.log('Organization user data:', userData);
 
                                 // Store organization data in localStorage
                                 localStorage.setItem('id', id);
-                                localStorage.setItem('company_name', company_name);
+                                localStorage.setItem('name', name); // This maps to Member's username
                                 localStorage.setItem('tax_num', tax_num);
                                 localStorage.setItem('phone', phone);
                                 localStorage.setItem('email', email);
                                 localStorage.setItem('is_organization', is_organization);
 
-                                // Verify data in localStorage after setting it
-                                console.log('Stored Organization Data in localStorage:');
-                                console.log('id:', localStorage.getItem('id'));
-                                console.log('company_name:', localStorage.getItem('company_name'));
-                                console.log('tax_num:', localStorage.getItem('tax_num'));
-                                console.log('phone:', localStorage.getItem('phone'));
-                                console.log('email:', localStorage.getItem('email'));
-                                console.log('is_organization:', localStorage.getItem('is_organization'));
+                                console.log('Stored Organization Data in localStorage:', { id, name, tax_num, phone, email, is_organization });
                             }
                         } else {
-                            console.log('User data not found in response for full_name:', user.full_name);
+                            console.log('User data not found for username:', username);
                         }
                     } catch (error) {
                         console.error('Error fetching user details:', error);
@@ -120,10 +105,9 @@ const AuthProvider = ({ children }) => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('id');
-        localStorage.removeItem('full_name');
+        localStorage.removeItem('name');
         localStorage.removeItem('phone');
         localStorage.removeItem('email');
-        localStorage.removeItem('company_name');
         localStorage.removeItem('tax_num');
         localStorage.removeItem('is_individual');
         localStorage.removeItem('is_organization');
