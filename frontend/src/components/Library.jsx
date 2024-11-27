@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Folder from './Folder';
+import OwlCarousel from 'react-owl-carousel';
 
 const PageComponent = () => {
     return (
@@ -38,10 +39,32 @@ const PageComponent = () => {
                     <h2>MODEL MỚI</h2>
                     <p>Các model gần đây nhất <i className="bi bi-chevron-right"></i> </p>
                     <div className="owl-stage d-flex justify-content-between" style={{ backgroundColor: '#f0f0f0' }}>
-                        <img src="/static/Resources/Dulux.png" alt="Dulux" width="110" height="40" />
-                        <img src="/static/Resources/Austra.png" alt="Austraalu" width="110" height="40" />
-                        <img src="/static/Resources/PNP.png" alt="Phương Nam Panel" width="110" height="40" />
-                        <img src="/static/Resources/Dulux.png" alt="Dulux" width="110" height="40" />
+                        <OwlCarousel
+                            id="homepage-carousel"
+                            className="owl-theme"
+                            loop
+                            margin={10}
+                            nav
+                            autoplay
+                            autoplayTimeout={4000}
+                            autoplaySpeed={1500}
+                            autoplayHoverPause
+                            responsive={{
+                                0: {
+                                    items: 1,
+                                },
+                                600: {
+                                    items: 3,
+                                },
+                                1000: {
+                                    items: 6,
+                                },
+                            }}
+                        >
+                            <img src="/static/Resources/Dulux.png" alt="Dulux" width="110" height="40" />
+                            <img src="/static/Resources/Austra.png" alt="Austraalu" width="110" height="40" />
+                            <img src="/static/Resources/PNP.png" alt="Phương Nam Panel" width="110" height="40" />
+                        </OwlCarousel>
                     </div>
                 </div>
             </div>

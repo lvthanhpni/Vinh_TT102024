@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password # type: ignore
 from django.http import JsonResponse
+from django.conf import settings
 
 
 # Django REST Framework imports
@@ -29,8 +30,12 @@ from EOB.models import Member, Individual, Organization, VLXD
 # Serializer imports
 from .serializers import MemberSerializer, IndividualSerializer, OrganizationSerializer, VLXDSerializer
 
-#Json import       
+#Other import       
 import json
+from google.auth.transport.requests import Request
+from google.oauth2.id_token import verify_oauth2_token
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 # Use get_user_model to refer to your custom Member model
 Member = get_user_model()
@@ -226,6 +231,53 @@ def Logout(request):
     except Exception as e:
             return Response({'success': False, 'message': 'Invalid token or logout failed.'}, status=400)
     
+@csrf_exempt
+def google_login(request):
+
+    if request.method == "POST":
+        try:
+            body = json.loads(request.body)
+            token = body.get('token')
+
+            if not token:
+                return JsonResponse({'success': False, 'message': 'Token not provided.'}, status=400)
+
+            # Verify the token
+            idinfo = id_token.verify_oauth2_token(
+                token,
+                requests.Request(),
+                settings.GOOGLE_CLIENT_ID
+            )
+
+            if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                raise ValueError('Wrong issuer.')
+
+            # Extract user information
+            email = idinfo['email']
+            first_name = idinfo.get('given_name', '')
+            last_name = idinfo.get('family_name', '')
+
+            # Authenticate the user
+            user = authenticate(request, email=email, backend='django.contrib.auth.backends.ModelBackend')
+
+            if not user:
+                # Create a new user if not already registered
+                from django.contrib.auth.models import User
+                user = Member.objects.create_user(username=email, email=email, first_name=first_name, last_name=last_name)
+                user.save()
+
+            # Log in the user
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+            return JsonResponse({'success': True, 'message': 'Google login successful.', 'token': token})
+
+        except ValueError as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f"An unexpected error occurred: {str(e)}"}, status=500)
+
+    return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=405)
+        
 class UserView(APIView):
     def get(self, request, *args, **kwargs):
         """

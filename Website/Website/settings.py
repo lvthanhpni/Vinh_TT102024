@@ -92,6 +92,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "Website.wsgi.application"
+GOOGLE_CLIENT_ID = "993922724873-eu8a8evuobn01rr82tmkb0ht0f30ir3h.apps.googleusercontent.com"
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {

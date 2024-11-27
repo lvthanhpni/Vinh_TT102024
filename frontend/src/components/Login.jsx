@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import AuthContext from '../context/AuthContext'; // Import AuthContext
 import Cookies from 'js-cookie';
+import { GoogleLogin } from '@react-oauth/google';
 
 function Login() {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -11,6 +11,7 @@ function Login() {
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
 
+    const clientId = "993922724873-eu8a8evuobn01rr82tmkb0ht0f30ir3h.apps.googleusercontent.com";
     const navigate = useNavigate();
 
     const togglePasswordVisibility = () => {
@@ -56,6 +57,38 @@ function Login() {
         }
     };
 
+    const googleLoginSuccess = async (credentialResponse) => {
+        const token = credentialResponse.credential;
+
+        try {
+            const response = await fetch('/api/google-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Cookies.set('authToken', data.token, { expires: 30 });
+                console.log('Google login successful, token stored.');
+
+            } else {
+                setError('Google login failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error during Google login:', error);
+            setError('An error occurred during Google login.');
+        }
+    };
+
+    // Google login error handler
+    const googleLoginError = (error) => {
+        console.log('Login Failed:', error);
+        setError('Google login failed. Please try again.');
+    };
+
+
     return (
         <section style={{ backgroundColor: '#eee' }}>
             <div className="container h-100" style={{ paddingBottom: '50px' }}>
@@ -85,23 +118,17 @@ function Login() {
                                             className="form-outline flex-fill mb-0"
                                             style={{
                                                 textAlign: 'center',
-                                                border: '1px solid #ced4da',
                                                 padding: '10px',
-                                                borderRadius: '.25rem',
-                                                color: '#6c757d',
                                             }}
                                         >
-                                            <img
-                                                className="img-fluid"
-                                                src="/static/Resources/GG.png"
-                                                width="5%"
-                                                height="5%"
-                                                alt="Google logo"
-                                                style={{ marginRight: '20px' }}
-                                            />
-                                            <a href="/accounts/google/login/?next=/" style={{ color: 'black' }}>
-                                                Đăng nhập bằng Google
-                                            </a>
+                                            <div style={{ color: 'black' }}>
+                                                <GoogleLogin
+                                                    clientId={clientId}
+                                                    buttonText="Login with Google"
+                                                    onSuccess={googleLoginSuccess}
+                                                    onFailure={googleLoginError}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
@@ -191,7 +218,7 @@ function Login() {
                                         </div>
 
                                         <label className="form-check-label" htmlFor="form2Example3c">
-                                            <a href="/password-reset" style={{ color: 'black' }}>
+                                            <a href="/EOB/Forget" style={{ color: 'black' }}>
                                                 Quên mật khẩu
                                             </a>
                                         </label>

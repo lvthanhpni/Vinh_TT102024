@@ -258,12 +258,11 @@ const SignupMem = () => {
                                                 style={{ width: '35%' }}
                                             />
                                         </div>
-                                        <div className="row">
-                                            <img
-                                                alt="Alt text"
-                                                className="img-fluid"
-                                                src="/static/Resources/signup_img.png"
-                                            />
+                                        <div className="row pt-4">
+                                            <h5>Đăng ký thành viên EOB</h5>
+                                            <p>
+                                                để bắt đầu trao đổi family thiết kế và kiến thức kiến trúc – xây dựng.
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

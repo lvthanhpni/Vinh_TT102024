@@ -3,7 +3,6 @@ import axios from 'axios';
 import AuthContext from './AuthContext';
 import Cookies from 'js-cookie';
 
-
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('access_token') || null);
@@ -117,21 +116,15 @@ const AuthProvider = ({ children }) => {
         }
     };
 
+
+
     const logout = () => {
         setUser(null);
         setUsername('');
         setToken(null);
         setIsLoggedIn(false);
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('username');
-        localStorage.removeItem('id');
-        localStorage.removeItem('name');
-        localStorage.removeItem('phone');
-        localStorage.removeItem('email');
-        localStorage.removeItem('tax_num');
-        localStorage.removeItem('is_individual');
-        localStorage.removeItem('is_organization');
+        localStorage.clear();
+        Cookies.remove('authToken');
     };
 
     useEffect(() => {
@@ -178,7 +171,9 @@ const AuthProvider = ({ children }) => {
             is_individual,
             is_organization,
             id,
+
         }}>
+
             {children}
         </AuthContext.Provider>
     );

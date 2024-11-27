@@ -52,20 +52,20 @@ const Header = () => {
                                 </Link>
                             </div>
 
-                            <div className="col-sm-3 p-1">
-                                <button
-                                    onClick={handleLogout}
-                                    style={{ color: 'white', background: 'none', border: 'none', cursor: 'pointer' }}
-                                >
-                                    Logout
-                                </button>
-                            </div>
                         </>
                     )}
 
                     <div className="col-sm-2 p-1 dropdown">
                         <button type="button" className="btn dropdown-toggle text-white w-100" style={{ backgroundColor: '#1c2d5a' }}>
                             <img src="/static/Resources/Vie.png" alt="Viet flag" /> Vi
+                        </button>
+                    </div>
+                    <div className="col-sm-3 p-1">
+                        <button
+                            onClick={handleLogout}
+                            style={{ color: 'white', background: 'none', border: 'none', cursor: 'pointer' }}
+                        >
+                            Logout
                         </button>
                     </div>
                 </div>
