@@ -233,7 +233,6 @@ def Logout(request):
     
 @csrf_exempt
 def google_login(request):
-
     if request.method == "POST":
         try:
             body = json.loads(request.body)
@@ -256,18 +255,26 @@ def google_login(request):
             email = idinfo['email']
             first_name = idinfo.get('given_name', '')
             last_name = idinfo.get('family_name', '')
+            name = last_name + ' ' + first_name
+            print(name)
 
-            # Authenticate the user
-            user = authenticate(request, email=email, backend='django.contrib.auth.backends.ModelBackend')
+            # Check if the user already exists by email
+            user = Member.objects.filter(email=email).first()  # You can also filter by username if preferred
 
-            if not user:
-                # Create a new user if not already registered
-                from django.contrib.auth.models import User
-                user = Member.objects.create_user(username=email, email=email, first_name=first_name, last_name=last_name)
+            if user:
+                # If the user exists, log them in
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                return JsonResponse({'success': True, 'message': 'Google login successful.', 'token': token})
+            else:
+                # If the user does not exist, create a new one
+                user = Member.objects.create_user(username=name, email=email, first_name=first_name, last_name=last_name)
+                user.is_individual = True
                 user.save()
+                individual_profile = Individual.objects.create(name=user, email=email)
+                individual_profile.save()
 
-            # Log in the user
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                # Log in the newly created user
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
             return JsonResponse({'success': True, 'message': 'Google login successful.', 'token': token})
 
@@ -277,7 +284,6 @@ def google_login(request):
             return JsonResponse({'success': False, 'message': f"An unexpected error occurred: {str(e)}"}, status=500)
 
     return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=405)
-        
 class UserView(APIView):
     def get(self, request, *args, **kwargs):
         """
