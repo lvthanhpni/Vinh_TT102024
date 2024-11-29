@@ -12,6 +12,7 @@ function Login() {
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const clientId = "993922724873-eu8a8evuobn01rr82tmkb0ht0f30ir3h.apps.googleusercontent.com";
     const navigate = useNavigate();
@@ -20,7 +21,8 @@ function Login() {
         setPasswordVisible(!passwordVisible);
     };
 
-    const { login, error: contextError } = useContext(AuthContext);
+    const { login, error: contextError, fetchUserData } = useContext(AuthContext);
+
 
     // Set initial form data from cookies if available
     useEffect(() => {
@@ -91,6 +93,7 @@ function Login() {
                 localStorage.setItem('username', username);
 
                 console.log('Google login successful, user info stored.');
+                fetchUserData(accessToken);
                 navigate("/EOB/"); // Redirect or perform any other action
 
             } else {

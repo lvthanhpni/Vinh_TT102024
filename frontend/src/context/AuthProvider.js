@@ -9,14 +9,13 @@ const AuthProvider = ({ children }) => {
     const [error, setError] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState(localStorage.getItem('username') || Cookies.get('username') || '');
-    const [password, setPassword] = useState('');
     const [id, setId] = useState(localStorage.getItem('id') || '');
     const [phone, setPhone] = useState(localStorage.getItem('phone') || '');
     const [email, setEmail] = useState(localStorage.getItem('email') || '');
     const [tax_num, setTax_num] = useState(localStorage.getItem('tax_num') || '');
     const [is_individual, setIndividual] = useState(localStorage.getItem('is_individual') || '');
     const [is_organization, setOrganization] = useState(localStorage.getItem('is_organization') || '');
-    const [rememberMe, setRememberMe] = useState(Cookies.get('rememberMe') === 'true');
+
     const csrfToken = Cookies.get('csrftoken');
     const login = async (username, password, rememberMe) => {
         try {
@@ -129,34 +128,33 @@ const AuthProvider = ({ children }) => {
         Cookies.remove('authToken');
     };
 
+    const fetchUserData = async (storedToken) => {
+        try {
+            const response = await axios.get('/api/user', {
+                headers: {
+                    'Authorization': `Bearer ${storedToken}`, // Use the token fetched from localStorage
+                },
+            });
+
+            setIsLoggedIn(true)
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            setIsLoggedIn(false);
+        }
+    };
+
 
     useEffect(() => {
 
         const storedToken = localStorage.getItem('access_token'); // Get the token from localStorage
-        console.log('Stored Token:', storedToken);
-
         if (storedToken) {
 
-            const fetchUserData = async () => {
-                try {
-                    const response = await axios.get('/api/user', {
-                        headers: {
-                            'Authorization': `Bearer ${storedToken}`, // Use the token fetched from localStorage
-                        },
-                    });
 
-                    setIsLoggedIn(true)
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                    setIsLoggedIn(false);
-                }
-            };
-
-            fetchUserData();
+            fetchUserData(storedToken);
         } else {
             setIsLoggedIn(false);
         }
-    }, []); // Empty dependency array means this effect runs once when the component mounts
+    }, []);
 
 
     return (
@@ -175,7 +173,7 @@ const AuthProvider = ({ children }) => {
             is_individual,
             is_organization,
             id,
-
+            fetchUserData,
         }}>
 
             {children}
