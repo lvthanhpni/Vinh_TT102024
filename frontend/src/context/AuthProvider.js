@@ -17,13 +17,21 @@ const AuthProvider = ({ children }) => {
     const [is_individual, setIndividual] = useState(localStorage.getItem('is_individual') || '');
     const [is_organization, setOrganization] = useState(localStorage.getItem('is_organization') || '');
     const [rememberMe, setRememberMe] = useState(Cookies.get('rememberMe') === 'true');
+    const getCsrfToken = () => {
+        return document.cookie
+            .split('; ')
+            .find((row) => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+    };
     const login = async (username, password, rememberMe) => {
+        const csrfToken = getCsrfToken();
         try {
             const loginResponse = await axios.post('/api/login', {
                 uname: username,
                 pass: password,
                 checkbox: rememberMe,
             });
+
 
             if (loginResponse.data.success) {
                 const accessToken = loginResponse.data.access;
@@ -65,6 +73,7 @@ const AuthProvider = ({ children }) => {
                         const response = await axios.get(`/members/${user?.username}/`, {
                             headers: {
                                 'Authorization': `Bearer ${accessToken}`,
+                                'X-CSRFToken': csrfToken,
                             },
                         });
 
@@ -124,14 +133,16 @@ const AuthProvider = ({ children }) => {
         setToken(null);
         setIsLoggedIn(false);
         localStorage.clear();
-        Cookies.remove('authToken');
     };
+
 
     useEffect(() => {
 
         const storedToken = localStorage.getItem('access_token'); // Get the token from localStorage
+        console.log('Stored Token:', storedToken);
 
         if (storedToken) {
+
             const fetchUserData = async () => {
                 try {
                     const response = await axios.get('/api/user', {
@@ -141,7 +152,6 @@ const AuthProvider = ({ children }) => {
                     });
 
                     setIsLoggedIn(true)
-
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                     setIsLoggedIn(false);

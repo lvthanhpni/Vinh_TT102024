@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.contrib.auth.hashers import make_password # type: ignore
 from django.http import JsonResponse
 from django.conf import settings
@@ -66,9 +66,7 @@ class MemberViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        """
-        Retrieve a member by username (accessible to authenticated users).
-        """
+       
         member = get_object_or_404(self.queryset, username=pk)  # Assuming `username` is the lookup field
         serializer = self.serializer_class(member)
         return Response(serializer.data)
@@ -213,25 +211,7 @@ def Login(request):
     else:
         return Response({'success': False, 'message': 'Login failed. User does not exist.'}, status=400)
 
-@api_view(['POST'])
-def Logout(request):
-    refresh_token = request.data.get('refresh')
-    if not refresh_token:
-            return Response({'success': False, 'message': 'Refresh token is required.'}, status=400)
-
-    try:
-            # Log out the user (this will remove session information)
-            logout(request)
-
-            # Handle the refresh token to blacklist it
-            token = RefreshToken(refresh_token)
-            token.blacklist()  # Blacklist the token
-
-            return Response({'success': True, 'message': 'Logged out successfully.'})
-    except Exception as e:
-            return Response({'success': False, 'message': 'Invalid token or logout failed.'}, status=400)
-    
-@csrf_exempt
+@csrf_protect
 def google_login(request):
     if request.method == "POST":
         try:
@@ -251,23 +231,36 @@ def google_login(request):
             if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
                 raise ValueError('Wrong issuer.')
 
+            
+
             # Extract user information
             email = idinfo['email']
             first_name = idinfo.get('given_name', '')
             last_name = idinfo.get('family_name', '')
             name = last_name + ' ' + first_name
-            print(name)
+            print(f"User: {name}")
 
             # Check if the user already exists by email
-            user = Member.objects.filter(email=email).first()  # You can also filter by username if preferred
+            user = Member.objects.filter(email=email).first()
 
             if user:
                 # If the user exists, log them in
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return JsonResponse({'success': True, 'message': 'Google login successful.', 'token': token})
+                refresh = RefreshToken.for_user(user)
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Google login successful.',
+                    'token': token,
+                    'email': email,
+                    'username': user.username,
+                    'access': str(refresh.access_token),
+                    'refresh': str(refresh),
+                })
             else:
                 # If the user does not exist, create a new one
-                user = Member.objects.create_user(username=name, email=email, first_name=first_name, last_name=last_name)
+                user = Member.objects.create_user(
+                    username=name, email=email, first_name=first_name, last_name=last_name
+                )
                 user.is_individual = True
                 user.save()
                 individual_profile = Individual.objects.create(name=user, email=email)
@@ -275,8 +268,17 @@ def google_login(request):
 
                 # Log in the newly created user
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                refresh = RefreshToken.for_user(user)
 
-            return JsonResponse({'success': True, 'message': 'Google login successful.', 'token': token})
+            return JsonResponse({
+                'success': True,
+                'message': 'Google login successful.',
+                'token': token,
+                'email': email,
+                'username': user.username,
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
+            })
 
         except ValueError as e:
             return JsonResponse({'success': False, 'message': str(e)}, status=400)
@@ -284,6 +286,26 @@ def google_login(request):
             return JsonResponse({'success': False, 'message': f"An unexpected error occurred: {str(e)}"}, status=500)
 
     return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=405)
+
+
+@api_view(['POST'])
+def Logout(request):
+    refresh_token = request.data.get('refresh')
+    if not refresh_token:
+            return Response({'success': False, 'message': 'Refresh token is required.'}, status=400)
+
+    try:
+            # Log out the user (this will remove session information)
+            logout(request)
+
+            # Handle the refresh token to blacklist it
+            token = RefreshToken(refresh_token)
+            token.blacklist()  # Blacklist the token
+
+            return Response({'success': True, 'message': 'Logged out successfully.'})
+    except Exception as e:
+            return Response({'success': False, 'message': 'Invalid token or logout failed.'}, status=400)
+    
 class UserView(APIView):
     def get(self, request, *args, **kwargs):
         """

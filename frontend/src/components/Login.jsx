@@ -4,6 +4,13 @@ import AuthContext from '../context/AuthContext'; // Import AuthContext
 import Cookies from 'js-cookie';
 import { GoogleLogin } from '@react-oauth/google';
 
+const getCsrfToken = () => {
+    return document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+};
+
 function Login() {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [username, setUsername] = useState('');
@@ -59,19 +66,35 @@ function Login() {
 
     const googleLoginSuccess = async (credentialResponse) => {
         const token = credentialResponse.credential;
-
+        const csrfToken = getCsrfToken();
         try {
             const response = await fetch('/api/google-login', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
                 body: JSON.stringify({ token }),
+
+
             });
 
             const data = await response.json();
 
             if (data.success) {
-                Cookies.set('authToken', data.token, { expires: 30 });
-                console.log('Google login successful, token stored.');
+                const accessToken = data.access; // Use `data`, not `response.data`
+                const refreshToken = data.refresh;
+
+                const { email, username } = data;
+
+                // Store the token, email, and username in localStorage
+                localStorage.setItem('access_token', accessToken);
+                localStorage.setItem('refresh_token', refreshToken);
+                localStorage.setItem('email', email);
+                localStorage.setItem('username', username);
+
+                console.log('Google login successful, user info stored.');
+                navigate("/EOB/"); // Redirect or perform any other action
 
             } else {
                 setError('Google login failed. Please try again.');
@@ -81,6 +104,7 @@ function Login() {
             setError('An error occurred during Google login.');
         }
     };
+
 
     // Google login error handler
     const googleLoginError = (error) => {
