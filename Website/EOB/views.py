@@ -211,7 +211,7 @@ def Login(request):
     else:
         return Response({'success': False, 'message': 'Login failed. User does not exist.'}, status=400)
 
-@csrf_protect
+@csrf_exempt
 def google_login(request):
     if request.method == "POST":
         try:
@@ -245,7 +245,6 @@ def google_login(request):
 
             if user:
                 # If the user exists, log them in
-                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 refresh = RefreshToken.for_user(user)
                 return JsonResponse({
                     'success': True,
@@ -267,7 +266,6 @@ def google_login(request):
                 individual_profile.save()
 
                 # Log in the newly created user
-                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 refresh = RefreshToken.for_user(user)
 
             return JsonResponse({

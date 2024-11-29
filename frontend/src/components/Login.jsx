@@ -4,12 +4,7 @@ import AuthContext from '../context/AuthContext'; // Import AuthContext
 import Cookies from 'js-cookie';
 import { GoogleLogin } from '@react-oauth/google';
 
-const getCsrfToken = () => {
-    return document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('csrftoken='))
-        ?.split('=')[1];
-};
+const getCsrfToken = () => Cookies.get('csrftoken');
 
 function Login() {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -67,6 +62,8 @@ function Login() {
     const googleLoginSuccess = async (credentialResponse) => {
         const token = credentialResponse.credential;
         const csrfToken = getCsrfToken();
+        console.log(csrfToken);
+
         try {
             const response = await fetch('/api/google-login', {
                 method: 'POST',

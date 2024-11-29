@@ -17,21 +17,14 @@ const AuthProvider = ({ children }) => {
     const [is_individual, setIndividual] = useState(localStorage.getItem('is_individual') || '');
     const [is_organization, setOrganization] = useState(localStorage.getItem('is_organization') || '');
     const [rememberMe, setRememberMe] = useState(Cookies.get('rememberMe') === 'true');
-    const getCsrfToken = () => {
-        return document.cookie
-            .split('; ')
-            .find((row) => row.startsWith('csrftoken='))
-            ?.split('=')[1];
-    };
+    const csrfToken = Cookies.get('csrftoken');
     const login = async (username, password, rememberMe) => {
-        const csrfToken = getCsrfToken();
         try {
             const loginResponse = await axios.post('/api/login', {
                 uname: username,
                 pass: password,
                 checkbox: rememberMe,
             });
-
 
             if (loginResponse.data.success) {
                 const accessToken = loginResponse.data.access;
@@ -133,6 +126,7 @@ const AuthProvider = ({ children }) => {
         setToken(null);
         setIsLoggedIn(false);
         localStorage.clear();
+        Cookies.remove('authToken');
     };
 
 

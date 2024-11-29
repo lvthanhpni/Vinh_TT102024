@@ -161,14 +161,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React's default port
-]
+#CORS_ALLOWED_ORIGINS = [
+#    "http://localhost:3000",  # React's default port
+#]
 
 CORS_ALLOW_ALL_ORIGINS = True
 
 # settings.py
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']  # Adjust this to your frontend's origin
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000','http://localhost:8000']  
+
 
 # Optionally, disable CSRF for development
 REST_FRAMEWORK = {
