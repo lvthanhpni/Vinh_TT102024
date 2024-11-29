@@ -38,33 +38,40 @@ const PageComponent = () => {
                 <div className="col-md-10 col-lg-6 col-xl-7">
                     <h2>MODEL MỚI</h2>
                     <p>Các model gần đây nhất <i className="bi bi-chevron-right"></i> </p>
-                    <div className="owl-stage d-flex justify-content-between" style={{ backgroundColor: '#f0f0f0' }}>
-                        <OwlCarousel
-                            id="homepage-carousel"
-                            className="owl-theme"
-                            loop
-                            margin={10}
-                            nav
-                            autoplay
-                            autoplayTimeout={4000}
-                            autoplaySpeed={1500}
-                            autoplayHoverPause
-                            responsive={{
-                                0: {
-                                    items: 1,
-                                },
-                                600: {
-                                    items: 3,
-                                },
-                                1000: {
-                                    items: 6,
-                                },
+                    <div className="carousel-wrapper" style={{ backgroundColor: '#f0f0f0' }}>
+                        <div
+                            className="carousel-container"
+                            style={{
+                                maxWidth: '80%',
+                                margin: '0 auto',
+                                display: 'flex',
+                                justifyContent: 'center',
                             }}
                         >
-                            <img src="/static/Resources/Dulux.png" alt="Dulux" width="110" height="40" />
-                            <img src="/static/Resources/Austra.png" alt="Austraalu" width="110" height="40" />
-                            <img src="/static/Resources/PNP.png" alt="Phương Nam Panel" width="110" height="40" />
-                        </OwlCarousel>
+                            <OwlCarousel
+                                id="homepage-carousel"
+                                className="owl-theme"
+                                loop
+                                margin={100}
+                                nav
+                                autoplay
+                                autoplayTimeout={4000}
+                                autoplaySpeed={1500}
+                                autoplayHoverPause
+                                responsive={{
+                                    0: {
+                                        items: 1,
+                                    },
+                                    1000: {
+                                        items: 4,
+                                    },
+                                }}
+                            >
+                                <img src="/static/Resources/Dulux.png" alt="Dulux" width="90" height="40" />
+                                <img src="/static/Resources/Austra.png" alt="Austraalu" width="90" height="40" />
+                                <img src="/static/Resources/PNP.png" alt="Phương Nam Panel" width="90" height="40" />
+                            </OwlCarousel>
+                        </div>
                     </div>
                 </div>
             </div>

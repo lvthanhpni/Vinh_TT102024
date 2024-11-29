@@ -3,6 +3,7 @@ import axios from 'axios';
 import AuthContext from './AuthContext';
 import Cookies from 'js-cookie';
 
+
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('access_token') || null);
@@ -15,8 +16,9 @@ const AuthProvider = ({ children }) => {
     const [tax_num, setTax_num] = useState(localStorage.getItem('tax_num') || '');
     const [is_individual, setIndividual] = useState(localStorage.getItem('is_individual') || '');
     const [is_organization, setOrganization] = useState(localStorage.getItem('is_organization') || '');
+    const [rank, setRank] = useState(localStorage.getItem('rank') || '1');
 
-    const csrfToken = Cookies.get('csrftoken');
+    const getCsrfToken = () => Cookies.get('csrftoken');
     const login = async (username, password, rememberMe) => {
         try {
             const loginResponse = await axios.post('/api/login', {
@@ -61,6 +63,7 @@ const AuthProvider = ({ children }) => {
 
                 // Fetch authenticated user's details using the retrieve endpoint
                 const fetchUserDetails = async () => {
+                    const csrfToken = getCsrfToken();
                     try {
                         const response = await axios.get(`/members/${user?.username}/`, {
                             headers: {
@@ -72,12 +75,15 @@ const AuthProvider = ({ children }) => {
                         setId(response.data.id || '');
                         localStorage.setItem('id', response.data.id || '');
 
+                        setRank(response.data.rank || '1');
+                        localStorage.setItem('rank', response.data.rank || '1');
 
                         // Handle `is_individual` and `is_organization` conditions
                         if (response.data.is_individual) {
                             setPhone(response.data.phone || '');
                             setEmail(response.data.email || '');
                             setIndividual(response.data.is_individual || '');
+
 
 
                             localStorage.setItem('phone', response.data.phone || '');
@@ -117,6 +123,57 @@ const AuthProvider = ({ children }) => {
         }
     };
 
+    const googleLoginSuccess = async (credentialResponse) => {
+        const token = credentialResponse.credential;
+        const csrfToken = getCsrfToken();
+        console.log(csrfToken);
+
+        try {
+            const response = await fetch('/api/google-login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: JSON.stringify({ token }),
+
+
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const accessToken = data.access;
+                const refreshToken = data.refresh;
+
+                const { email, username } = data;
+
+                // Store the token, email, and username in localStorage
+                localStorage.setItem('access_token', accessToken);
+                localStorage.setItem('refresh_token', refreshToken);
+                localStorage.setItem('email', email);
+                localStorage.setItem('username', username);
+
+                console.log('Google login successful, user info stored.');
+                fetchUserData(accessToken);
+
+
+            } else {
+                setError('Google login failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error during Google login:', error);
+            setError('An error occurred during Google login.');
+        }
+    };
+
+
+    // Google login error handler
+    const googleLoginError = (error) => {
+        console.log('Login Failed:', error);
+        setError('Google login failed. Please try again.');
+    };
+
 
 
     const logout = () => {
@@ -126,6 +183,48 @@ const AuthProvider = ({ children }) => {
         setIsLoggedIn(false);
         localStorage.clear();
         Cookies.remove('authToken');
+    };
+
+    const updateUserData = async (updatedData) => {
+        try {
+            // Log the data being sent to the server
+            console.log('Sending the following data to the server:', updatedData);
+
+            // Assuming getCsrfToken() is a function that retrieves the CSRF token from cookies or meta tags
+            const csrfToken = getCsrfToken();
+            const response = await axios.put(`/members/${username}/`, updatedData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,  // Authorization header with Bearer token
+                    'X-CSRFToken': csrfToken,  // CSRF token to protect against cross-site request forgery
+                },
+            });
+
+            // Log the response data received from the server
+            console.log('Response from server:', response.data);
+
+            if (response.data.success) {
+                // Log the user data that will be updated
+                const { user } = response.data;
+                console.log('User data received from server:', user);
+
+                // Update the state and localStorage with the new user data
+                setUsername(user?.username || '');
+                setPhone(user?.phone || '');
+                setEmail(user?.email || '');
+
+                // Update localStorage with the new data
+                localStorage.setItem('username', user?.username || '');
+                localStorage.setItem('phone', user?.phone || '');
+                localStorage.setItem('email', user?.email || '');
+
+                console.log('User data updated successfully!');
+            } else {
+                setError('Failed to update user data.');
+            }
+        } catch (error) {
+            console.error('Error updating user data:', error);
+            setError('An error occurred while updating user data.');
+        }
     };
 
     const fetchUserData = async (storedToken) => {
@@ -167,6 +266,8 @@ const AuthProvider = ({ children }) => {
             logout,
             error,
             setUsername,
+            setEmail,
+            setPhone,
             phone,
             email,
             tax_num,
@@ -174,6 +275,9 @@ const AuthProvider = ({ children }) => {
             is_organization,
             id,
             fetchUserData,
+            googleLoginSuccess,
+            googleLoginError,
+            updateUserData,
         }}>
 
             {children}

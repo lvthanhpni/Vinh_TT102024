@@ -5,8 +5,9 @@ import AuthContext from "../context/AuthContext";
 const Profile = () => {
     const [image, setImage] = useState("/static/Resources/Profile.jpg");
 
-    const { isLoggedIn, username, email, phone, logout } = useContext(AuthContext);
+    const { username, email, phone, logout, updateUserData, setEmail, setUsername, setPhone } = useContext(AuthContext);
     const navigate = useNavigate();
+
 
 
     const handleLogout = async () => {
@@ -26,6 +27,23 @@ const Profile = () => {
             setImage(URL.createObjectURL(file));
         }
     };
+
+    // Handle the update functionality
+    const handleUpdate = () => {
+        if (username && email && phone) {
+            // Example updateUserData function from context
+            updateUserData({ username, email, phone })
+                .then(() => {
+                    alert("Cập nhật thành công!");
+                })
+                .catch((error) => {
+                    console.error("Error updating data:", error);
+                });
+        } else {
+            alert("Vui lòng điền đầy đủ thông tin!");
+        }
+    };
+
 
     return (
         <section style={{ backgroundColor: "#eee" }}>
@@ -62,6 +80,7 @@ const Profile = () => {
                                                     id="uname"
                                                     className="form-control"
                                                     value={username}
+                                                    onChange={(e) => setUsername(e.target.value)}
                                                 />
                                             </div>
 
@@ -72,6 +91,7 @@ const Profile = () => {
                                                     id="email"
                                                     className="form-control"
                                                     value={email || ""}
+                                                    onChange={(e) => setEmail(e.target.value)}
                                                 />
                                             </div>
 
@@ -82,6 +102,8 @@ const Profile = () => {
                                                     id="phone"
                                                     className="form-control"
                                                     value={phone || ""}
+                                                    onChange={(e) => setPhone(e.target.value)}
+
                                                 />
                                             </div>
 
@@ -92,6 +114,7 @@ const Profile = () => {
                                                     id="field"
                                                     className="form-control"
                                                     value={""}
+                                                    readOnly
                                                 />
                                             </div>
                                         </div>
@@ -142,14 +165,14 @@ const Profile = () => {
                                             </div>
                                         </div>
 
-                                        {/* Logout Button */}
+                                        {/* Update Button */}
                                         <div className="d-flex justify-content-center order-3 mt-5">
                                             <button
                                                 type="button"
-                                                className="btn btn-danger"
-                                                onClick={handleLogout}
+                                                className="btn btn-primary px-4"
+                                                onClick={handleUpdate}
                                             >
-                                                Đăng xuất
+                                                Cập nhật
                                             </button>
                                         </div>
                                     </div>

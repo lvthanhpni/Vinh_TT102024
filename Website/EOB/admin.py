@@ -2,8 +2,9 @@ from django.contrib import admin
 from .models import Member, Individual, Organization, VLXD
 
 class MemberAdmin(admin.ModelAdmin):
-    list_display = ('username', 'is_individual', 'is_organization', 'is_vlxd', 'is_active', 'is_staff')
-    search_fields = ('username', 'is_individual', 'is_organization', 'is_vlxd')
+    list_display = ('username', 'rank', 'is_individual', 'is_organization', 'is_vlxd', 'is_active', 'is_staff')
+    search_fields = ('username', 'rank', 'is_individual', 'is_organization', 'is_vlxd')
+    list_filter = ('rank', 'is_individual', 'is_organization', 'is_vlxd', 'is_active')  
 
 class IndividualAdmin(admin.ModelAdmin):
     list_display = ('name', 'phone', 'email')  # Changed from 'full_name' to 'name'

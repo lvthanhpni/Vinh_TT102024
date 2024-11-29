@@ -35,21 +35,22 @@ class MemberSerializer(serializers.ModelSerializer):
     is_individual = serializers.BooleanField(read_only=True)
     is_organization = serializers.BooleanField(read_only=True)
     is_vlxd = serializers.BooleanField(read_only=True)
+    rank = serializers.IntegerField()  
+
+    name = serializers.CharField(source='individual.name')
+    phone = serializers.CharField(source='individual.phone')
+    email = serializers.EmailField(source='individual.email')
     
-    name = serializers.CharField(source='individual.name', read_only=True)
-    phone = serializers.CharField(source='individual.phone', read_only=True)
-    email = serializers.EmailField(source='individual.email', read_only=True)
-    
-    company_name = serializers.CharField(source='organization.name', read_only=True)
-    tax_num = serializers.CharField(source='organization.tax_num', read_only=True)
-    organization_phone = serializers.CharField(source='organization.phone', read_only=True)
-    organization_email = serializers.EmailField(source='organization.email', read_only=True)
+    company_name = serializers.CharField(source='organization.name')
+    tax_num = serializers.CharField(source='organization.tax_num')
+    organization_phone = serializers.CharField(source='organization.phone')
+    organization_email = serializers.EmailField(source='organization.email')
     
     job = serializers.CharField(source='vlxd.job', read_only=True)
 
     class Meta:
         model = Member
-        fields = ['id', 'is_individual', 'is_organization', 'is_vlxd', 'name', 'phone', 'email', 'company_name', 'tax_num', 'organization_phone', 'organization_email', 'job']
+        fields = ['id', 'is_individual', 'is_organization', 'is_vlxd', 'rank', 'name', 'phone', 'email', 'company_name', 'tax_num', 'organization_phone', 'organization_email', 'job']
     
     def to_representation(self, instance):
         """
@@ -61,12 +62,12 @@ class MemberSerializer(serializers.ModelSerializer):
         # Remove unnecessary fields based on the flags
         if instance.is_individual:
             # Keep only the individual-specific fields
-            return {key: representation[key] for key in ['id', 'name', 'phone', 'email', 'is_individual']}
+            return {key: representation[key] for key in ['id', 'name', 'phone', 'email', 'rank', 'is_individual']}
         elif instance.is_organization:
             # Keep only the organization-specific fields
-            return {key: representation[key] for key in ['id', 'company_name', 'tax_num', 'organization_phone', 'organization_email', 'is_organization']}
+            return {key: representation[key] for key in ['id', 'company_name', 'tax_num', 'organization_phone', 'organization_email', 'rank', 'is_organization']}
         elif instance.is_vlxd:
             # Keep only the VLXD-specific fields
-            return {key: representation[key] for key in ['id', 'name', 'phone', 'email', 'job', 'is_vlxd']}
+            return {key: representation[key] for key in ['id', 'name', 'phone', 'email', 'job', 'rank', 'is_vlxd']}
         
         return representation

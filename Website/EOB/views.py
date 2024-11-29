@@ -18,7 +18,7 @@ from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.authentication import TokenAuthentication
@@ -43,17 +43,15 @@ Member = get_user_model()
 class MemberViewSet(viewsets.ModelViewSet):
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
+    
 
     def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-        if self.action == 'retrieve':
-            # Allow any authenticated user to retrieve a specific user
-            permission_classes = [IsAuthenticated]
-        else:
-            # Only allow admins to list all users
+
+        if self.action == 'list':
+             # Only allow admins to list all users
             permission_classes = [IsAdminUser]
+        else:
+            permission_classes = [IsAuthenticated]
 
         return [permission() for permission in permission_classes]
 
@@ -67,9 +65,20 @@ class MemberViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk=None):
        
-        member = get_object_or_404(self.queryset, username=pk)  # Assuming `username` is the lookup field
+        member = get_object_or_404(self.queryset, username=pk)  
         serializer = self.serializer_class(member)
         return Response(serializer.data)
+    
+    def update(self, request, pk=None):
+        member = get_object_or_404(self.queryset, username=pk)
+        serializer = self.serializer_class(member, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            # Return detailed validation errors
+            raise ValidationError(serializer.errors)
 
 
 class IndividualViewSet(viewsets.ModelViewSet):

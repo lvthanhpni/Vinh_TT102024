@@ -1,10 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import AuthContext from '../context/AuthContext'; // Import AuthContext
+import AuthContext from '../context/AuthContext';
 import Cookies from 'js-cookie';
 import { GoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
-const getCsrfToken = () => Cookies.get('csrftoken');
+
+const clientId = "993922724873-eu8a8evuobn01rr82tmkb0ht0f30ir3h.apps.googleusercontent.com";
 
 function Login() {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -14,14 +16,14 @@ function Login() {
     const [error, setError] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const clientId = "993922724873-eu8a8evuobn01rr82tmkb0ht0f30ir3h.apps.googleusercontent.com";
+
     const navigate = useNavigate();
 
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
     };
 
-    const { login, error: contextError, fetchUserData } = useContext(AuthContext);
+    const { login, error: contextError, googleLoginSuccess, googleLoginError } = useContext(AuthContext);
 
 
     // Set initial form data from cookies if available
@@ -61,56 +63,11 @@ function Login() {
         }
     };
 
-    const googleLoginSuccess = async (credentialResponse) => {
-        const token = credentialResponse.credential;
-        const csrfToken = getCsrfToken();
-        console.log(csrfToken);
-
-        try {
-            const response = await fetch('/api/google-login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken,
-                },
-                body: JSON.stringify({ token }),
-
-
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                const accessToken = data.access; // Use `data`, not `response.data`
-                const refreshToken = data.refresh;
-
-                const { email, username } = data;
-
-                // Store the token, email, and username in localStorage
-                localStorage.setItem('access_token', accessToken);
-                localStorage.setItem('refresh_token', refreshToken);
-                localStorage.setItem('email', email);
-                localStorage.setItem('username', username);
-
-                console.log('Google login successful, user info stored.');
-                fetchUserData(accessToken);
-                navigate("/EOB/"); // Redirect or perform any other action
-
-            } else {
-                setError('Google login failed. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error during Google login:', error);
-            setError('An error occurred during Google login.');
-        }
+    const handleLoginSuccess = (response) => {
+        googleLoginSuccess(response); // Call your existing success handler
+        navigate('/EOB'); // Navigate to '/EOB' on success
     };
 
-
-    // Google login error handler
-    const googleLoginError = (error) => {
-        console.log('Login Failed:', error);
-        setError('Google login failed. Please try again.');
-    };
 
 
     return (
@@ -146,12 +103,14 @@ function Login() {
                                             }}
                                         >
                                             <div style={{ color: 'black' }}>
-                                                <GoogleLogin
-                                                    clientId={clientId}
-                                                    buttonText="Login with Google"
-                                                    onSuccess={googleLoginSuccess}
-                                                    onFailure={googleLoginError}
-                                                />
+                                                <GoogleOAuthProvider clientId={clientId}>
+                                                    <GoogleLogin
+                                                        clientId={clientId}
+                                                        buttonText="Login with Google"
+                                                        onSuccess={handleLoginSuccess}
+                                                        onFailure={googleLoginError}
+                                                    />
+                                                </GoogleOAuthProvider>
                                             </div>
                                         </div>
                                     </div>

@@ -8,6 +8,15 @@ class Member(AbstractUser):
     is_organization = models.BooleanField(default=False)
     is_vlxd = models.BooleanField(default=False)
 
+    rank = models.PositiveIntegerField(
+        default=1,
+        choices=[
+            (1, 'Star'),
+            (2, 'Pro'),
+            (3, 'VIP'),
+        ]
+    )
+
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='member_set',
@@ -29,6 +38,9 @@ class Member(AbstractUser):
         if types_selected > 1:
             raise ValidationError("A member can only be one of: Individual, Organization, or VLXD.")
 
+    
+
+# Individual model
 class Individual(models.Model):
     name = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True)
     phone = models.CharField("Phone", max_length=50)
@@ -37,6 +49,7 @@ class Individual(models.Model):
     def __str__(self):
         return f"Individual: {self.name}"
 
+# Organization model
 class Organization(models.Model):
     name = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True, verbose_name='Company Name')
     tax_num = models.CharField(max_length=10, verbose_name='Tax Number')
@@ -46,6 +59,7 @@ class Organization(models.Model):
     def __str__(self):
         return f"Organization: {self.name}"
 
+# VLXD model
 class VLXD(models.Model):
     name = models.OneToOneField(Member, on_delete=models.CASCADE, primary_key=True, verbose_name='Company Name')
     phone = models.CharField("Phone", max_length=50)
