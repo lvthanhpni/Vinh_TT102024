@@ -16,6 +16,8 @@ import Individual from './components/Individual';
 import Organization from './components/Organization';
 import VLXD from './components/VLXD';
 import AuthProvider from './context/AuthProvider';
+import CreatePost from './components/Create_post';
+import ViewPost from './components/View_post';
 
 
 
@@ -63,6 +65,9 @@ const App = () => {
             <Route path="/Individual" element={<Individual />} />
             <Route path="/Organization" element={<Organization />} />
             <Route path="/VLXD" element={<VLXD />} />
+
+            <Route path="/EOB/Post" element={< ViewPost />} />
+            <Route path="/EOB/Post/Create" element={< CreatePost />} />
 
             {/* New Route to Display Fetched Data */}
             <Route

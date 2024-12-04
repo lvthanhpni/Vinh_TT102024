@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
+from django.conf import settings  # To reference the custom Member model
 
 # Member model
 class Member(AbstractUser):
@@ -68,3 +69,39 @@ class VLXD(models.Model):
 
     def __str__(self):
         return f"VLXD Company: {self.name}"
+
+class Post(models.Model):
+    picture = models.ImageField(
+        upload_to='post_pictures/',  # Subdirectory within MEDIA_ROOT
+        blank=True, 
+        null=True
+    )  # Member uploads a picture
+    name = models.CharField(max_length=255, verbose_name="Posted by")  # Store the username or full name of the member who made the post
+    title = models.CharField(max_length=100, verbose_name="Post Title")  # Main title of the post
+    caption = models.TextField(verbose_name="Post Caption")  # Long detail about the post
+    likes = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="liked_posts",
+        blank=True
+    )  # Tracks which Members liked this post
+
+    created_at = models.DateTimeField(auto_now_add=True)  # Automatically adds timestamp for creation
+    updated_at = models.DateTimeField(auto_now=True)  # Automatically updates when post is modified
+
+    def is_liked_by(self, member):
+        """
+        Check if a specific member has liked this post.
+        """
+        return self.likes.filter(pk=member.pk).exists()
+
+    def like_count(self):
+        """
+        Returns the total number of likes.
+        """
+        return self.likes.count()
+
+    def __str__(self):
+        return f"{self.title} by {self.name}"  # Display meaningful info in admin
+
+
+

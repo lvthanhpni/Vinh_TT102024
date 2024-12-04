@@ -25,10 +25,10 @@ from rest_framework.authentication import TokenAuthentication
 from datetime import timedelta
 
 # Model imports
-from EOB.models import Member, Individual, Organization, VLXD
+from EOB.models import Member, Individual, Organization, VLXD, Post
 
 # Serializer imports
-from .serializers import MemberSerializer, IndividualSerializer, OrganizationSerializer, VLXDSerializer
+from .serializers import MemberSerializer, IndividualSerializer, OrganizationSerializer, VLXDSerializer, PostSerializer
 
 #Other import       
 import json
@@ -94,6 +94,37 @@ class OrganizationViewSet(viewsets.ModelViewSet):
 class VLXDViewSet(viewsets.ModelViewSet):
     queryset = VLXD.objects.all()
     serializer_class = VLXDSerializer
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_post(request):
+    data = request.data.copy()  # Copy request data
+    
+    # Assign the current authenticated user (Member) to the post
+    member = request.user  # Assuming request.user is the Member instance
+
+    # Ensure that the post serializer receives the member's information
+    data['name'] = member.username  # Assuming you want to store the username, or pass `member` itself if needed.
+
+    # Now serialize and validate the data
+    serializer = PostSerializer(data=data, context={'request': request})
+    if serializer.is_valid():
+        # Save the post with the associated member
+        serializer.save(name=member)  # Ensure the post gets linked to the member
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_posts(request):
+    """
+    Retrieve all posts.
+    """
+    try:
+        posts = Post.objects.all()  # Fetch all posts from the database
+        serializer = PostSerializer(posts, many=True)  # Serialize the posts
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Post.DoesNotExist:
+        return Response({"detail": "No posts found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['POST'])

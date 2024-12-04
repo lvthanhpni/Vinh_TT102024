@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Folder from './Folder';
 import OwlCarousel from 'react-owl-carousel';
+import ViewPost from './View_post';
 
 const PageComponent = () => {
     return (
@@ -38,6 +39,7 @@ const PageComponent = () => {
                 <div className="col-md-10 col-lg-6 col-xl-7">
                     <h2>MODEL MỚI</h2>
                     <p>Các model gần đây nhất <i className="bi bi-chevron-right"></i> </p>
+                    <ViewPost />
                     <div className="carousel-wrapper" style={{ backgroundColor: '#f0f0f0' }}>
                         <div
                             className="carousel-container"
@@ -71,6 +73,7 @@ const PageComponent = () => {
                                 <img src="/static/Resources/Austra.png" alt="Austraalu" width="90" height="40" />
                                 <img src="/static/Resources/PNP.png" alt="Phương Nam Panel" width="90" height="40" />
                             </OwlCarousel>
+
                         </div>
                     </div>
                 </div>

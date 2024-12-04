@@ -265,7 +265,7 @@ const HomePage = () => {
                     <div className="col-sm-3 p-2">
                         <img src="/static/Resources/Member.png" alt="Member" width="100" height="60" />
                         <p>Thành viên</p>
-                        <h1 style={{ fontSize: '60px' }}><b>1390</b></h1>
+                        <h1 style={{ fontSize: '60px' }}><b>1446</b></h1>
                     </div>
 
                     <div className="col-sm-3 p-2">

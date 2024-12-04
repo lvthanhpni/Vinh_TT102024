@@ -25,7 +25,7 @@ const Header = () => {
                         <Link to="/EOB" style={{ color: 'white' }}>Công trình tiêu biểu</Link>
                     </div>
                     <div className="res_remove col-sm-1 p-1">
-                        <Link to="/EOB" style={{ color: 'white' }}>Tin Tức</Link>
+                        <Link to="/EOB/Folder" style={{ color: 'white' }}>Tin Tức</Link>
                     </div>
                 </div>
 
@@ -85,8 +85,8 @@ const Header = () => {
                     </button>
                     <ul className="dropdown-menu">
                         <li><Link className="dropdown-item" to="/EOB/Library">Tất cả thư viện</Link></li>
-                        <li><Link className="dropdown-item" to="/EOB/Folder">Thư viện EOB</Link></li>
-                        <li><Link className="dropdown-item" to="#">Thư viện VLXD</Link></li>
+                        <li><Link className="dropdown-item" to="/EOB/Post">Thư viện EOB</Link></li>
+                        <li><Link className="dropdown-item" to="/EOB/Post/Create">Thư viện VLXD</Link></li>
                     </ul>
                 </div>
 

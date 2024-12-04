@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/signup_mem', views.Signup_mem, name='signup_mem'),
 
     path('api/login', views.Login, name='login'),
+     path('api/google-login', views.google_login, name='google-login'),
     path('api/logout', views.Logout, name='logout'),  
     path('api/user', views.UserView.as_view(), name='user'),
 
@@ -34,5 +35,7 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),  # Verify token
     path('api/token/list', TokenListView.as_view(), name='token_list'),
 
-    path('api/google-login', views.google_login, name='google-login'),
+    path('api/posts/create/', views.create_post, name='create_post'),
+    path('api/posts/', views.get_posts, name='get_posts'),
+   
 ]
