@@ -1,41 +1,66 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from .models import Member, Individual, Organization, VLXD, Post
 
-class MemberAdmin(admin.ModelAdmin):
-    list_display = ('username', 'rank', 'is_individual', 'is_organization', 'is_vlxd', 'is_active', 'is_staff')
-    search_fields = ('username', 'rank', 'is_individual', 'is_organization', 'is_vlxd')
-    list_filter = ('rank', 'is_individual', 'is_organization', 'is_vlxd', 'is_active')  
 
+class MemberAdmin(UserAdmin):
+    """
+    Custom admin for the Member model, including fields for member type and rank.
+    """
+    fieldsets = UserAdmin.fieldsets + (
+        ('Member Details', {
+            'fields': ('is_individual', 'is_organization', 'is_vlxd', 'rank')
+        }),
+    )
+    list_display = ('username', 'email', 'is_individual', 'is_organization', 'is_vlxd', 'rank')
+    list_filter = ('is_individual', 'is_organization', 'is_vlxd', 'rank')
+
+
+@admin.register(Individual)
 class IndividualAdmin(admin.ModelAdmin):
+    """
+    Admin for the Individual model.
+    """
     list_display = ('name', 'phone', 'email')
-    search_fields = ('name', 'phone', 'email')
+    search_fields = ('name__username', 'phone', 'email')  # Supports searching by the related Member username
 
+
+@admin.register(Organization)
 class OrganizationAdmin(admin.ModelAdmin):
+    """
+    Admin for the Organization model.
+    """
     list_display = ('name', 'tax_num', 'phone', 'email')
-    search_fields = ('name', 'tax_num', 'phone', 'email')
+    search_fields = ('name__username', 'tax_num', 'phone', 'email')
 
+
+@admin.register(VLXD)
 class VLXDAdmin(admin.ModelAdmin):
+    """
+    Admin for the VLXD model.
+    """
     list_display = ('name', 'phone', 'email', 'job')
-    search_fields = ('name', 'phone', 'email', 'job')
+    search_fields = ('name__username', 'phone', 'email', 'job')
 
-# New PostAdmin for the Post model
+
+@admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'name', 'like_count', 'created_at', 'updated_at')  # Show post title, author name (as CharField), likes, and timestamps
-    search_fields = ('title', 'name', 'caption')  # Allow searching by title, name (author's name), and caption
-    list_filter = ('created_at', 'updated_at')  # Add filtering options for creation and modification timestamps
-    readonly_fields = ('like_count',)  # Make the like_count read-only in admin
+    """
+    Admin for the Post model.
+    """
+    list_display = ('title', 'name', 'created_at', 'updated_at', 'like_count_display')
+    list_filter = ('created_at', 'updated_at')
+    search_fields = ('title', 'name')
+    readonly_fields = ('like_count_display',)
 
-    def like_count(self, obj):
+    def like_count_display(self, obj):
         """
-        Display the number of likes for the post.
+        Display the like count in the admin.
         """
         return obj.like_count()
 
-    like_count.short_description = "Number of Likes"  # Customize column name in admin
+    like_count_display.short_description = 'Like Count'
 
-# Register all models
+
+# Register the Member model with the custom MemberAdmin
 admin.site.register(Member, MemberAdmin)
-admin.site.register(Individual, IndividualAdmin)
-admin.site.register(Organization, OrganizationAdmin)
-admin.site.register(VLXD, VLXDAdmin)
-admin.site.register(Post, PostAdmin)

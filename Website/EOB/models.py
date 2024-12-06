@@ -72,27 +72,28 @@ class VLXD(models.Model):
 
 class Post(models.Model):
     picture = models.ImageField(
-        upload_to='post_pictures/',  # Subdirectory within MEDIA_ROOT
-        blank=True, 
+        upload_to='post_pictures/',
+        blank=True,
         null=True
-    )  # Member uploads a picture
-    name = models.CharField(max_length=255, verbose_name="Posted by")  # Store the username or full name of the member who made the post
-    title = models.CharField(max_length=100, verbose_name="Post Title")  # Main title of the post
-    caption = models.TextField(verbose_name="Post Caption")  # Long detail about the post
+    )
+    name = models.CharField(max_length=255, verbose_name="Posted by")
+    title = models.CharField(max_length=100, verbose_name="Post Title")
+    caption = models.TextField(verbose_name="Post Caption")
     likes = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name="liked_posts",
         blank=True
-    )  # Tracks which Members liked this post
-
-    created_at = models.DateTimeField(auto_now_add=True)  # Automatically adds timestamp for creation
-    updated_at = models.DateTimeField(auto_now=True)  # Automatically updates when post is modified
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def is_liked_by(self, member):
         """
         Check if a specific member has liked this post.
         """
-        return self.likes.filter(pk=member.pk).exists()
+        if member and member.is_authenticated:
+            return self.likes.filter(pk=member.pk).exists()
+        return False
 
     def like_count(self):
         """
@@ -101,7 +102,8 @@ class Post(models.Model):
         return self.likes.count()
 
     def __str__(self):
-        return f"{self.title} by {self.name}"  # Display meaningful info in admin
+        return f"{self.title} by {self.name}"
+
 
 
 

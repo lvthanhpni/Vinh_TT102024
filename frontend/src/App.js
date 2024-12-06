@@ -18,6 +18,8 @@ import VLXD from './components/VLXD';
 import AuthProvider from './context/AuthProvider';
 import CreatePost from './components/Create_post';
 import ViewPost from './components/View_post';
+import DetailPost from './components/Detail_post';
+import DetailLibrary from './components/Detail_library';
 
 
 
@@ -53,6 +55,7 @@ const App = () => {
             <Route path="/EOB/Carousel" element={<Carousel />} />
             <Route path="/EOB/Folder" element={<Folder />} />
             <Route path="/EOB/Library" element={<Library />} />
+            <Route path="/EOB/Library/:id" element={<DetailLibrary />} />
 
             {/* Login routes */}
             <Route path="/EOB/Member" element={<SignupMem />} />
@@ -67,6 +70,7 @@ const App = () => {
             <Route path="/VLXD" element={<VLXD />} />
 
             <Route path="/EOB/Post" element={< ViewPost />} />
+            <Route path="/EOB/Post/:id" element={<DetailPost />} />
             <Route path="/EOB/Post/Create" element={< CreatePost />} />
 
             {/* New Route to Display Fetched Data */}

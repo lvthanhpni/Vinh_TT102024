@@ -104,14 +104,20 @@ def create_post(request):
     member = request.user  # Assuming request.user is the Member instance
 
     # Ensure that the post serializer receives the member's information
-    data['name'] = member.username  # Assuming you want to store the username, or pass `member` itself if needed.
+    data['name'] = member.username  # Store the username, or you could pass 'member' if necessary
 
     # Now serialize and validate the data
     serializer = PostSerializer(data=data, context={'request': request})
     if serializer.is_valid():
         # Save the post with the associated member
-        serializer.save(name=member)  # Ensure the post gets linked to the member
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        post = serializer.save(name=member)  # Ensure the post gets linked to the member
+
+        # Optionally, if you want to include the like_count and is_liked information in the response:
+        post_data = serializer.data
+        post_data['like_count'] = post.like_count()
+        post_data['is_liked'] = post.is_liked_by(member)
+
+        return Response(post_data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
@@ -125,7 +131,53 @@ def get_posts(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Post.DoesNotExist:
         return Response({"detail": "No posts found."}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def like_post(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+        member = request.user
+        
+        # Toggle like
+        if member in post.likes.all():
+            post.likes.remove(member)  # Unlike
+            is_liked = False
+        else:
+            post.likes.add(member)  # Like
+            is_liked = True
+        
+        post.save()
+        return Response({'like_count': post.like_count(), 'is_liked': is_liked}, status=status.HTTP_200_OK)
+    
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
 
+@api_view(['GET'])
+def detail_posts(request, post_id):
+    """
+    Retrieve the details of a specific post.
+    """
+    try:
+        # Fetch the post by ID
+        post = get_object_or_404(Post, id=post_id)
+
+        # Serialize the post data
+        serializer = PostSerializer(post, context={'request': request})
+
+        # Include additional fields (like count, is_liked) if needed
+        post_data = serializer.data
+        post_data['like_count'] = post.like_count()  # Total likes for the post
+
+        # Check if the current user has liked the post (if authenticated)
+        if request.user.is_authenticated:
+            post_data['is_liked'] = post.is_liked_by(request.user)  # Check if the user liked the post
+        else:
+            post_data['is_liked'] = False
+
+        return Response(post_data, status=status.HTTP_200_OK)
+    except Post.DoesNotExist:
+        return Response({"detail": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
 @csrf_exempt  # If needed, you can use csrf_exempt, but ensure CSRF protection is handled securely

@@ -1,12 +1,11 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Folder from './Folder';
 import OwlCarousel from 'react-owl-carousel';
 import ViewPost from './View_post';
+import PostDetail from './Detail_post';
 
-const PageComponent = () => {
-    const navigate = useNavigate();
-
+const DetailLibrary = () => {
     return (
         <div className="row d-flex">
             <div className="row my-5">
@@ -36,23 +35,12 @@ const PageComponent = () => {
                     <div style={{ border: '1px solid #333', padding: '10px', borderRadius: '5px', width: '95%', margin: '0 auto' }}>
                         <Folder />
                     </div>
-
-                    {/* New Button to Redirect */}
-                    <div className="d-flex justify-content-center my-4">
-                        <button
-                            className="btn btn-primary"
-                            style={{ borderRadius: '5px', width: '95%' }}
-                            onClick={() => navigate('/EOB/Post/Create')}
-                        >
-                            Tạo bài viết mới
-                        </button>
-                    </div>
                 </div>
 
                 <div className="col-md-10 col-lg-6 col-xl-7">
                     <h2>MODEL MỚI</h2>
                     <p>Các model gần đây nhất <i className="bi bi-chevron-right"></i> </p>
-                    <ViewPost />
+                    <PostDetail />
                     <div className="carousel-wrapper" style={{ backgroundColor: '#f0f0f0' }}>
                         <div
                             className="carousel-container"
@@ -86,6 +74,7 @@ const PageComponent = () => {
                                 <img src="/static/Resources/Austra.png" alt="Austraalu" width="90" height="40" />
                                 <img src="/static/Resources/PNP.png" alt="Phương Nam Panel" width="90" height="40" />
                             </OwlCarousel>
+
                         </div>
                     </div>
                 </div>
@@ -94,4 +83,4 @@ const PageComponent = () => {
     );
 };
 
-export default PageComponent;
+export default DetailLibrary;

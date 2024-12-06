@@ -37,5 +37,7 @@ urlpatterns = [
 
     path('api/posts/create/', views.create_post, name='create_post'),
     path('api/posts/', views.get_posts, name='get_posts'),
+    path('api/posts/<int:post_id>', views.detail_posts, name='detail_posts'),
+    path('api/posts/<int:post_id>/like/', views.like_post, name='like_post'),  # URL for liking a post
    
 ]

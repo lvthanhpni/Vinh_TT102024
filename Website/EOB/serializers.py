@@ -73,13 +73,30 @@ class MemberSerializer(serializers.ModelSerializer):
         return representation
 
 class PostSerializer(serializers.ModelSerializer):
-    # We assume 'name' is now a CharField in the Post model that stores the username or member's name
-    name = serializers.CharField(read_only=True)  # The member's name who created the post (this is a CharField now)
+    name = serializers.CharField(read_only=True)
+    like_count = serializers.SerializerMethodField()  # Add like count
+    is_liked = serializers.SerializerMethodField()  # Add is_liked field
 
     class Meta:
         model = Post
-        fields = ['id', 'picture', 'name', 'title', 'caption', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'name']  # 'name' is read-only since it is the member's name
+        fields = ['id', 'picture', 'name', 'title', 'caption', 'created_at', 'updated_at', 'like_count', 'is_liked']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'name', 'like_count', 'is_liked']
+
+    def get_like_count(self, obj):
+        """
+        Get the total number of likes for the post.
+        """
+        return obj.like_count()
+
+    def get_is_liked(self, obj):
+        """
+        Check if the current authenticated user has liked this post.
+        """
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.is_liked_by(request.user)  # Checks if the current user liked the post
+        return False
+
 
     def validate(self, data):
         """
@@ -95,16 +112,13 @@ class PostSerializer(serializers.ModelSerializer):
         """
         Override the create method to set the 'name' field as the username of the member creating the post.
         """
-        # Assuming the user is authenticated and available via the request context
         user = self.context['request'].user
-        validated_data['name'] = user.username  # Store the username in the 'name' field
-
+        validated_data['name'] = user.username
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
         """
-        Override the update method if necessary. Here we're just ensuring 'name' remains unchanged as it's not editable.
+        Prevent updating the 'name' field.
         """
-        validated_data.pop('name', None)  # Prevent updating the 'name' field
-
+        validated_data.pop('name', None)
         return super().update(instance, validated_data)
