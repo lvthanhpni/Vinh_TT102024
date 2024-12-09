@@ -63,9 +63,6 @@ const App = () => {
             <Route path="/EOB/Login" element={<Login />} />
             <Route path="/EOB/Profile" element={<Profile />} />
             <Route path="/EOB/Forget" element={<ForgetPass />} />
-
-
-            <Route path="/Individual" element={<Individual />} />
             <Route path="/Organization" element={<Organization />} />
             <Route path="/VLXD" element={<VLXD />} />
 
