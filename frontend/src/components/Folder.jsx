@@ -9,9 +9,255 @@ const FolderPage = () => {
             subfolders: [
                 {
                     name: "Việt Nam",
-                    subfolders: [],
+                    subfolders: [
+                        {
+                            name: "Revit",
+                            subfolders: [
+                                {
+                                    name: "Vật liệu xây dựng",
+                                    subfolders: [
+                                        {
+                                            name: "Mặt dựng và trần nhôm Austra Alu",
+                                            subfolders: [
+
+                                            ]
+                                        },
+                                        {
+                                            name: "Sơn trang trí Dulux",
+                                            subfolders: [
+
+                                            ]
+                                        },
+                                        {
+                                            name: "Tấm cách âm cách nhiệt Phương Nam panel",
+                                            subfolders: [
+
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: "Kiến trúc",
+                                    subfolders: [
+
+                                    ]
+                                },
+                                {
+                                    name: "Kết cấu",
+                                    subfolders: [
+
+                                    ]
+                                },
+                                {
+                                    name: "MEP",
+                                    subfolders: [
+
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            name: "Auto CAD",
+                            subfolders: [
+                                {
+                                    name: "Vật liệu xây dựng",
+                                    subfolders: [
+                                        {
+                                            name: "Mặt dựng và trần nhôm Austra Alu",
+                                            subfolders: [
+
+                                            ]
+                                        },
+                                        {
+                                            name: "Sơn trang trí Dulux",
+                                            subfolders: [
+
+                                            ]
+                                        },
+                                        {
+                                            name: "Tấm cách âm cách nhiệt Phương Nam panel",
+                                            subfolders: [
+
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: "Kiến trúc",
+                                    subfolders: [
+
+                                    ]
+                                },
+                                {
+                                    name: "Kết cấu",
+                                    subfolders: [
+
+                                    ]
+                                },
+                                {
+                                    name: "MEP",
+                                    subfolders: [
+
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            name: "Sketch UP",
+                            subfolders: [
+                                {
+                                    name: "Vật liệu xây dựng",
+                                    subfolders: [
+                                        {
+                                            name: "Mặt dựng và trần nhôm Austra Alu",
+                                            subfolders: [
+
+                                            ]
+                                        },
+                                        {
+                                            name: "Sơn trang trí Dulux",
+                                            subfolders: [
+
+                                            ]
+                                        },
+                                        {
+                                            name: "Tấm cách âm cách nhiệt Phương Nam panel",
+                                            subfolders: [
+
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: "Kiến trúc",
+                                    subfolders: [
+
+                                    ]
+                                },
+                                {
+                                    name: "Kết cấu",
+                                    subfolders: [
+
+                                    ]
+                                },
+                                {
+                                    name: "MEP",
+                                    subfolders: [
+
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            name: "Tekla",
+                            subfolders: [
+                                {
+                                    name: "Vật liệu xây dựng",
+                                    subfolders: [
+                                        {
+                                            name: "Mặt dựng và trần nhôm Austra Alu",
+                                            subfolders: [
+
+                                            ]
+                                        },
+                                        {
+                                            name: "Sơn trang trí Dulux",
+                                            subfolders: [
+
+                                            ]
+                                        },
+                                        {
+                                            name: "Tấm cách âm cách nhiệt Phương Nam panel",
+                                            subfolders: [
+
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: "Kiến trúc",
+                                    subfolders: [
+
+                                    ]
+                                },
+                                {
+                                    name: "Kết cấu",
+                                    subfolders: [
+
+                                    ]
+                                },
+                                {
+                                    name: "MEP",
+                                    subfolders: [
+
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            name: "Archi CAD",
+                            subfolders: [
+                                {
+                                    name: "Vật liệu xây dựng",
+                                    subfolders: [
+                                        {
+                                            name: "Mặt dựng và trần nhôm Austra Alu",
+                                            subfolders: [
+
+                                            ]
+                                        },
+                                        {
+                                            name: "Sơn trang trí Dulux",
+                                            subfolders: [
+
+                                            ]
+                                        },
+                                        {
+                                            name: "Tấm cách âm cách nhiệt Phương Nam panel",
+                                            subfolders: [
+
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: "Kiến trúc",
+                                    subfolders: [
+
+                                    ]
+                                },
+                                {
+                                    name: "Kết cấu",
+                                    subfolders: [
+
+                                    ]
+                                },
+                                {
+                                    name: "MEP",
+                                    subfolders: [
+
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 },
-            ],
+                {
+                    name: "BIM-VietNam ",
+                    subfolders: [{
+                        name: "Vật liệu xây dựng",
+                        subfolders: [
+                            {
+                                name: "ISO-19650",
+                                subfolders: [
+                                    { name: "ISO-19650-AP01" },
+
+                                ]
+                            },
+                        ]
+                    }]
+                }
+            ]
         },
     ]);
 
@@ -44,15 +290,9 @@ const FolderPage = () => {
         setFolders((prevFolders) => [...addFileRecursively(prevFolders, path)]);
     };
 
-    // Example Usage of Add File
-    const handleAddFile = () => {
-        addFileToFolder(["eob", "Việt Nam"], "example-file.txt");
-    };
 
     return (
         <div className="folder-page">
-            <h1>Folder Tree</h1>
-            <button onClick={handleAddFile}>Add File</button>
             {folders.map((folder, index) => (
                 <Recursive_folder key={index} folder={folder} />
             ))}

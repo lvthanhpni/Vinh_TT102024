@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-
 function ViewPost() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -10,7 +9,7 @@ function ViewPost() {
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 6;
 
-    const navigate = useNavigate(); // Initialize the navigation hook
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -46,10 +45,10 @@ function ViewPost() {
     };
 
     const handlePostClick = (postId) => {
-        navigate(`/EOB/Library/${postId}`); // Redirect to the post detail page
+        navigate(`/EOB/Library/${postId}`);
     };
 
-    const handleLikeToggle = async (postId, currentLikeStatus) => {
+    const handleLikeToggle = async (postId) => {
         try {
             const accessToken = localStorage.getItem('access_token');
             const response = await axios.post(
@@ -66,24 +65,22 @@ function ViewPost() {
                 post.id === postId
                     ? {
                         ...post,
-                        like_count: currentLikeStatus ? post.like_count - 1 : post.like_count + 1,
-                        is_liked: !currentLikeStatus,
+                        like_count: response.data.is_liked
+                            ? post.like_count + 1
+                            : post.like_count - 1,
+                        is_liked: response.data.is_liked,
                     }
                     : post
             );
             setPosts(updatedPosts);
         } catch (err) {
-            console.error('Error liking/unliking post:', err);
+            console.error('Error toggling like status:', err);
             setError('Failed to update like status.');
         }
     };
 
     if (loading) {
         return <div>Loading Posts...</div>;
-    }
-
-    if (error) {
-        return <div>{error}</div>;
     }
 
     if (error) {
@@ -112,19 +109,19 @@ function ViewPost() {
                                 <div
                                     key={post.id}
                                     className="col-lg-4 col-md-6 mb-4"
-                                    onClick={() => handlePostClick(post.id)} // Attach the click handler here
-                                    style={{ cursor: 'pointer' }} // Add pointer cursor for better UX
+                                    style={{ cursor: 'pointer' }}
                                 >
                                     <div
                                         className="card d-flex flex-column"
                                         style={{ borderRadius: '15px', minHeight: '400px', maxHeight: '400px' }}
                                     >
                                         <div className="card-body d-flex flex-column">
-                                            <h5 className="card-title text-center">{post.title}</h5>
-                                            <p className="card-text">{post.caption}</p>
+                                            <h5 className="card-title text-center" onClick={() => handlePostClick(post.id)}>{post.title}</h5>
+                                            <p className="card-text" onClick={() => handlePostClick(post.id)}>{post.caption}</p>
 
                                             {post.picture && (
                                                 <img
+                                                    onClick={() => handlePostClick(post.id)}
                                                     src={post.picture}
                                                     alt={post.title}
                                                     className="img-fluid mb-3"
@@ -134,14 +131,13 @@ function ViewPost() {
                                                 />
                                             )}
 
-                                            {/* Spacer to push content above */}
                                             <div className="flex-grow-1"></div>
 
                                             <p className="text-muted text-center mt-auto">
                                                 {post.like_count}{' '}
                                                 <i
                                                     className={`bi bi-heart${post.is_liked ? '-fill' : ''} text-danger`}
-                                                    onClick={() => handleLikeToggle(post.id, post.is_liked)}
+                                                    onClick={() => handleLikeToggle(post.id)}
                                                     style={{ cursor: 'pointer' }}
                                                 ></i>
                                             </p>
@@ -153,7 +149,6 @@ function ViewPost() {
                     ) : (
                         <p className="text-center">No posts available</p>
                     )}
-                    {/* Pagination Controls */}
                     <div className="d-flex justify-content-center mt-4">
                         <button
                             className="btn btn-light me-2"

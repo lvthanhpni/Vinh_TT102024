@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
 import Base from './components/Base';
 import Homepage from './components/Homepage';
 import Carousel from './components/Carousel';

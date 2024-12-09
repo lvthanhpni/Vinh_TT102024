@@ -123,14 +123,19 @@ def create_post(request):
 @api_view(['GET'])
 def get_posts(request):
     """
-    Retrieve all posts.
+    Retrieve all posts and include like status for the current user.
     """
     try:
-        posts = Post.objects.all()  # Fetch all posts from the database
-        serializer = PostSerializer(posts, many=True)  # Serialize the posts
+        # Fetch all posts
+        posts = Post.objects.all()
+
+        # Serialize the posts, passing the current request context for `is_liked` evaluation
+        serializer = PostSerializer(posts, many=True, context={'request': request})
+
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Post.DoesNotExist:
         return Response({"detail": "No posts found."}, status=status.HTTP_404_NOT_FOUND)
+
     
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

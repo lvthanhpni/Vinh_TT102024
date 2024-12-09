@@ -75,12 +75,11 @@ class MemberSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     name = serializers.CharField(read_only=True)
     like_count = serializers.SerializerMethodField()  # Add like count
-    is_liked = serializers.SerializerMethodField()  # Add is_liked field
 
     class Meta:
         model = Post
-        fields = ['id', 'picture', 'name', 'title', 'caption', 'created_at', 'updated_at', 'like_count', 'is_liked']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'name', 'like_count', 'is_liked']
+        fields = ['id', 'picture', 'name', 'title', 'caption', 'created_at', 'updated_at', 'like_count']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'name', 'like_count']
 
     def get_like_count(self, obj):
         """
