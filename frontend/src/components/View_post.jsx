@@ -11,11 +11,52 @@ function ViewPost() {
 
     const navigate = useNavigate();
 
+
+    const updatePosts = (postId, isLiked, Refresh) => {
+        const updatedPosts = posts.map((post) =>
+            post.id === postId
+                ? {
+                    ...post,
+                    like_count: isLiked
+                        ? post.like_count + 1
+                        : post.like_count - 1,
+                    is_liked: isLiked,
+                }
+                : post
+        );
+
+        if (!Refresh)
+            setPosts(updatedPosts);
+    };
+
+    const handleLikeToggle = async (postId, Refresh) => {
+        try {
+            const accessToken = localStorage.getItem('access_token');
+            const response = await axios.post(
+                `/api/posts/${postId}/like/`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+
+            // Use the updatePosts function here
+            updatePosts(postId, response.data.is_liked, Refresh);
+        } catch (err) {
+            console.error('Error toggling like status:', err);
+            setError('Failed to update like status.');
+        }
+    };
+
+
     useEffect(() => {
         const fetchPosts = async () => {
             try {
                 const response = await axios.get('/api/posts/');
                 console.log('Fetched Posts:', response.data);
+
                 setPosts(response.data);
                 setLoading(false);
             } catch (err) {
@@ -24,7 +65,6 @@ function ViewPost() {
                 setLoading(false);
             }
         };
-
         fetchPosts();
     }, []);
 
@@ -46,37 +86,6 @@ function ViewPost() {
 
     const handlePostClick = (postId) => {
         navigate(`/EOB/Library/${postId}`);
-    };
-
-    const handleLikeToggle = async (postId) => {
-        try {
-            const accessToken = localStorage.getItem('access_token');
-            const response = await axios.post(
-                `/api/posts/${postId}/like/`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                }
-            );
-
-            const updatedPosts = posts.map((post) =>
-                post.id === postId
-                    ? {
-                        ...post,
-                        like_count: response.data.is_liked
-                            ? post.like_count + 1
-                            : post.like_count - 1,
-                        is_liked: response.data.is_liked,
-                    }
-                    : post
-            );
-            setPosts(updatedPosts);
-        } catch (err) {
-            console.error('Error toggling like status:', err);
-            setError('Failed to update like status.');
-        }
     };
 
     if (loading) {
@@ -137,7 +146,7 @@ function ViewPost() {
                                                 {post.like_count}{' '}
                                                 <i
                                                     className={`bi bi-heart${post.is_liked ? '-fill' : ''} text-danger`}
-                                                    onClick={() => handleLikeToggle(post.id)}
+                                                    onClick={() => handleLikeToggle(post.id, false)}
                                                     style={{ cursor: 'pointer' }}
                                                 ></i>
                                             </p>
