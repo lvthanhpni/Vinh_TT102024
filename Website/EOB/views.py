@@ -137,6 +137,24 @@ def get_posts(request):
         return Response({"detail": "No posts found."}, status=status.HTTP_404_NOT_FOUND)
 
     
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def check_like(request, post_id):
+    """
+    Check if the current authenticated user has liked the specified post.
+    """
+    try:
+        # Retrieve the post by its ID
+        post = get_object_or_404(Post, id=post_id)
+
+        # Check if the user has liked the post
+        is_liked = post.is_liked_by(request.user)
+
+        # Return the response with the result
+        return Response({'is_liked': is_liked}, status=status.HTTP_200_OK)
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+    
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def like_post(request, post_id):

@@ -55,9 +55,28 @@ function ViewPost() {
         const fetchPosts = async () => {
             try {
                 const response = await axios.get('/api/posts/');
-                console.log('Fetched Posts:', response.data);
+                const fetchedPosts = response.data;
 
-                setPosts(response.data);
+                // Fetch the is_liked state for each post
+                const updatedPosts = await Promise.all(
+                    fetchedPosts.map(async (post) => {
+                        try {
+                            const accessToken = localStorage.getItem('access_token');
+                            const likeResponse = await axios.get(`/api/posts/${post.id}/check-like/`, {
+                                headers: {
+                                    Authorization: `Bearer ${accessToken}`,
+                                },
+                            });
+
+                            return { ...post, is_liked: likeResponse.data.is_liked };
+                        } catch (err) {
+                            console.error(`Error checking like status for post ${post.id}:`, err);
+                            return post; // Return post without modifying is_liked if API call fails
+                        }
+                    })
+                );
+
+                setPosts(updatedPosts);
                 setLoading(false);
             } catch (err) {
                 console.error('Error fetching posts:', err);

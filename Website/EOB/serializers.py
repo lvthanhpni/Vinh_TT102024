@@ -75,25 +75,20 @@ class MemberSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     name = serializers.CharField(read_only=True)
     like_count = serializers.SerializerMethodField()  # Add like count
+    is_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ['id', 'picture', 'name', 'title', 'caption', 'created_at', 'updated_at', 'like_count']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'name', 'like_count']
+        fields = ['id', 'picture', 'name', 'title', 'caption', 'created_at', 'updated_at', 'like_count', 'is_liked']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'name', 'like_count', 'is_liked']
 
     def get_like_count(self, obj):
-        """
-        Get the total number of likes for the post.
-        """
         return obj.like_count()
 
     def get_is_liked(self, obj):
-        """
-        Check if the current authenticated user has liked this post.
-        """
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            return obj.is_liked_by(request.user)  # Checks if the current user liked the post
+            return obj.is_liked_by(request.user)  # Check if the user liked the post
         return False
 
 
@@ -121,3 +116,4 @@ class PostSerializer(serializers.ModelSerializer):
         """
         validated_data.pop('name', None)
         return super().update(instance, validated_data)
+    
