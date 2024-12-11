@@ -22,10 +22,10 @@ from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.authentication import TokenAuthentication
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 # Model imports
-from EOB.models import Member, Individual, Organization, VLXD, Post
+from EOB.models import Member, Individual, Organization, VLXD, Post, Folder   
 
 # Serializer imports
 from .serializers import MemberSerializer, IndividualSerializer, OrganizationSerializer, VLXDSerializer, PostSerializer
@@ -99,25 +99,43 @@ class VLXDViewSet(viewsets.ModelViewSet):
 @permission_classes([IsAuthenticated])
 def create_post(request):
     data = request.data.copy()  # Copy request data
-    
-    # Assign the current authenticated user (Member) to the post
-    member = request.user  # Assuming request.user is the Member instance
+    member = request.user
 
-    # Ensure that the post serializer receives the member's information
-    data['name'] = member.username  # Store the username, or you could pass 'member' if necessary
+    # Extract folder hierarchy from the request data
+    region = data.get('region')
+    software_folder = data.get('softwareFolder')
+    category_folder = data.get('categoryFolder')
+    material_folder = data.get('materialFolder')
 
-    # Now serialize and validate the data
+    # Ensure all required fields are provided
+    if not all([region, software_folder, category_folder, material_folder]):
+        return Response(
+            {"error": "All folder hierarchy fields (region, software folder, category folder, material folder) must be provided."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Create or get the folder hierarchy
+    parent_folder, _ = Folder.objects.get_or_create(name=region, parent=None)
+    software, _ = Folder.objects.get_or_create(name=software_folder, parent=parent_folder)
+    category, _ = Folder.objects.get_or_create(name=category_folder, parent=software)
+    material, _ = Folder.objects.get_or_create(name=material_folder, parent=category)
+
+    # Determine the current year and create the year folder
+    current_year = str(datetime.now().year)
+    year_folder, _ = Folder.objects.get_or_create(name=current_year, parent=material)
+
+    # Assign the post to the year folder
+    data['folder'] = year_folder.id
+
+    # Add the member's username as the post creator
+    data['name'] = member.username
+
+    # Serialize and save the data
     serializer = PostSerializer(data=data, context={'request': request})
     if serializer.is_valid():
-        # Save the post with the associated member
-        post = serializer.save(name=member)  # Ensure the post gets linked to the member
+        post = serializer.save(name=member)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        # Optionally, if you want to include the like_count and is_liked information in the response:
-        post_data = serializer.data
-        post_data['like_count'] = post.like_count()
-        post_data['is_liked'] = post.is_liked_by(member)
-
-        return Response(post_data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
