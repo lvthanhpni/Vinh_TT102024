@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Member, Individual, Organization, VLXD, Post
+from .models import Member, Individual, Organization, VLXD, Post, Folder
 
 
 class MemberAdmin(UserAdmin):
@@ -43,14 +43,24 @@ class VLXDAdmin(admin.ModelAdmin):
     search_fields = ('name__username', 'phone', 'email', 'job')
 
 
+@admin.register(Folder)
+class FolderAdmin(admin.ModelAdmin):
+    """
+    Admin for the Folder model.
+    """
+    list_display = ('name', 'parent')
+    search_fields = ('name',)
+    list_filter = ('parent',)
+
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     """
     Admin for the Post model.
     """
-    list_display = ('title', 'name', 'created_at', 'updated_at', 'like_count_display')
-    list_filter = ('created_at', 'updated_at')
-    search_fields = ('title', 'name')
+    list_display = ('title', 'name', 'folder', 'created_at', 'updated_at', 'like_count_display')
+    list_filter = ('folder', 'created_at', 'updated_at')
+    search_fields = ('title', 'name', 'folder__name')
     readonly_fields = ('like_count_display',)
 
     def like_count_display(self, obj):

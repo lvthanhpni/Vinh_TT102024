@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Member, Individual, Organization, VLXD, Post
+from .models import Member, Individual, Organization, VLXD, Post, Folder
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
@@ -72,14 +72,24 @@ class MemberSerializer(serializers.ModelSerializer):
         
         return representation
 
+class FolderSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Folder model.
+    """
+    class Meta:
+        model = Folder
+        fields = ['id', 'name', 'parent']
+
+
 class PostSerializer(serializers.ModelSerializer):
+    folder = FolderSerializer()  # Serialize folder information
     name = serializers.CharField(read_only=True)
     like_count = serializers.SerializerMethodField()  # Add like count
     is_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ['id', 'picture', 'name', 'title', 'caption', 'created_at', 'updated_at', 'like_count', 'is_liked']
+        fields = ['id', 'picture', 'name', 'title', 'caption', 'folder', 'created_at', 'updated_at', 'like_count', 'is_liked']
         read_only_fields = ['id', 'created_at', 'updated_at', 'name', 'like_count', 'is_liked']
 
     def get_like_count(self, obj):
@@ -90,7 +100,6 @@ class PostSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return obj.is_liked_by(request.user)  # Check if the user liked the post
         return False
-
 
     def validate(self, data):
         """
@@ -116,4 +125,3 @@ class PostSerializer(serializers.ModelSerializer):
         """
         validated_data.pop('name', None)
         return super().update(instance, validated_data)
-    

@@ -144,7 +144,7 @@ function ViewPost() {
                                         style={{ borderRadius: '15px', minHeight: '400px', maxHeight: '400px' }}
                                     >
                                         <div className="card-body d-flex flex-column">
-                                            <h5 className="card-title text-center" onClick={() => handlePostClick(post.id)}>{post.title}</h5>
+                                            <h5 className="card-title text-center" onClick={() => handlePostClick(post.id)}><b>{post.title}</b></h5>
                                             <p className="card-text" onClick={() => handlePostClick(post.id)}>{post.caption}</p>
 
                                             {post.picture && (
