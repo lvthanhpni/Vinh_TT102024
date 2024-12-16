@@ -98,45 +98,41 @@ class VLXDViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_post(request):
-    data = request.data.copy()  # Copy request data
-    member = request.user
+    try:
+        # Extract data from request
+        title = request.data.get('title')
+        caption = request.data.get('caption')
+        picture = request.FILES.get('picture')
+        folder_path = request.data.get('folder')
 
-    # Extract folder hierarchy from the request data
-    region = data.get('region')
-    software_folder = data.get('softwareFolder')
-    category_folder = data.get('categoryFolder')
-    material_folder = data.get('materialFolder')
+        # Validate required fields
+        if not title or not caption or not folder_path:
+            return Response({"error": "Title, caption, and folder are required."}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Ensure all required fields are provided
-    if not all([region, software_folder, category_folder, material_folder]):
-        return Response(
-            {"error": "All folder hierarchy fields (region, software folder, category folder, material folder) must be provided."},
-            status=status.HTTP_400_BAD_REQUEST
+        # Find or create the folder
+        folder_names = folder_path.split('/')
+        parent_folder = None
+        for name in folder_names:
+            folder, created = Folder.objects.get_or_create(name=name, parent=parent_folder)
+            parent_folder = folder
+
+        # Create the post
+        post = Post.objects.create(
+            name=request.user.username,
+            title=title,
+            caption=caption,
+            picture=picture,
+            folder=parent_folder
         )
 
-    # Create or get the folder hierarchy
-    parent_folder, _ = Folder.objects.get_or_create(name=region, parent=None)
-    software, _ = Folder.objects.get_or_create(name=software_folder, parent=parent_folder)
-    category, _ = Folder.objects.get_or_create(name=category_folder, parent=software)
-    material, _ = Folder.objects.get_or_create(name=material_folder, parent=category)
-
-    # Determine the current year and create the year folder
-    current_year = str(datetime.now().year)
-    year_folder, _ = Folder.objects.get_or_create(name=current_year, parent=material)
-
-    # Assign the post to the year folder
-    data['folder'] = year_folder.id
-
-    # Add the member's username as the post creator
-    data['name'] = member.username
-
-    # Serialize and save the data
-    serializer = PostSerializer(data=data, context={'request': request})
-    if serializer.is_valid():
-        post = serializer.save(name=member)
+        # Serialize the post and return the response
+        serializer = PostSerializer(post, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 @api_view(['GET'])
 def get_posts(request):

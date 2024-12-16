@@ -73,12 +73,16 @@ class MemberSerializer(serializers.ModelSerializer):
         return representation
 
 class FolderSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the Folder model.
-    """
+    parent = serializers.SerializerMethodField()
+
     class Meta:
         model = Folder
         fields = ['id', 'name', 'parent']
+
+    def get_parent(self, obj):
+        if obj.parent:
+            return FolderSerializer(obj.parent).data
+        return None
 
 
 class PostSerializer(serializers.ModelSerializer):

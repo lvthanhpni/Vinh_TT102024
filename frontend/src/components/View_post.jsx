@@ -68,7 +68,10 @@ function ViewPost() {
                                 },
                             });
 
-                            return { ...post, is_liked: likeResponse.data.is_liked };
+                            // Calculate the full folder path
+                            const fullPath = calculateFolderPath(post.folder);
+
+                            return { ...post, is_liked: likeResponse.data.is_liked, folder_path: fullPath };
                         } catch (err) {
                             console.error(`Error checking like status for post ${post.id}:`, err);
                             return post; // Return post without modifying is_liked if API call fails
@@ -84,6 +87,19 @@ function ViewPost() {
                 setLoading(false);
             }
         };
+
+        const calculateFolderPath = (folder) => {
+            let path = '';
+            let current = folder;
+
+            while (current) {
+                path = `${current.name}/${path}`;
+                current = current.parent;
+            }
+
+            return path.replace(/\/$/, ''); // Remove trailing slash
+        };
+
         fetchPosts();
     }, []);
 
@@ -160,6 +176,10 @@ function ViewPost() {
                                             )}
 
                                             <div className="flex-grow-1"></div>
+
+                                            <p className="text-muted text-center">
+                                                Folder Path: {post.folder_path}
+                                            </p>
 
                                             <p className="text-muted text-center mt-auto">
                                                 {post.like_count}{' '}

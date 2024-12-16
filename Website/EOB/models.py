@@ -80,16 +80,6 @@ class Folder(models.Model):
     def __str__(self):
         return self.name
 
-    @staticmethod
-    def valid_year_folders():
-        # List valid years dynamically
-        return ["2024", "2025", "2026"]
-
-    @staticmethod
-    def valid_material_folders():
-        # Define valid material folder names
-        return ["Mặt dựng và trần nhôm Austra Alu", "Sơn trang trí Dulux", "Tấm cách âm cách nhiệt Phương Nam panel"]
-
     def is_valid_location(self):
         # Check if the folder is a valid year folder under a valid material folder
         if self.parent and self.parent.name in self.valid_material_folders():
