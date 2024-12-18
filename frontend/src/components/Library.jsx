@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Folder from './Folder';
 import OwlCarousel from 'react-owl-carousel';
-import ViewPost from './View_post';
+import DisplayPost from './Display_post';
 
 const PageComponent = () => {
     const navigate = useNavigate();
+
+    const [selectedFolderId, setSelectedFolderId] = useState(null);
+
+    // Define the onFolderSelect function
+    const handleFolderSelect = (selectedId) => {
+        setSelectedFolderId(selectedId); // Update selected folder ID
+    };
 
     return (
         <div className="row d-flex">
@@ -34,7 +41,7 @@ const PageComponent = () => {
                     </div>
 
                     <div style={{ border: '1px solid #333', padding: '10px', borderRadius: '5px', width: '95%', margin: '0 auto' }}>
-                        <Folder />
+                        <Folder onFolderSelect={handleFolderSelect} />
                     </div>
 
                     {/* New Button to Redirect */}
@@ -52,7 +59,7 @@ const PageComponent = () => {
                 <div className="col-md-10 col-lg-6 col-xl-7">
                     <h2>MODEL MỚI</h2>
                     <p>Các model gần đây nhất <i className="bi bi-chevron-right"></i> </p>
-                    <ViewPost />
+                    <DisplayPost selectedFolderId={selectedFolderId} />
                     <div className="carousel-wrapper" style={{ backgroundColor: '#f0f0f0' }}>
                         <div
                             className="carousel-container"

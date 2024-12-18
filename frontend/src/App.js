@@ -21,11 +21,11 @@ import CreatePost from './components/Create_post';
 import ViewPost from './components/View_post';
 import DetailPost from './components/Detail_post';
 import DetailLibrary from './components/Detail_library';
-
-
+import DisplayPost from './components/Display_post'; // Import the new component
 
 const App = () => {
   const [data, setData] = useState(null);
+  const [selectedFolderPath, setSelectedFolderPath] = useState('');
 
   // Fetch data from Django backend
   useEffect(() => {
@@ -41,21 +41,21 @@ const App = () => {
   }, []);
 
   return (
-
     <div className="App">
-
-
-
       <AuthProvider>
         <Router>
           <Header />
-
           <Routes>
             <Route path="/" element={<Base />} />
             <Route path="/EOB" element={<Homepage />} />
             <Route path="/EOB/Carousel" element={<Carousel />} />
             <Route path="/EOB/Folder" element={<Folder />} />
-            <Route path="/EOB/Library" element={<Library />} />
+            <Route
+              path="/EOB/Library"
+              element={
+                <Library setSelectedFolderPath={setSelectedFolderPath} />
+              }
+            />
             <Route path="/EOB/Library/:id" element={<DetailLibrary />} />
 
             {/* Login routes */}
@@ -67,9 +67,14 @@ const App = () => {
             <Route path="/Organization" element={<Organization />} />
             <Route path="/VLXD" element={<VLXD />} />
 
-            <Route path="/EOB/Post" element={< ViewPost />} />
+            <Route path="/EOB/Post" element={<ViewPost />} />
             <Route path="/EOB/Post/:id" element={<DetailPost />} />
-            <Route path="/EOB/Post/Create" element={< CreatePost />} />
+            <Route path="/EOB/Post/Create" element={<CreatePost />} />
+
+            <Route
+              path="/EOB/DisplayPosts"
+              element={<DisplayPost selectedFolderPath={selectedFolderPath} />}
+            />
 
             {/* New Route to Display Fetched Data */}
             <Route
@@ -89,17 +94,10 @@ const App = () => {
               }
             />
           </Routes>
-
           <Footer />
-        </Router >
+        </Router>
       </AuthProvider>
-
-
-
-
-    </div >
-
-
+    </div>
   );
 };
 

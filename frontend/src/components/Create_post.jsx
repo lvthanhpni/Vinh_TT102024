@@ -13,6 +13,16 @@ function CreatePost() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
 
+    // Predefined options
+    const locations = ['Việt Nam', 'BIM-VietNam'];
+    const validMaterials = [
+        'Mặt dựng và trần nhôm Austra Alu',
+        'Sơn trang trí Dulux',
+        'Tấm cách âm cách nhiệt Phương Nam panel',
+    ];
+    const validCategories = ['Kiến trúc', 'Kết cấu', 'MEP'];
+    const validSoftware = ['Revit', 'Auto CAD', 'Sketch UP', 'Tekla', 'Archi CAD'];
+
     const handlePostCreate = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -22,23 +32,35 @@ function CreatePost() {
         const formData = new FormData();
         formData.append('title', title);
         formData.append('caption', caption);
-        formData.append('picture', picture);
+        if (picture) {
+            formData.append('picture', picture);
+        }
 
-        // Add folder path based on the location selection
+        // Validate folder path based on fixed hierarchy
+        let folderPath = '';
         if (location === 'Việt Nam') {
-            if (!software || !category || !material) {
-                setError('Please select Software, Category, and Material for Việt Nam location.');
+            if (!validSoftware.includes(software) || !validCategories.includes(category)) {
+                setError('Invalid selection for Software or Category.');
                 setLoading(false);
                 return;
             }
-            formData.append('folder', `Việt Nam/${software}/${category}/${material}`);
+            if (category === 'Kiến trúc' && !validMaterials.includes(material)) {
+                setError('Invalid selection for Material.');
+                setLoading(false);
+                return;
+            }
+            folderPath = category === 'Kiến trúc'
+                ? `EOB/Việt Nam/${software}/Vật liệu xây dựng/${material}`
+                : `EOB/Việt Nam/${software}/${category}`;
         } else if (location === 'BIM-VietNam') {
-            formData.append('folder', 'BIM-VietNam/Vật liệu xây dựng/ISO-19650/ISO-19650-AP01');
+            folderPath = 'EOB/BIM-VietNam/ISO-19650/ISO-19650-AP01';
         } else {
             setError('Please select a valid location.');
             setLoading(false);
             return;
         }
+
+        formData.append('folder', folderPath);
 
         try {
             const response = await axios.post('/api/posts/create/', formData, {
@@ -51,7 +73,7 @@ function CreatePost() {
             setSuccess(true);
         } catch (err) {
             console.error('Error creating post:', err.response?.data || err.message);
-            setError('Failed to create post.');
+            setError(err.response?.data?.error || 'Failed to create post.');
         } finally {
             setLoading(false);
         }
@@ -128,12 +150,16 @@ function CreatePost() {
                                                 required
                                             >
                                                 <option value="">Select Location</option>
-                                                <option value="Việt Nam">Việt Nam</option>
-                                                <option value="BIM-VietNam">BIM-VietNam</option>
+                                                {locations.map((loc) => (
+                                                    <option key={loc} value={loc}>
+                                                        {loc}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>
 
+                                    {/* Conditional Dropdowns */}
                                     {location === 'Việt Nam' && (
                                         <>
                                             {/* Software Dropdown */}
@@ -148,52 +174,60 @@ function CreatePost() {
                                                         required
                                                     >
                                                         <option value="">Select Software</option>
-                                                        <option value="Revit">Revit</option>
-                                                        <option value="Auto CAD">Auto CAD</option>
-                                                        <option value="Sketch UP">Sketch UP</option>
-                                                        <option value="Tekla">Tekla</option>
-                                                        <option value="Archi CAD">Archi CAD</option>
+                                                        {validSoftware.map((soft) => (
+                                                            <option key={soft} value={soft}>
+                                                                {soft}
+                                                            </option>
+                                                        ))}
                                                     </select>
                                                 </div>
                                             </div>
 
                                             {/* Category Dropdown */}
-                                            <div className="d-flex flex-row mb-4">
-                                                <i className="fas fa-th-large fa-lg me-3 fa-fw"></i>
-                                                <div className="form-outline flex-fill mb-0">
-                                                    <select
-                                                        id="post_category"
-                                                        className="form-control"
-                                                        value={category}
-                                                        onChange={(e) => setCategory(e.target.value)}
-                                                        required
-                                                    >
-                                                        <option value="">Select Category</option>
-                                                        <option value="Kiến trúc">Kiến trúc</option>
-                                                        <option value="Kết cấu">Kết cấu</option>
-                                                        <option value="MEP">MEP</option>
-                                                    </select>
+                                            {software && (
+                                                <div className="d-flex flex-row mb-4">
+                                                    <i className="fas fa-th-large fa-lg me-3 fa-fw"></i>
+                                                    <div className="form-outline flex-fill mb-0">
+                                                        <select
+                                                            id="post_category"
+                                                            className="form-control"
+                                                            value={category}
+                                                            onChange={(e) => setCategory(e.target.value)}
+                                                            required
+                                                        >
+                                                            <option value="">Select Category</option>
+                                                            {validCategories.map((cat) => (
+                                                                <option key={cat} value={cat}>
+                                                                    {cat}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )}
 
                                             {/* Material Dropdown */}
-                                            <div className="d-flex flex-row mb-4">
-                                                <i className="fas fa-cubes fa-lg me-3 fa-fw"></i>
-                                                <div className="form-outline flex-fill mb-0">
-                                                    <select
-                                                        id="post_material"
-                                                        className="form-control"
-                                                        value={material}
-                                                        onChange={(e) => setMaterial(e.target.value)}
-                                                        required
-                                                    >
-                                                        <option value="">Select Material</option>
-                                                        <option value="Mặt dựng và trần nhôm Austra Alu">Mặt dựng và trần nhôm Austra Alu</option>
-                                                        <option value="Sơn trang trí Dulux">Sơn trang trí Dulux</option>
-                                                        <option value="Tấm cách âm cách nhiệt Phương Nam panel">Tấm cách âm cách nhiệt Phương Nam panel</option>
-                                                    </select>
+                                            {category === 'Kiến trúc' && (
+                                                <div className="d-flex flex-row mb-4">
+                                                    <i className="fas fa-cubes fa-lg me-3 fa-fw"></i>
+                                                    <div className="form-outline flex-fill mb-0">
+                                                        <select
+                                                            id="post_material"
+                                                            className="form-control"
+                                                            value={material}
+                                                            onChange={(e) => setMaterial(e.target.value)}
+                                                            required
+                                                        >
+                                                            <option value="">Select Material</option>
+                                                            {validMaterials.map((mat) => (
+                                                                <option key={mat} value={mat}>
+                                                                    {mat}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )}
                                         </>
                                     )}
 

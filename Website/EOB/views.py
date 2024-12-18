@@ -12,7 +12,7 @@ from django.conf import settings
 
 
 # Django REST Framework imports
-from rest_framework import viewsets, status , permissions, status
+from rest_framework import viewsets, status , permissions, status, generics
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.views import APIView
@@ -22,6 +22,8 @@ from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.generics import CreateAPIView
+
 from datetime import timedelta, datetime
 
 # Model imports
@@ -95,34 +97,124 @@ class VLXDViewSet(viewsets.ModelViewSet):
     queryset = VLXD.objects.all()
     serializer_class = VLXDSerializer
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def create_post(request):
-    try:
-        # Extract data from request
-        title = request.data.get('title')
-        caption = request.data.get('caption')
-        picture = request.FILES.get('picture')
-        folder_path = request.data.get('folder')
+class GenericPostCreateView(CreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
 
-        # Validate required fields
-        if not title or not caption or not folder_path:
-            return Response({"error": "Title, caption, and folder are required."}, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        folder_path = self.request.data.get('folder')
 
-        # Find or create the folder
+        if not folder_path:
+            raise ValidationError({"error": "Folder path is required."})
+
+        # Parse folder path and get or create folders
         folder_names = folder_path.split('/')
         parent_folder = None
         for name in folder_names:
             folder, created = Folder.objects.get_or_create(name=name, parent=parent_folder)
             parent_folder = folder
 
-        # Create the post
+        # Save the post with the parent folder and user
+        serializer.save(name=self.request.user.username, folder=parent_folder)
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])  # Restrict to admins
+def populate_folder_tree(request):
+    """
+    Populate the folder tree into the database following the exact structure in Folder.jsx.
+    """
+
+    def create_folders_recursively(folders, parent=None):
+        """
+        Recursive function to create folders and subfolders.
+        """
+        for folder in folders:
+            folder_obj, _ = Folder.objects.get_or_create(name=folder['name'], parent=parent)
+            if 'subfolders' in folder and folder['subfolders']:
+                create_folders_recursively(folder['subfolders'], parent=folder_obj)
+
+    # Folder structure as defined in Folder.jsx
+    folder_structure = [
+        {
+            "name": "EOB",
+            "subfolders": [
+                {
+                    "name": "Việt Nam",
+                    "subfolders": [
+                        {
+                            "name": software_name,
+                            "subfolders": [
+                                {
+                                    "name": "Vật liệu xây dựng",
+                                    "subfolders": [
+                                        {"name": "Mặt dựng và trần nhôm Austra Alu"},
+                                        {"name": "Sơn trang trí Dulux"},
+                                        {"name": "Tấm cách âm cách nhiệt Phương Nam panel"},
+                                    ],
+                                },
+                                {"name": "Kiến trúc", "subfolders": []},
+                                {"name": "Kết cấu", "subfolders": []},
+                                {"name": "MEP", "subfolders": []},
+                            ],
+                        }
+                        for software_name in ["Revit", "Auto CAD", "Sketch UP", "Tekla", "Archi CAD"]
+                    ],
+                },
+                {
+                    "name": "BIM-VietNam",
+                    "subfolders": [
+                        {
+                            "name": "ISO-19650",
+                            "subfolders": [
+                                {"name": "ISO-19650-AP01"},
+                            ],
+                        }
+                    ],
+                },
+            ],
+        }
+    ]
+
+    try:
+        # Create the folder tree in the database
+        create_folders_recursively(folder_structure)
+        return Response({"success": True, "message": "Folder tree populated successfully."}, status=201)
+    except Exception as e:
+        return Response({"success": False, "error": str(e)}, status=500)
+
+        
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_post(request):
+    try:
+        # Extract data from the request
+        title = request.data.get('title')
+        caption = request.data.get('caption')
+        picture = request.FILES.get('picture')
+        folder_path = request.data.get('folder')
+
+        if not folder_path:
+            return Response({"error": "Folder path is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Split the folder path into names
+        folder_names = folder_path.split('/')
+
+        # Traverse the folder hierarchy to find the folder
+        parent_folder = None
+        for name in folder_names:
+            try:
+                parent_folder = Folder.objects.get(name=name, parent=parent_folder)
+            except Folder.DoesNotExist:
+                return Response({"error": f"Folder path '{folder_path}' does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create the post in the resolved folder
         post = Post.objects.create(
             name=request.user.username,
             title=title,
             caption=caption,
             picture=picture,
-            folder=parent_folder
+            folder=parent_folder,  # Associate the post with the resolved folder
         )
 
         # Serialize the post and return the response
@@ -140,12 +232,13 @@ def get_posts(request):
     Retrieve all posts and include like status for the current user.
     """
     try:
-        # Fetch all posts
-        posts = Post.objects.all()
+        folder_id = request.GET.get('folder_id', None)  # Get folder_id from request
+        if folder_id:
+            posts = Post.objects.filter(folder_id=folder_id)  # Filter by folder ID
+        else:
+            posts = Post.objects.all()
 
-        # Serialize the posts, passing the current request context for `is_liked` evaluation
         serializer = PostSerializer(posts, many=True, context={'request': request})
-
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Post.DoesNotExist:
         return Response({"detail": "No posts found."}, status=status.HTTP_404_NOT_FOUND)
@@ -478,6 +571,8 @@ def Base(request):
 
 def Homepage(request):
     return render(request, 'Homepage.html')
+
+
 
 
 

@@ -4,6 +4,7 @@ from django.contrib.auth import views as auth_views
 
 from rest_framework.routers import DefaultRouter
 from .views import MemberViewSet, IndividualViewSet, OrganizationViewSet, VLXDViewSet, TokenListView
+from .views import GenericPostCreateView
 
 
 from rest_framework_simplejwt.views import (
@@ -26,7 +27,7 @@ urlpatterns = [
     path('api/signup_mem', views.Signup_mem, name='signup_mem'),
 
     path('api/login', views.Login, name='login'),
-     path('api/google-login', views.google_login, name='google-login'),
+    path('api/google-login', views.google_login, name='google-login'),
     path('api/logout', views.Logout, name='logout'),  
     path('api/user', views.UserView.as_view(), name='user'),
 
@@ -35,7 +36,10 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),  # Verify token
     path('api/token/list', TokenListView.as_view(), name='token_list'),
 
+    path('api/folders/populate/', views.populate_folder_tree, name='populate_folder_tree'),
+
     path('api/posts/create/', views.create_post, name='create_post'),
+     path('api/posts/view_create/', GenericPostCreateView.as_view(), name='generic_create_post'),
     path('api/posts/', views.get_posts, name='get_posts'),
     path('api/posts/<int:post_id>', views.detail_posts, name='detail_posts'),
     path('api/posts/<int:post_id>/like/', views.like_post, name='like_post'),  # URL for liking a post

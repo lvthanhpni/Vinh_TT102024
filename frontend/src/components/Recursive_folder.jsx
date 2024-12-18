@@ -1,21 +1,28 @@
-
 import React, { useState } from 'react';
 
-const Recursive_folder = ({ folder }) => {
+const Recursive_folder = ({ folder, parentPath, onFolderClick }) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    const toggleOpen = () => setIsOpen(!isOpen);
+    // Toggle folder open state
+    const toggleOpen = () => {
+        setIsOpen(!isOpen);
+    };
 
-    // Render only if the folder has subfolders (excluding files)
-    if (!folder.subfolders) {
-        return null;
-    }
+    // Handle click on the folder name
+    const handleFolderClick = () => {
+        const fullPath = parentPath ? `${parentPath}/${folder.id}` : folder.id; // Build full path
+        onFolderClick(folder.id); // Pass folder ID to parent
+        console.log(`Selected Folder ID: ${folder.id}`); // Log folder ID
+    };
 
     return (
-        <div className={`folder ${isOpen ? 'open' : ''}`} style={{ marginLeft: '20px' }}>
+        <div className="folder" style={{ marginLeft: '20px' }}>
             <div
                 className="folder-name"
-                onClick={toggleOpen}
+                onClick={() => {
+                    toggleOpen(); // Toggle folder visibility
+                    handleFolderClick(); // Log folder ID
+                }}
                 style={{ cursor: 'pointer' }}
             >
                 {isOpen ? '📂' : '📁'} {folder.name}
@@ -23,7 +30,12 @@ const Recursive_folder = ({ folder }) => {
             {isOpen && folder.subfolders && (
                 <div className="subfolders">
                     {folder.subfolders.map((subfolder, index) => (
-                        <Recursive_folder key={index} folder={subfolder} />
+                        <Recursive_folder
+                            key={index}
+                            folder={subfolder}
+                            parentPath={folder.id} // Pass the current folder ID as the parent path
+                            onFolderClick={onFolderClick}
+                        />
                     ))}
                 </div>
             )}
