@@ -1,3 +1,4 @@
+// Recursive_folder.jsx
 import React, { useState } from 'react';
 
 const Recursive_folder = ({ folder, onFolderClick }) => {
@@ -6,8 +7,8 @@ const Recursive_folder = ({ folder, onFolderClick }) => {
     const toggleOpen = () => setIsOpen(!isOpen);
 
     const handleFolderClick = () => {
-        toggleOpen(); // Toggle subfolder visibility
-        if (onFolderClick) onFolderClick(folder.id); // Return the folder ID
+        toggleOpen();
+        if (onFolderClick) onFolderClick(folder.id);
     };
 
     return (
@@ -21,11 +22,11 @@ const Recursive_folder = ({ folder, onFolderClick }) => {
             </div>
             {isOpen && folder.subfolders && (
                 <div className="subfolders">
-                    {folder.subfolders.map((subfolder, index) => (
+                    {folder.subfolders.map((subfolder) => (
                         <Recursive_folder
-                            key={index}
+                            key={subfolder.id}
                             folder={subfolder}
-                            onFolderClick={onFolderClick} // Pass the callback down
+                            onFolderClick={onFolderClick}
                         />
                     ))}
                 </div>
