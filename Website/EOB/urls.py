@@ -30,6 +30,11 @@ urlpatterns = [
     path('api/google-login', views.google_login, name='google-login'),
     path('api/logout', views.Logout, name='logout'),  
     path('api/user', views.UserView.as_view(), name='user'),
+    path('api/member', views.UserView.as_view(), name='member'),
+    path('api/members/<str:username>/', MemberViewSet.as_view({'put': 'update'}), name='update_user_data'),
+
+
+
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
      path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # Refresh token

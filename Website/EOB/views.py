@@ -579,6 +579,26 @@ class TokenListView(APIView):
 
         return Response(data)
 
+def update_user_data(self, request, username=None):
+    """
+    API to update specific fields for a user.
+    """
+    user = get_object_or_404(Member, username=username)
+    serializer = self.serializer_class(user, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            'success': True,
+            'user': serializer.data,
+            'message': 'User data updated successfully.'
+        }, status=status.HTTP_200_OK)
+    else:
+        return Response({
+            'success': False,
+            'errors': serializer.errors,
+            'message': 'Failed to update user data.'
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def protected_view(request):

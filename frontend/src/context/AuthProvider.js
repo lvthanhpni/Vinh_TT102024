@@ -187,45 +187,45 @@ const AuthProvider = ({ children }) => {
 
     const updateUserData = async (updatedData) => {
         try {
-            // Log the data being sent to the server
             console.log('Sending the following data to the server:', updatedData);
 
-            // Assuming getCsrfToken() is a function that retrieves the CSRF token from cookies or meta tags
+            if (!username) {
+                throw new Error('Username is required for updating user data.');
+            }
+
             const csrfToken = getCsrfToken();
-            const response = await axios.put(`/members/${username}/`, updatedData, {
+            const response = await axios.put(`/api/members/${username}/`, updatedData, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,  // Authorization header with Bearer token
-                    'X-CSRFToken': csrfToken,  // CSRF token to protect against cross-site request forgery
+                    'Authorization': `Bearer ${token}`,
+                    'X-CSRFToken': csrfToken,
                 },
             });
 
-            // Log the response data received from the server
             console.log('Response from server:', response.data);
 
             if (response.data.success) {
-                // Log the user data that will be updated
                 const { user } = response.data;
                 console.log('User data received from server:', user);
 
-                // Update the state and localStorage with the new user data
-                setUsername(user?.username || '');
-                setPhone(user?.phone || '');
-                setEmail(user?.email || '');
+                // Update the state and localStorage
+                setUsername(user.username || '');
+                setPhone(user.phone || '');
+                setEmail(user.email || '');
 
-                // Update localStorage with the new data
-                localStorage.setItem('username', user?.username || '');
-                localStorage.setItem('phone', user?.phone || '');
-                localStorage.setItem('email', user?.email || '');
+                localStorage.setItem('username', user.username || '');
+                localStorage.setItem('phone', user.phone || '');
+                localStorage.setItem('email', user.email || '');
 
                 console.log('User data updated successfully!');
             } else {
-                setError('Failed to update user data.');
+                setError(response.data.message || 'Failed to update user data.');
             }
         } catch (error) {
             console.error('Error updating user data:', error);
-            setError('An error occurred while updating user data.');
+            setError(error.message || 'An error occurred while updating user data.');
         }
     };
+
 
     const fetchUserData = async (storedToken) => {
         try {
