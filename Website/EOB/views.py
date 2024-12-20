@@ -30,7 +30,7 @@ from datetime import timedelta, datetime
 from EOB.models import Member, Individual, Organization, VLXD, Post, Folder   
 
 # Serializer imports
-from .serializers import MemberSerializer, IndividualSerializer, OrganizationSerializer, VLXDSerializer, PostSerializer
+from .serializers import MemberSerializer, IndividualSerializer, OrganizationSerializer, VLXDSerializer, PostSerializer, FolderSerializer
 
 #Other import       
 import json
@@ -224,7 +224,30 @@ def create_post(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['GET'])
+def get_folders(request):
+    """
+    Retrieve the entire folder hierarchy from the database.
+    """
+    def fetch_folder_hierarchy(folder):
+        """
+        Recursively fetch subfolders for a given folder.
+        """
+        serializer = FolderSerializer(folder)
+        folder_data = serializer.data
+        subfolders = Folder.objects.filter(parent=folder)
+        folder_data['subfolders'] = [
+            fetch_folder_hierarchy(subfolder) for subfolder in subfolders
+        ]
+        return folder_data
 
+    try:
+        # Fetch top-level folders
+        top_level_folders = Folder.objects.filter(parent=None)
+        folder_hierarchy = [fetch_folder_hierarchy(folder) for folder in top_level_folders]
+        return Response(folder_hierarchy, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
 
 @api_view(['GET'])
 def get_posts(request):

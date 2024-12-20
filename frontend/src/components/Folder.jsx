@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Recursive_folder from './Recursive_folder';
+import axios from 'axios';
 
 // Function to generate software folder structure
 function generateSoftwareFolders() {
@@ -49,16 +50,13 @@ function generateMaterialFolders() {
 
 const folderStructure = [
     {
-        id: "root-eob",
         name: "EOB",
         subfolders: [
             {
-                id: "root-vn",
                 name: "Việt Nam",
                 subfolders: generateSoftwareFolders()
             },
             {
-                id: "root-bim",
                 name: "BIM-VietNam",
                 subfolders: [
                     {
@@ -75,12 +73,38 @@ const folderStructure = [
 ];
 
 const FolderPage = ({ onFolderSelect }) => {
-    const [folders, setFolders] = useState(folderStructure);
+    const [folders, setFolders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchFolders = async () => {
+            try {
+                const response = await axios.get('/api/folders/'); // Fetch folders from backend
+                setFolders(response.data); // Populate folder data
+            } catch (err) {
+                setError('Failed to load folders.');
+                console.error('Error fetching folders:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchFolders();
+    }, []);
 
     const handleFolderClick = (id) => {
-        console.log(`Selected Folder ID: ${id}`); // Ensure correct folder ID is logged
-        onFolderSelect(id); // Pass the folder ID to the parent
+        console.log(`Selected Folder ID: ${id}`); // Log folder ID
+        onFolderSelect(id); // Send folder ID to parent
     };
+
+    if (loading) {
+        return <div>Loading folders...</div>;
+    }
+
+    if (error) {
+        return <div className="alert alert-danger">{error}</div>;
+    }
 
     return (
         <div className="folder-page">
@@ -88,7 +112,6 @@ const FolderPage = ({ onFolderSelect }) => {
                 <Recursive_folder
                     key={index}
                     folder={folder}
-                    parentPath="" // Root level has no parent path
                     onFolderClick={handleFolderClick}
                 />
             ))}

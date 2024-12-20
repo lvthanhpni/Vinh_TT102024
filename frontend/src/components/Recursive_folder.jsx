@@ -1,28 +1,20 @@
 import React, { useState } from 'react';
 
-const Recursive_folder = ({ folder, parentPath, onFolderClick }) => {
+const Recursive_folder = ({ folder, onFolderClick }) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    // Toggle folder open state
-    const toggleOpen = () => {
-        setIsOpen(!isOpen);
-    };
+    const toggleOpen = () => setIsOpen(!isOpen);
 
-    // Handle click on the folder name
     const handleFolderClick = () => {
-        const fullPath = parentPath ? `${parentPath}/${folder.id}` : folder.id; // Build full path
-        onFolderClick(folder.id); // Pass folder ID to parent
-        console.log(`Selected Folder ID: ${folder.id}`); // Log folder ID
+        toggleOpen(); // Toggle subfolder visibility
+        if (onFolderClick) onFolderClick(folder.id); // Return the folder ID
     };
 
     return (
         <div className="folder" style={{ marginLeft: '20px' }}>
             <div
                 className="folder-name"
-                onClick={() => {
-                    toggleOpen(); // Toggle folder visibility
-                    handleFolderClick(); // Log folder ID
-                }}
+                onClick={handleFolderClick}
                 style={{ cursor: 'pointer' }}
             >
                 {isOpen ? '📂' : '📁'} {folder.name}
@@ -33,8 +25,7 @@ const Recursive_folder = ({ folder, parentPath, onFolderClick }) => {
                         <Recursive_folder
                             key={index}
                             folder={subfolder}
-                            parentPath={folder.id} // Pass the current folder ID as the parent path
-                            onFolderClick={onFolderClick}
+                            onFolderClick={onFolderClick} // Pass the callback down
                         />
                     ))}
                 </div>

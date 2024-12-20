@@ -36,6 +36,7 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),  # Verify token
     path('api/token/list', TokenListView.as_view(), name='token_list'),
 
+    path('api/folders/', views.get_folders, name='get_folders'),
     path('api/folders/populate/', views.populate_folder_tree, name='populate_folder_tree'),
 
     path('api/posts/create/', views.create_post, name='create_post'),
