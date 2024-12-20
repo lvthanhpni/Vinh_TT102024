@@ -59,7 +59,28 @@ function DisplayPost({ selectedFolderId }) {
                         folder_id: selectedFolderId, // Explicitly filter by folder ID
                     },
                 });
-                setPosts(response.data);
+                const fetchedPosts = response.data;
+
+                // Fetch the is_liked state for each post
+                const updatedPosts = await Promise.all(
+                    fetchedPosts.map(async (post) => {
+                        try {
+                            const accessToken = localStorage.getItem('access_token');
+                            const likeResponse = await axios.get(`/api/posts/${post.id}/check-like/`, {
+                                headers: {
+                                    Authorization: `Bearer ${accessToken}`,
+                                },
+                            });
+
+                            return { ...post, is_liked: likeResponse.data.is_liked };
+                        } catch (err) {
+                            console.error(`Error checking like status for post ${post.id}:`, err);
+                            return post; // Return post without modifying is_liked if API call fails
+                        }
+                    })
+                );
+
+                setPosts(updatedPosts);
             } catch (err) {
                 console.error('Error fetching posts:', err);
                 setError('Failed to load posts.');
@@ -70,6 +91,7 @@ function DisplayPost({ selectedFolderId }) {
 
         fetchPosts();
     }, [selectedFolderId]);
+
 
     const startIndex = (currentPage - 1) * postsPerPage;
     const endIndex = startIndex + postsPerPage;
@@ -96,26 +118,18 @@ function DisplayPost({ selectedFolderId }) {
     }
 
     if (error) {
-        return (
-            <div className="container h-100">
-                <div className="row d-flex justify-content-center align-items-center h-100">
-                    <div className="col-lg-7 col-xl-6">
-                        <div className="card text-black" style={{ borderRadius: '25px' }}>
-                            <div className="card-body p-md-5">
-                                <h2 className="text-center h4 fw-bold mb-4">{error}</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+        return <div>{error}</div>;
+    }
+
+    if (posts.length === 0) {
+        return null; // Render nothing when there are no posts
     }
 
     return (
         <div className="container" style={{ paddingBottom: '50px', paddingTop: '0', paddingLeft: '0' }}>
             <div className="col-lg-12">
                 <div className="card-body p-md-5">
-                    {currentPosts.length > 0 ? (
+                    {currentPosts.length > 0 && (
                         <div className="row">
                             {currentPosts.map((post) => (
                                 <div
@@ -162,28 +176,28 @@ function DisplayPost({ selectedFolderId }) {
                                 </div>
                             ))}
                         </div>
-                    ) : (
-                        <p className="text-center">No posts available</p>
                     )}
-                    <div className="d-flex justify-content-center mt-4">
-                        <button
-                            className="btn btn-light me-2"
-                            onClick={handlePreviousPage}
-                            disabled={currentPage === 1}
-                        >
-                            &lt;
-                        </button>
-                        <button className="btn btn-secondary" disabled>
-                            {currentPage}
-                        </button>
-                        <button
-                            className="btn btn-light ms-2"
-                            onClick={handleNextPage}
-                            disabled={endIndex >= posts.length}
-                        >
-                            &gt;
-                        </button>
-                    </div>
+                    {currentPosts.length > 0 && (
+                        <div className="d-flex justify-content-center mt-4">
+                            <button
+                                className="btn btn-light me-2"
+                                onClick={handlePreviousPage}
+                                disabled={currentPage === 1}
+                            >
+                                &lt;
+                            </button>
+                            <button className="btn btn-secondary" disabled>
+                                {currentPage}
+                            </button>
+                            <button
+                                className="btn btn-light ms-2"
+                                onClick={handleNextPage}
+                                disabled={endIndex >= posts.length}
+                            >
+                                &gt;
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
