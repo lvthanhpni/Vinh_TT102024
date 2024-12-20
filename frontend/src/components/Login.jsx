@@ -14,8 +14,6 @@ function Login() {
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
 
     const navigate = useNavigate();
 
@@ -23,11 +21,13 @@ function Login() {
         setPasswordVisible(!passwordVisible);
     };
 
-    const { login, error: contextError, googleLoginSuccess, googleLoginError } = useContext(AuthContext);
+    const { login, isLoggedIn, error: contextError, googleLoginSuccess, googleLoginError } = useContext(AuthContext);
 
 
-    // Set initial form data from cookies if available
     useEffect(() => {
+        if (isLoggedIn)
+            navigate("/EOB/")
+
         const savedUsername = Cookies.get('username');
         const savedPassword = Cookies.get('password');
         const savedRememberMe = Cookies.get('rememberMe') === 'true';
@@ -43,18 +43,17 @@ function Login() {
         if (savedRememberMe) {
             setRememberMe(savedRememberMe);
         }
-    }, []);
+    }, [isLoggedIn]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            // Use the login function directly
+            setError(''); // Clear previous error
             await login(username, password, rememberMe);
-            navigate("/EOB/")
 
-            // If the login process has set an error in AuthContext, handle it here
             if (contextError) {
+                console.error('Error:', error.response?.data || error.message);
                 setError(contextError);
             }
         } catch (error) {
