@@ -42,6 +42,7 @@ urlpatterns = [
     path('api/token/list', TokenListView.as_view(), name='token_list'),
 
     path('api/folders/', views.get_folders, name='get_folders'),
+    path('api/folders/<int:folder_id>/path/', views.get_folder_path, name='get_folder_path'),
     path('api/folders/populate/', views.populate_folder_tree, name='populate_folder_tree'),
 
     path('api/posts/create/', views.create_post, name='create_post'),

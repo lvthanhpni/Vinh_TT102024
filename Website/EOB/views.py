@@ -187,19 +187,17 @@ def populate_folder_tree(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_post(request):
-    """
-    Create a new post in the selected folder.
-    """
     try:
+        # Extract data from request
         title = request.data.get('title')
         caption = request.data.get('caption')
         picture = request.FILES.get('picture')
         folder_id = request.data.get('folder')
 
         # Validate folder
-        folder = Folder.objects.filter(id=folder_id, can_have_posts=True).first()
+        folder = Folder.objects.filter(id=folder_id).first()
         if not folder:
-            return Response({"error": "Invalid or restricted folder selection."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Invalid folder ID."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Create the post
         post = Post.objects.create(
@@ -211,7 +209,9 @@ def create_post(request):
         )
 
         serializer = PostSerializer(post, context={'request': request})
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({
+            "post": serializer.data,
+        }, status=status.HTTP_201_CREATED)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -242,7 +242,22 @@ def get_folders(request):
     except Exception as e:
         return Response({'error': str(e)}, status=500)
 
+@api_view(['GET'])
+def get_folder_path(request, folder_id):
+    """
+    Retrieve the full path of a folder by its ID.
+    """
+    try:
+        # Fetch the folder by ID
+        folder = get_object_or_404(Folder, id=folder_id)
 
+        # Get the full path using the `get_full_path` method
+        full_path = folder.get_full_path()
+
+        return Response({'id': folder.id, 'name': folder.name, 'full_path': full_path}, status=200)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+    
 @api_view(['GET'])
 def get_posts(request):
     """

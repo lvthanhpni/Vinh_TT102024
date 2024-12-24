@@ -94,6 +94,15 @@ class Folder(models.Model):
             layer += 1
             current = current.parent
         return layer
+    
+    def get_full_path(self):
+       
+        path = []
+        current_folder = self
+        while current_folder is not None:
+            path.insert(0, current_folder.name)
+            current_folder = current_folder.parent
+        return '/'.join(path)
 
     def save(self, *args, **kwargs):
         """

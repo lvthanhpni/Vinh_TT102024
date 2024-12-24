@@ -74,24 +74,28 @@ const PageComponent = () => {
                     <div style={{ border: '1px solid #333', padding: '10px', borderRadius: '5px', width: '95%', margin: '0 auto' }}>
                         <Folder onFolderSelect={handleFolderSelect} />
                     </div>
+                </div>
 
-                    {/* New Button to Redirect */}
-                    <div className="d-flex justify-content-center my-4">
+                <div className="col-md-10 col-lg-6 col-xl-7">
+                    <div className="d-flex justify-content-start align-items-center mb-3">
+                        <div className="me-3">
+                            <h2>MODEL MỚI</h2>
+                            <p>Các model gần đây nhất <i className="bi bi-chevron-right"></i></p>
+                        </div>
                         {selectedFolder?.can_have_posts && (
                             <button
                                 className="btn btn-primary"
-                                style={{ borderRadius: '5px', width: '95%' }}
+                                style={{
+                                    borderRadius: '5px',
+                                    height: 'fit-content',
+                                }}
                                 onClick={() => navigate('/EOB/Post/Create', { state: { selectedFolder } })}
                             >
                                 Tạo bài viết mới
                             </button>
                         )}
                     </div>
-                </div>
 
-                <div className="col-md-10 col-lg-6 col-xl-7">
-                    <h2>MODEL MỚI</h2>
-                    <p>Các model gần đây nhất <i className="bi bi-chevron-right"></i> </p>
                     <DisplayPost selectedFolderId={selectedFolderId} />
                     <div className="carousel-wrapper" style={{ backgroundColor: '#f0f0f0' }}>
                         <div
@@ -130,7 +134,9 @@ const PageComponent = () => {
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
+
+
     );
 };
 

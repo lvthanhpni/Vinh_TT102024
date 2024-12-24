@@ -13,10 +13,27 @@ function CreatePost() {
     const location = useLocation(); // Hook to get the current location
     const [selectedFolder, setSelectedFolder] = useState(null);
 
-    // Fetch the selected folder details from location state
     useEffect(() => {
+        const fetchFolderDetails = async (folderId) => {
+            try {
+                const response = await axios.get(`/api/folders/${folderId}/path/`);
+                // Merge the data from API with location.state if available
+                setSelectedFolder((prev) => ({
+                    ...prev,
+                    ...response.data,
+                }));
+            } catch (err) {
+                setError('Failed to fetch folder details.');
+                console.error('Error fetching folder details:', err);
+            }
+        };
+
+        // Use folder data from location.state if available
         if (location.state?.selectedFolder) {
             setSelectedFolder(location.state.selectedFolder);
+            if (!location.state.selectedFolder.full_path) {
+                fetchFolderDetails(location.state.selectedFolder.id); // Fetch full path if not provided
+            }
         } else {
             setError('No folder selected. Please select a valid folder from the library.');
         }
@@ -76,7 +93,8 @@ function CreatePost() {
                                     <div className="alert alert-info">
                                         <p><strong>Current Folder:</strong></p>
                                         <p><strong>ID:</strong> {selectedFolder.id}</p>
-                                        <p><strong>Path:</strong> {selectedFolder.path || 'Path not provided'}</p>
+                                        <p><strong>Path:</strong> {selectedFolder.full_path || 'Path not provided'}</p>
+                                        <p><strong>Can Have Posts:</strong> {selectedFolder.can_have_posts ? 'Yes' : 'No'}</p>
                                     </div>
                                 )}
 
