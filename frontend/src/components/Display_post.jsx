@@ -7,6 +7,7 @@ function DisplayPost({ selectedFolderId }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const postsPerPage = 6;
 
     const navigate = useNavigate();
@@ -29,6 +30,8 @@ function DisplayPost({ selectedFolderId }) {
     };
 
     const handleLikeToggle = async (postId, Refresh) => {
+        if (!isAuthenticated) return;
+
         try {
             const accessToken = localStorage.getItem('access_token');
             const response = await axios.post(
@@ -54,6 +57,11 @@ function DisplayPost({ selectedFolderId }) {
             setError('');
 
             try {
+                const accessToken = localStorage.getItem('access_token');
+                if (accessToken) {
+                    setIsAuthenticated(true);
+                }
+
                 const response = await axios.get('/api/posts/', {
                     params: {
                         folder_id: selectedFolderId, // Explicitly filter by folder ID
@@ -61,21 +69,22 @@ function DisplayPost({ selectedFolderId }) {
                 });
                 const fetchedPosts = response.data;
 
-                // Fetch the is_liked state for each post
                 const updatedPosts = await Promise.all(
                     fetchedPosts.map(async (post) => {
-                        try {
-                            const accessToken = localStorage.getItem('access_token');
-                            const likeResponse = await axios.get(`/api/posts/${post.id}/check-like/`, {
-                                headers: {
-                                    Authorization: `Bearer ${accessToken}`,
-                                },
-                            });
-
-                            return { ...post, is_liked: likeResponse.data.is_liked };
-                        } catch (err) {
-                            console.error(`Error checking like status for post ${post.id}:`, err);
-                            return post; // Return post without modifying is_liked if API call fails
+                        if (isAuthenticated) {
+                            try {
+                                const likeResponse = await axios.get(`/api/posts/${post.id}/check-like/`, {
+                                    headers: {
+                                        Authorization: `Bearer ${accessToken}`,
+                                    },
+                                });
+                                return { ...post, is_liked: likeResponse.data.is_liked };
+                            } catch (err) {
+                                console.error(`Error checking like status for post ${post.id}:`, err);
+                                return post; // Return post without modifying is_liked if API call fails
+                            }
+                        } else {
+                            return post;
                         }
                     })
                 );
@@ -90,7 +99,7 @@ function DisplayPost({ selectedFolderId }) {
         };
 
         fetchPosts();
-    }, [selectedFolderId]);
+    }, [selectedFolderId, isAuthenticated]);
 
 
     const startIndex = (currentPage - 1) * postsPerPage;
@@ -167,8 +176,8 @@ function DisplayPost({ selectedFolderId }) {
                                                 {post.like_count}{' '}
                                                 <i
                                                     className={`bi bi-heart${post.is_liked ? '-fill' : ''} text-danger`}
-                                                    onClick={() => handleLikeToggle(post.id, false)}
-                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => isAuthenticated && handleLikeToggle(post.id, false)}
+                                                    style={{ cursor: isAuthenticated ? 'pointer' : 'default' }}
                                                 ></i>
                                             </p>
                                         </div>

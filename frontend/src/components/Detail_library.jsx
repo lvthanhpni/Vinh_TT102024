@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Folder from './Folder';
 import OwlCarousel from 'react-owl-carousel';
-import ViewPost from './View_post';
 import PostDetail from './Detail_post';
 
 const DetailLibrary = () => {

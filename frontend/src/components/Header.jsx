@@ -85,8 +85,8 @@ const Header = () => {
                     </button>
                     <ul className="dropdown-menu">
                         <li><Link className="dropdown-item" to="/EOB/Library">Tất cả thư viện</Link></li>
-                        <li><Link className="dropdown-item" to="/EOB/Post">Thư viện EOB</Link></li>
-                        <li><Link className="dropdown-item" to="/EOB/Post/Create">Thư viện VLXD</Link></li>
+                        <li><Link className="dropdown-item" to="/EOB/">Thư viện EOB</Link></li>
+                        <li><Link className="dropdown-item" to="/EOB/">Thư viện VLXD</Link></li>
                     </ul>
                 </div>
 

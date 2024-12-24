@@ -440,7 +440,7 @@ def Login(request):
 
     # Authenticate the user
     user = authenticate(request, username=uname, password=password)
-    print(user)
+  
     if user is not None:
         if user.is_individual or user.is_organization:  # Assuming these are valid attributes
             # Generate JWT tokens

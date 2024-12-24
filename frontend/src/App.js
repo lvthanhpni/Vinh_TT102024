@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import Base from './components/Base';
 import Homepage from './components/Homepage';
 import Carousel from './components/Carousel';
 import Header from './components/Header';
@@ -13,12 +12,8 @@ import SignupVLXD from './components/Signup_VLXD';
 import ForgetPass from './components/Forget_pass';
 import Login from './components/Login';
 import Profile from './components/Profile';
-import Individual from './components/Individual';
-import Organization from './components/Organization';
-import VLXD from './components/VLXD';
 import AuthProvider from './context/AuthProvider';
 import CreatePost from './components/Create_post';
-import ViewPost from './components/View_post';
 import DetailPost from './components/Detail_post';
 import DetailLibrary from './components/Detail_library';
 import DisplayPost from './components/Display_post'; // Import the new component
@@ -46,7 +41,6 @@ const App = () => {
         <Router>
           <Header />
           <Routes>
-            <Route path="/" element={<Base />} />
             <Route path="/EOB" element={<Homepage />} />
             <Route path="/EOB/Carousel" element={<Carousel />} />
             <Route path="/EOB/Folder" element={<Folder />} />
@@ -64,10 +58,7 @@ const App = () => {
             <Route path="/EOB/Login" element={<Login />} />
             <Route path="/EOB/Profile" element={<Profile />} />
             <Route path="/EOB/Forget" element={<ForgetPass />} />
-            <Route path="/Organization" element={<Organization />} />
-            <Route path="/VLXD" element={<VLXD />} />
 
-            <Route path="/EOB/Post" element={<ViewPost />} />
             <Route path="/EOB/Post/:id" element={<DetailPost />} />
             <Route path="/EOB/Post/Create" element={<CreatePost />} />
 
