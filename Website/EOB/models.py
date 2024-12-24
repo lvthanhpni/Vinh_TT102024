@@ -79,7 +79,7 @@ class Folder(models.Model):
     can_have_posts = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('name', 'parent')  # Prevent duplicate names under the same parent
+        unique_together = ('name', 'parent')
 
     def __str__(self):
         return self.name
@@ -87,7 +87,6 @@ class Folder(models.Model):
     def get_layer(self):
         """
         Calculate the layer (depth) of the folder by traversing its parents.
-        Root folder (no parent) is layer 1.
         """
         layer = 1
         current = self.parent
@@ -98,9 +97,9 @@ class Folder(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Override the save method to set `can_have_posts` for Layer 3 and above folders.
+        Override the save method to set `can_have_posts` for Layer 3 and above.
         """
-        # Determine the layer of the folder
+        # Determine the layer
         layer = self.get_layer()
 
         # Allow posts for Layer 3 and above
@@ -108,12 +107,9 @@ class Folder(models.Model):
 
         super().save(*args, **kwargs)
 
-# Signal handlers to update `can_have_posts` for parent folders
+# Signals for keeping parent folders updated
 @receiver(post_save, sender=Folder)
 def update_parent_on_save(sender, instance, **kwargs):
-    """
-    Update the parent folder's `can_have_posts` after saving a subfolder.
-    """
     if instance.parent:
         parent = instance.parent
         parent.can_have_posts = parent.get_layer() >= 3
@@ -121,13 +117,11 @@ def update_parent_on_save(sender, instance, **kwargs):
 
 @receiver(pre_delete, sender=Folder)
 def update_parent_on_delete(sender, instance, **kwargs):
-    """
-    Update the parent folder's `can_have_posts` when a subfolder is deleted.
-    """
     if instance.parent:
         parent = instance.parent
         parent.can_have_posts = parent.get_layer() >= 3
         parent.save()
+
 
 
 

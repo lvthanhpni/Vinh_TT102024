@@ -81,7 +81,7 @@ const PageComponent = () => {
                             <button
                                 className="btn btn-primary"
                                 style={{ borderRadius: '5px', width: '95%' }}
-                                onClick={() => navigate('/EOB/Post/Create')}
+                                onClick={() => navigate('/EOB/Post/Create', { state: { selectedFolder } })}
                             >
                                 Tạo bài viết mới
                             </button>
@@ -130,7 +130,7 @@ const PageComponent = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

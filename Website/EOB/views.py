@@ -187,37 +187,29 @@ def populate_folder_tree(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_post(request):
+    """
+    Create a new post in the selected folder.
+    """
     try:
-        # Extract data from the request
         title = request.data.get('title')
         caption = request.data.get('caption')
         picture = request.FILES.get('picture')
-        folder_path = request.data.get('folder')
+        folder_id = request.data.get('folder')
 
-        if not folder_path:
-            return Response({"error": "Folder path is required."}, status=status.HTTP_400_BAD_REQUEST)
+        # Validate folder
+        folder = Folder.objects.filter(id=folder_id, can_have_posts=True).first()
+        if not folder:
+            return Response({"error": "Invalid or restricted folder selection."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Split the folder path into names
-        folder_names = folder_path.split('/')
-
-        # Traverse the folder hierarchy to find the folder
-        parent_folder = None
-        for name in folder_names:
-            try:
-                parent_folder = Folder.objects.get(name=name, parent=parent_folder)
-            except Folder.DoesNotExist:
-                return Response({"error": f"Folder path '{folder_path}' does not exist."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Create the post in the resolved folder
+        # Create the post
         post = Post.objects.create(
             name=request.user.username,
             title=title,
             caption=caption,
             picture=picture,
-            folder=parent_folder,  # Associate the post with the resolved folder
+            folder=folder
         )
 
-        # Serialize the post and return the response
         serializer = PostSerializer(post, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -228,20 +220,18 @@ def create_post(request):
 @api_view(['GET'])
 def get_folders(request):
     """
-    Retrieve the entire folder hierarchy from the database, including `can_have_posts`.
+    Retrieve the entire folder hierarchy, including `layer` and `can_have_posts`.
     """
     def fetch_folder_hierarchy(folder):
         """
-        Recursively fetch subfolders for a given folder, including `can_have_posts`.
+        Recursively fetch subfolders for a given folder.
         """
-        folder_data = {
-            'id': folder.id,
-            'name': folder.name,
-            'can_have_posts': folder.can_have_posts,  # Include the `can_have_posts` field
-            'subfolders': [
-                fetch_folder_hierarchy(subfolder) for subfolder in Folder.objects.filter(parent=folder)
-            ]
-        }
+        serializer = FolderSerializer(folder)
+        folder_data = serializer.data
+        subfolders = Folder.objects.filter(parent=folder)
+        folder_data['subfolders'] = [
+            fetch_folder_hierarchy(subfolder) for subfolder in subfolders
+        ]
         return folder_data
 
     try:

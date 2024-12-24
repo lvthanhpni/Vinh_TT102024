@@ -73,16 +73,22 @@ class MemberSerializer(serializers.ModelSerializer):
         return representation
 
 class FolderSerializer(serializers.ModelSerializer):
-    parent = serializers.SerializerMethodField()
+    layer = serializers.SerializerMethodField()  # Add the layer field
 
     class Meta:
         model = Folder
-        fields = ['id', 'name', 'parent']
+        fields = ['id', 'name', 'parent', 'can_have_posts', 'layer']
 
-    def get_parent(self, obj):
-        if obj.parent:
-            return FolderSerializer(obj.parent).data
-        return None
+    def get_layer(self, obj):
+        """
+        Calculate and return the layer of the folder.
+        """
+        layer = 1
+        current = obj.parent
+        while current:
+            layer += 1
+            current = current.parent
+        return layer
 
 
 class PostSerializer(serializers.ModelSerializer):
