@@ -1,18 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Folder from './Folder';
 import OwlCarousel from 'react-owl-carousel';
 import DisplayPost from './Display_post';
+import axios from 'axios';
+
+// Recursive function to find a folder by ID in a nested folder structure
+const findFolderById = (folders, id) => {
+    for (const folder of folders) {
+        if (folder.id === id) {
+            return folder;
+        }
+        if (folder.subfolders?.length) {
+            const result = findFolderById(folder.subfolders, id);
+            if (result) return result;
+        }
+    }
+    return null;
+};
 
 const PageComponent = () => {
     const navigate = useNavigate();
-
     const [selectedFolderId, setSelectedFolderId] = useState(null);
+    const [folders, setFolders] = useState([]); // State for folders data
 
-    // Define the onFolderSelect function
+    // Fetch folders and include `can_have_posts` field
+    useEffect(() => {
+        const fetchFolders = async () => {
+            try {
+                const response = await axios.get('/api/folders/'); // Adjust API endpoint if necessary
+                setFolders(response.data);
+            } catch (error) {
+                console.error('Error fetching folders:', error);
+            }
+        };
+        fetchFolders();
+    }, []);
+
+    // Handle folder selection
     const handleFolderSelect = (selectedId) => {
-        setSelectedFolderId(selectedId); // Update selected folder ID
+        setSelectedFolderId(selectedId);
     };
+
+    // Find the selected folder to check `can_have_posts`
+    const selectedFolder = selectedFolderId ? findFolderById(folders, selectedFolderId) : null;
 
     return (
         <div className="row d-flex">
@@ -46,13 +77,15 @@ const PageComponent = () => {
 
                     {/* New Button to Redirect */}
                     <div className="d-flex justify-content-center my-4">
-                        <button
-                            className="btn btn-primary"
-                            style={{ borderRadius: '5px', width: '95%' }}
-                            onClick={() => navigate('/EOB/Post/Create')}
-                        >
-                            Tạo bài viết mới
-                        </button>
+                        {selectedFolder?.can_have_posts && (
+                            <button
+                                className="btn btn-primary"
+                                style={{ borderRadius: '5px', width: '95%' }}
+                                onClick={() => navigate('/EOB/Post/Create')}
+                            >
+                                Tạo bài viết mới
+                            </button>
+                        )}
                     </div>
                 </div>
 

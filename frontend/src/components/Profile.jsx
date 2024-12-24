@@ -29,20 +29,21 @@ const Profile = () => {
     };
 
     // Handle the update functionality
-    const handleUpdate = () => {
-        if (username && email && phone) {
-            // Example updateUserData function from context
-            updateUserData({ username, email, phone })
-                .then(() => {
-                    alert("Cập nhật thành công!");
-                })
-                .catch((error) => {
-                    console.error("Error updating data:", error);
-                });
-        } else {
-            alert("Vui lòng điền đầy đủ thông tin!");
+    const handleUpdate = async () => {
+        if (!username || !email || !phone) {
+            alert("Please fill out all fields before updating.");
+            return;
+        }
+
+        try {
+            await updateUserData({ username, email, phone });
+            alert("Update successful!");
+        } catch (error) {
+            console.error("Error during update:", error);
+            alert("Update failed. Please try again.");
         }
     };
+
 
 
     return (

@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.conf import settings  # To reference the custom Member model
+from django.db.models.signals import post_save, pre_delete
+from django.dispatch import receiver
 
 # Member model
 class Member(AbstractUser):
@@ -69,10 +71,12 @@ class VLXD(models.Model):
     def __str__(self):
         return f"VLXD Company: {self.name}"
 
-# Folder model
 class Folder(models.Model):
     name = models.CharField(max_length=255)
-    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='subfolders')
+    parent = models.ForeignKey(
+        'self', null=True, blank=True, on_delete=models.CASCADE, related_name='subfolders'
+    )
+    can_have_posts = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('name', 'parent')  # Prevent duplicate names under the same parent
@@ -80,11 +84,52 @@ class Folder(models.Model):
     def __str__(self):
         return self.name
 
-    def is_valid_location(self):
-        # Check if the folder is a valid year folder under a valid material folder
-        if self.parent and self.parent.name in self.valid_material_folders():
-            return self.name in self.valid_year_folders()
-        return False
+    def get_layer(self):
+        """
+        Calculate the layer (depth) of the folder by traversing its parents.
+        Root folder (no parent) is layer 1.
+        """
+        layer = 1
+        current = self.parent
+        while current:
+            layer += 1
+            current = current.parent
+        return layer
+
+    def save(self, *args, **kwargs):
+        """
+        Override the save method to set `can_have_posts` for Layer 3 and above folders.
+        """
+        # Determine the layer of the folder
+        layer = self.get_layer()
+
+        # Allow posts for Layer 3 and above
+        self.can_have_posts = (layer >= 3)
+
+        super().save(*args, **kwargs)
+
+# Signal handlers to update `can_have_posts` for parent folders
+@receiver(post_save, sender=Folder)
+def update_parent_on_save(sender, instance, **kwargs):
+    """
+    Update the parent folder's `can_have_posts` after saving a subfolder.
+    """
+    if instance.parent:
+        parent = instance.parent
+        parent.can_have_posts = parent.get_layer() >= 3
+        parent.save()
+
+@receiver(pre_delete, sender=Folder)
+def update_parent_on_delete(sender, instance, **kwargs):
+    """
+    Update the parent folder's `can_have_posts` when a subfolder is deleted.
+    """
+    if instance.parent:
+        parent = instance.parent
+        parent.can_have_posts = parent.get_layer() >= 3
+        parent.save()
+
+
 
 # Post model
 class Post(models.Model):

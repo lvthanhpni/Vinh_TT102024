@@ -224,21 +224,24 @@ def create_post(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 @api_view(['GET'])
 def get_folders(request):
     """
-    Retrieve the entire folder hierarchy from the database.
+    Retrieve the entire folder hierarchy from the database, including `can_have_posts`.
     """
     def fetch_folder_hierarchy(folder):
         """
-        Recursively fetch subfolders for a given folder.
+        Recursively fetch subfolders for a given folder, including `can_have_posts`.
         """
-        serializer = FolderSerializer(folder)
-        folder_data = serializer.data
-        subfolders = Folder.objects.filter(parent=folder)
-        folder_data['subfolders'] = [
-            fetch_folder_hierarchy(subfolder) for subfolder in subfolders
-        ]
+        folder_data = {
+            'id': folder.id,
+            'name': folder.name,
+            'can_have_posts': folder.can_have_posts,  # Include the `can_have_posts` field
+            'subfolders': [
+                fetch_folder_hierarchy(subfolder) for subfolder in Folder.objects.filter(parent=folder)
+            ]
+        }
         return folder_data
 
     try:
@@ -248,6 +251,7 @@ def get_folders(request):
         return Response(folder_hierarchy, status=200)
     except Exception as e:
         return Response({'error': str(e)}, status=500)
+
 
 @api_view(['GET'])
 def get_posts(request):
@@ -579,26 +583,6 @@ class TokenListView(APIView):
 
         return Response(data)
 
-def update_user_data(self, request, username=None):
-    """
-    API to update specific fields for a user.
-    """
-    user = get_object_or_404(Member, username=username)
-    serializer = self.serializer_class(user, data=request.data, partial=True)
-
-    if serializer.is_valid():
-        serializer.save()
-        return Response({
-            'success': True,
-            'user': serializer.data,
-            'message': 'User data updated successfully.'
-        }, status=status.HTTP_200_OK)
-    else:
-        return Response({
-            'success': False,
-            'errors': serializer.errors,
-            'message': 'Failed to update user data.'
-        }, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def protected_view(request):
