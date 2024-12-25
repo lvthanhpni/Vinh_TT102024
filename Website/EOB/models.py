@@ -11,7 +11,12 @@ class Member(AbstractUser):
     is_individual = models.BooleanField(default=False)
     is_organization = models.BooleanField(default=False)
     is_vlxd = models.BooleanField(default=False)
-
+    profile_picture = models.ImageField(
+        upload_to='profile_pictures/',
+        blank=True,
+        null=True,
+        verbose_name="Profile Picture"
+    )
     rank = models.PositiveIntegerField(
         default=1,
         choices=[
@@ -20,7 +25,6 @@ class Member(AbstractUser):
             (3, 'VIP'),
         ]
     )
-
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='member_set',
@@ -37,7 +41,6 @@ class Member(AbstractUser):
     )
 
     def clean(self):
-        # Ensure only one member type is True
         types_selected = sum([self.is_individual, self.is_organization, self.is_vlxd])
         if types_selected > 1:
             raise ValidationError("A member can only be one of: Individual, Organization, or VLXD.")

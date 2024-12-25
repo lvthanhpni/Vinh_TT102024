@@ -1,5 +1,6 @@
-// Recursive_folder.jsx
 import React, { useState } from 'react';
+import { FaChevronRight, FaChevronDown } from 'react-icons/fa';
+import { FaFolder, FaFolderOpen } from 'react-icons/fa';
 
 const Recursive_folder = ({ folder, onFolderClick }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -16,9 +17,15 @@ const Recursive_folder = ({ folder, onFolderClick }) => {
             <div
                 className="folder-name"
                 onClick={handleFolderClick}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
             >
-                {isOpen ? '📂' : '📁'} {folder.name}
+                <span style={{ marginRight: '8px' }}>
+                    {isOpen ? <FaChevronDown /> : <FaChevronRight />}
+                </span>
+                <span style={{ marginRight: '8px', color: 'gold' }}>
+                    {isOpen ? <FaFolderOpen /> : <FaFolder />}
+                </span>
+                {folder.name}
             </div>
             {isOpen && folder.subfolders && (
                 <div className="subfolders">

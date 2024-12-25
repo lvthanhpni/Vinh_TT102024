@@ -51,7 +51,7 @@ class MemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
         fields = ['id', 'is_individual', 'is_organization', 'is_vlxd', 'rank', 'name', 'phone', 'email', 'company_name', 'tax_num', 'organization_phone', 'organization_email', 'job']
-    
+        read_only_fields = ['username', 'individual', 'organization']
     def to_representation(self, instance):
         """
         Conditionally change the fields depending on the Member type
@@ -71,6 +71,20 @@ class MemberSerializer(serializers.ModelSerializer):
             return {key: representation[key] for key in ['id', 'name', 'phone', 'email', 'job', 'rank', 'is_vlxd']}
         
         return representation
+    
+    def update(self, instance, validated_data):
+        """
+        Custom update logic for Individual or Organization based on Member type.
+        """
+        if instance.is_individual and 'individual' in validated_data:
+            individual_data = validated_data.pop('individual')
+            Individual.objects.filter(name=instance).update(**individual_data)
+
+        if instance.is_organization and 'organization' in validated_data:
+            organization_data = validated_data.pop('organization')
+            Organization.objects.filter(name=instance).update(**organization_data)
+
+        return instance
 
 class FolderSerializer(serializers.ModelSerializer):
     layer = serializers.SerializerMethodField()  # Add the layer field

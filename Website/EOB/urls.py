@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/user', views.UserView.as_view(), name='user'),
     path('api/member', views.UserView.as_view(), name='member'),
     path('api/members/<str:username>/', MemberViewSet.as_view({'put': 'update'}), name='update_user_data'),
+    
 
 
 

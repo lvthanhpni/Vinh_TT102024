@@ -187,44 +187,25 @@ const AuthProvider = ({ children }) => {
 
     const updateUserData = async (updatedData) => {
         try {
-            console.log('Sending the following data to the server:', updatedData);
-
-            if (!username) {
-                throw new Error('Username is required for updating user data.');
-            }
-
-            const csrfToken = getCsrfToken();
+            const csrfToken = getCsrfToken();  // Ensure CSRF token is included if necessary
             const response = await axios.put(`/api/members/${username}/`, updatedData, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'X-CSRFToken': csrfToken,
+                    Authorization: `Bearer ${token}`,
+                    'X-CSRFToken': csrfToken,  // Include CSRF token for Django if needed
                 },
             });
 
-            console.log('Response from server:', response.data);
+            if (response.data) {
 
-            if (response.data.success) {
-                const { user } = response.data;
-                console.log('User data received from server:', user);
-
-                // Update the state and localStorage
-                setUsername(user.username || '');
-                setPhone(user.phone || '');
-                setEmail(user.email || '');
-
-                localStorage.setItem('username', user.username || '');
-                localStorage.setItem('phone', user.phone || '');
-                localStorage.setItem('email', user.email || '');
-
+                setEmail(response.data.email || '');
+                setPhone(response.data.phone || '');
                 console.log('User data updated successfully!');
-            } else {
-                setError(response.data.message || 'Failed to update user data.');
             }
         } catch (error) {
             console.error('Error updating user data:', error);
-            setError(error.message || 'An error occurred while updating user data.');
         }
     };
+
 
 
     const fetchUserData = async (storedToken) => {

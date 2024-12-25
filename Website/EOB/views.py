@@ -71,16 +71,24 @@ class MemberViewSet(viewsets.ModelViewSet):
         serializer = self.serializer_class(member)
         return Response(serializer.data)
     
-    def update(self, request, pk=None):
-        member = get_object_or_404(self.queryset, username=pk)
+    def get_object(self):
+        """
+        Override `get_object` to retrieve the member using the `username` instead of `pk`.
+        """
+        username = self.kwargs.get('username')
+        return get_object_or_404(self.queryset, username=username)
+
+    def update(self, request, *args, **kwargs):
+        """
+        Update a member's details based on the username.
+        """
+        member = self.get_object()  # Use the custom `get_object` method
         serializer = self.serializer_class(member, data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        else:
-            # Return detailed validation errors
-            raise ValidationError(serializer.errors)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class IndividualViewSet(viewsets.ModelViewSet):

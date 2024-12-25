@@ -1,24 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import axios from "axios";
 
 const Profile = () => {
     const [image, setImage] = useState("/static/Resources/Profile.jpg");
 
-    const { username, email, phone, logout, updateUserData, setEmail, setUsername, setPhone } = useContext(AuthContext);
+    const { username, email, phone, updateUserData, setEmail, setPhone } = useContext(AuthContext);
     const navigate = useNavigate();
 
-
-
-    const handleLogout = async () => {
-        try {
-            // Call the logout function from AuthContext
-            await logout();
-            navigate("/EOB/Login"); // Redirect to login page after logout
-        } catch (error) {
-            console.error("Error during logout:", error);
-        }
-    };
 
     // Handle image preview
     const previewImage = (event) => {
@@ -30,20 +20,42 @@ const Profile = () => {
 
     // Handle the update functionality
     const handleUpdate = async () => {
-        if (!username || !email || !phone) {
-            alert("Please fill out all fields before updating.");
-            return;
-        }
-
         try {
-            await updateUserData({ username, email, phone });
-            alert("Update successful!");
+            // Make a PUT request to update user data
+            await updateUserData({ email, phone });
+            alert('Profile updated successfully!');
         } catch (error) {
             console.error("Error during update:", error);
             alert("Update failed. Please try again.");
         }
     };
 
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            const storedToken = localStorage.getItem('access_token'); // Retrieve the stored access token
+
+            try {
+                const response = await axios.get(`/members/${username}/`, {
+                    headers: {
+                        Authorization: `Bearer ${storedToken}`,
+                    },
+                });
+
+                const userData = response.data;
+
+                setEmail(userData.email || '');
+                setPhone(userData.phone || '');
+
+                localStorage.setItem('phone', response.data.phone || '');
+                localStorage.setItem('email', response.data.email || '');
+
+            } catch (error) {
+                console.error('Error fetching user details:', error);
+            }
+        };
+
+        fetchUserDetails();
+    }, []);
 
 
     return (
@@ -81,7 +93,7 @@ const Profile = () => {
                                                     id="uname"
                                                     className="form-control"
                                                     value={username}
-                                                    onChange={(e) => setUsername(e.target.value)}
+                                                    readOnly // Make the field read-only
                                                 />
                                             </div>
 
