@@ -9,6 +9,8 @@ function PostDetail() {
     const [error, setError] = useState('');
     const [isLiked, setIsLiked] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState('');
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -27,6 +29,9 @@ function PostDetail() {
                     });
                     setIsLiked(likeResponse.data.is_liked);
                 }
+                const commentsResponse = await axios.get(`/api/posts/${id}/comments/`);
+                setComments(commentsResponse.data);
+
                 setLoading(false);
             } catch (err) {
                 console.error('Error fetching post:', err);
@@ -66,6 +71,29 @@ function PostDetail() {
         }
     };
 
+    const handleCommentSubmit = async () => {
+        if (!isAuthenticated || newComment.trim() === '') return;
+
+        try {
+            const accessToken = localStorage.getItem('access_token');
+            const response = await axios.post(
+                `/api/posts/${id}/comments/create/`,
+                { text: newComment },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+
+            setComments((prevComments) => [...prevComments, response.data]);
+            setNewComment('');
+        } catch (err) {
+            console.error('Error submitting comment:', err);
+            setError('Failed to submit comment.');
+        }
+    };
+
     if (loading) {
         return <div>Loading post...</div>;
     }
@@ -100,6 +128,54 @@ function PostDetail() {
                     </div>
                 </div>
             </div>
+
+            <div className="card mt-4" style={{ borderRadius: '15px' }}>
+                <div className="card-body">
+                    <h3>Comments</h3>
+                    {comments.length > 0 ? (
+                        comments.map((comment) => (
+                            <div
+                                key={comment.id}
+                                className="comment-item border rounded mb-3 p-3 shadow-sm"
+                                style={{
+                                    backgroundColor: '#f9f9f9',
+                                    borderRadius: '10px',
+                                }}
+                            >
+                                <div className="d-flex justify-content-between align-items-center">
+                                    <strong>{comment.username}</strong>
+                                    <small className="text-muted">
+                                        {new Date(comment.created_at).toLocaleString()}
+                                    </small>
+                                </div>
+                                <p className="mt-2">{comment.text}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No comments yet. Be the first to comment!</p>
+                    )}
+
+                    {isAuthenticated && (
+                        <div className="mt-3">
+                            <textarea
+                                className="form-control"
+                                rows="3"
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                placeholder="Write a comment..."
+                                style={{ borderRadius: '10px', marginBottom: '10px' }}
+                            ></textarea>
+                            <button
+                                className="btn btn-primary"
+                                onClick={handleCommentSubmit}
+                            >
+                                Post Comment
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+
         </div>
     );
 }

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Member, Individual, Organization, VLXD, Post, Folder
+from .models import Member, Individual, Organization, VLXD, Post, Folder, Comment
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
@@ -149,3 +149,12 @@ class PostSerializer(serializers.ModelSerializer):
         """
         validated_data.pop('name', None)
         return super().update(instance, validated_data)
+    
+class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()  # Use the `__str__` method of the User model
+    username = serializers.CharField(source='user.username', read_only=True)  # Explicitly add the username field
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'post', 'user', 'username', 'text', 'created_at', 'updated_at']
+        read_only_fields = ['user', 'created_at', 'updated_at']

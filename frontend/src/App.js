@@ -17,6 +17,7 @@ import CreatePost from './components/Create_post';
 import DetailPost from './components/Detail_post';
 import DetailLibrary from './components/Detail_library';
 import DisplayPost from './components/Display_post'; // Import the new component
+import ResetPassword from './components/ResetPassword';
 
 const App = () => {
   const [data, setData] = useState(null);
@@ -58,6 +59,7 @@ const App = () => {
             <Route path="/EOB/Login" element={<Login />} />
             <Route path="/EOB/Profile" element={<Profile />} />
             <Route path="/EOB/Forget" element={<ForgetPass />} />
+            <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
 
             <Route path="/EOB/Post/:id" element={<DetailPost />} />
             <Route path="/EOB/Post/Create" element={<CreatePost />} />

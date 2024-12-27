@@ -134,9 +134,6 @@ def update_parent_on_delete(sender, instance, **kwargs):
         parent.can_have_posts = parent.get_layer() >= 3
         parent.save()
 
-
-
-
 # Post model
 class Post(models.Model):
     picture = models.ImageField(
@@ -178,3 +175,20 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.title} by {self.name}"
+
+class Comment(models.Model):
+    post = models.ForeignKey(
+        Post, 
+        on_delete=models.CASCADE, 
+        related_name='comments'
+    )  # Links the comment to a specific post
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE
+    )  # Links the comment to a specific user
+    text = models.TextField()  # Stores the comment text
+    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp for when the comment is created
+    updated_at = models.DateTimeField(auto_now=True)  # Timestamp for when the comment is last updated
+
+    def __str__(self):
+        return f"Comment by {self.user.username} on {self.post.title}"

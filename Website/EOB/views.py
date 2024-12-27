@@ -9,6 +9,11 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.contrib.auth.hashers import make_password # type: ignore
 from django.http import JsonResponse
 from django.conf import settings
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.urls import reverse
+from django.core.mail import send_mail
 
 
 # Django REST Framework imports
@@ -27,10 +32,10 @@ from rest_framework.generics import CreateAPIView
 from datetime import timedelta, datetime
 
 # Model imports
-from EOB.models import Member, Individual, Organization, VLXD, Post, Folder   
+from EOB.models import Member, Individual, Organization, VLXD, Post, Folder, Comment
 
 # Serializer imports
-from .serializers import MemberSerializer, IndividualSerializer, OrganizationSerializer, VLXDSerializer, PostSerializer, FolderSerializer
+from .serializers import MemberSerializer, IndividualSerializer, OrganizationSerializer, VLXDSerializer, PostSerializer, FolderSerializer, CommentSerializer
 
 #Other import       
 import json
@@ -348,6 +353,31 @@ def detail_posts(request, post_id):
         return Response(post_data, status=status.HTTP_200_OK)
     except Post.DoesNotExist:
         return Response({"detail": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_comment(request, post_id):
+    text = request.data.get('text')
+    if not text:
+        return Response({'error': 'Comment text is required.'}, status=400)
+
+    try:
+        post = Post.objects.get(id=post_id)
+        comment = Comment.objects.create(post=post, user=request.user, text=text)
+        serializer = CommentSerializer(comment)
+        return Response(serializer.data, status=201)
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found.'}, status=404)
+
+@api_view(['GET'])
+def list_comments(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+        comments = post.comments.all()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data, status=200)
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found.'}, status=404)
 
 @api_view(['POST'])
 @csrf_exempt  # If needed, you can use csrf_exempt, but ensure CSRF protection is handled securely
@@ -600,6 +630,62 @@ class TokenListView(APIView):
 @api_view(['GET'])
 def protected_view(request):
     return Response({'message': 'This is a protected view!'})
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def password_reset_request(request):
+    email = request.data.get('email')
+    if not email:
+        return Response({"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = Member.objects.get(email=email)
+    except Member.DoesNotExist:
+        return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+    token_generator = PasswordResetTokenGenerator()
+    token = token_generator.make_token(user)
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    reset_url = request.build_absolute_uri(reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token}))
+
+    send_mail(
+        'Password Reset Request',
+        f'Click the link below to reset your password:\n\n{reset_url}',
+        'no-reply@yourdomain.com',
+        [email],
+    )
+
+    return Response({"message": "Password reset link sent to your email."}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def password_reset_confirm(request, uidb64, token):
+    try:
+        user_id = force_str(urlsafe_base64_decode(uidb64))
+        user = Member.objects.get(pk=user_id)
+    except (TypeError, ValueError, OverflowError, Member.DoesNotExist):
+        return Response({"error": "Invalid link."}, status=status.HTTP_400_BAD_REQUEST)
+
+    token_generator = PasswordResetTokenGenerator()
+    if not token_generator.check_token(user, token):
+        return Response({"error": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+
+    new_password = request.data.get('new_password')
+    confirm_password = request.data.get('confirm_password')
+
+    if not new_password or not confirm_password:
+        return Response({"error": "Both new password and confirmation are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    if new_password != confirm_password:
+        return Response({"error": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
+
+    user.set_password(new_password)
+    user.save()
+
+    return Response({"message": "Password has been reset successfully."}, status=status.HTTP_200_OK)
+
 
 
 # Regular Django views

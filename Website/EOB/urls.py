@@ -33,9 +33,8 @@ urlpatterns = [
     path('api/member', views.UserView.as_view(), name='member'),
     path('api/members/<str:username>/', MemberViewSet.as_view({'put': 'update'}), name='update_user_data'),
     
-
-
-
+    path('api/password-reset/', views.password_reset_request, name='password_reset_request'),
+    path('api/password-reset-confirm/<uidb64>/<token>/', views.password_reset_confirm, name='password_reset_confirm'),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
      path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # Refresh token
@@ -52,6 +51,9 @@ urlpatterns = [
     path('api/posts/<int:post_id>', views.detail_posts, name='detail_posts'),
     path('api/posts/<int:post_id>/like/', views.like_post, name='like_post'),  # URL for liking a post
     path('api/posts/<int:post_id>/check-like/', views.check_like, name='check_like'),
+
+    path('api/posts/<int:post_id>/comments/', views.list_comments, name='list_comments'),
+    path('api/posts/<int:post_id>/comments/create/', views.create_comment, name='create_comment'),
 
    
 ]
