@@ -72,15 +72,21 @@ const Header = () => {
                 </div>
             </div>
 
-            <div className="row bg-white text-darkalign-items-center" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div className="white_nav col-sm-1 p-3" style={{ marginLeft: '20px' }}>
+            <div className="header-row row bg-white text-dark align-items-center" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div className="white_nav logo col-sm-1 p-3" style={{ marginLeft: '20px' }}>
                     <Link to="/EOB/">
                         <img src="/static/Resources/Logo.png" alt="EOB logo" width="120" height="60" />
                     </Link>
                 </div>
 
                 <div className="lib_model res_remove col-sm-2 p-4 dropdown" style={{ textAlign: 'right' }}>
-                    <button className="dropdown-toggle text-dark" style={{ textDecoration: 'none', background: 'none', border: 'none' }} id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button
+                        className="dropdown-toggle text-dark"
+                        style={{ textDecoration: 'none', background: 'none', border: 'none' }}
+                        id="dropdownMenuLink"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
                         <b>THƯ VIỆN MODEL</b>
                     </button>
                     <ul className="dropdown-menu">
@@ -90,7 +96,14 @@ const Header = () => {
                     </ul>
                 </div>
 
-                <form className="white_nav col-sm-3 p-4" style={{ marginLeft: 'auto' }}>
+                <div className="button_toggle white_nav button col-sm-2 d-flex align-items-center justify-content-center">
+                    <Link to="/EOB/Library" className="btn btn-primary p-2 d-flex align-items-center justify-content-center " style={{ width: '50px', height: '50px' }}>
+                        <i class="bi bi-folder-fill"></i>
+                    </Link>
+                </div>
+
+
+                <form className="white_nav search col-sm-3 p-4" style={{ marginLeft: 'auto' }}>
                     <div className="input-group">
                         <input className="form-control" type="text" placeholder="Tìm kiếm" style={{ borderRadius: '25px 0 0 25px', border: '2px solid lightgray' }} />
                         <span className="input-group-text" style={{ borderRadius: '0 25px 25px 0', border: '2px solid lightgray' }}>

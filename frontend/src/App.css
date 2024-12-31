@@ -66,6 +66,12 @@ a:hover {
   z-index: 1000;
 }
 
+@media (min-width: 750px) {
+  .button_toggle {
+    display: none !important;
+  }
+}
+
 /* Responsive Website Styles */
 @media (max-width: 1270px) {
   .lib_model {
@@ -101,14 +107,38 @@ a:hover {
 }
 
 @media (max-width: 750px) {
-  .white_nav {
-    flex: 0 0 50%;
-    max-width: 50%;
+  .header-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    /* Space out items */
+    align-items: center;
+  }
+
+  .white_nav.logo {
+    flex: 0 0 auto;
+    /* Allow logo to size naturally */
+  }
+
+  .white_nav.search {
+    flex: 1 1 100%;
+    /* Take full width for centering */
+    display: flex;
+    justify-content: center;
+    /* Center the search bar horizontally */
+    margin-top: 10px;
+    /* Add spacing */
+  }
+
+  .white_nav.button {
+    flex: 0 0 auto;
+    /* Allow button to size naturally */
   }
 
   .res_remove {
     display: none;
   }
+
 
   .black_nav {
     flex: 0 0 100%;
@@ -139,6 +169,7 @@ a:hover {
   .res_new .row {
     flex-direction: column;
   }
+
 
   .homepage-carousel-img-1 {
     width: 105% !important;
