@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Folder from './Folder';
 import OwlCarousel from 'react-owl-carousel';
 import DisplayPost from './Display_post';
 import axios from 'axios';
+import AuthContext from '../context/AuthContext';
+
+
 
 // Recursive function to find a folder by ID in a nested folder structure
 const findFolderById = (folders, id) => {
@@ -23,6 +26,7 @@ const PageComponent = () => {
     const navigate = useNavigate();
     const [selectedFolderId, setSelectedFolderId] = useState(null);
     const [folders, setFolders] = useState([]); // State for folders data
+    const { isLoggedIn } = useContext(AuthContext);
 
     // Fetch folders and include `can_have_posts` field
     useEffect(() => {
@@ -82,7 +86,7 @@ const PageComponent = () => {
                             <h2>MODEL MỚI</h2>
                             <p>Các model gần đây nhất <i className="bi bi-chevron-right"></i></p>
                         </div>
-                        {selectedFolder?.can_have_posts && (
+                        {isLoggedIn && selectedFolder?.can_have_posts && (
                             <button
                                 className="btn btn-primary"
                                 style={{

@@ -30,23 +30,21 @@ function Carousel() {
             {/* The slideshow/carousel */}
             <div className="row" style={{ height: '700px' }}>
                 <div className="carousel-inner">
-                    <div className="carousel-item active">
+                    <div className="carousel-item active homepage-carousel-item-1">
                         <div className="container mt-3">
                             <img
                                 src="/static/Resources/Model.png"
                                 alt="Model"
-                                className="mx-auto d-block"
-                                style={{ width: '75%' }}
+                                className=" homepage-carousel-block homepage-carousel-img-1"
                             />
                         </div>
                     </div>
-                    <div className="carousel-item">
+                    <div className="carousel-item homepage-carousel-item-2">
                         <div className="container mt-3 text-center">
                             <img
                                 src="/static/Resources/Star.png"
                                 alt="Star"
-                                className="mx-auto d-block"
-                                style={{ width: '60%', maxWidth: '100%' }}
+                                className=" homepage-carousel-block homepage-carousel-img-2"
                             />
                             <button type="button" className="btn btn-primary">
                                 <a href="/EOB/Member" style={{ color: 'white' }}>
@@ -55,13 +53,12 @@ function Carousel() {
                             </button>
                         </div>
                     </div>
-                    <div className="carousel-item">
+                    <div className="carousel-item homepage-carousel-item-3">
                         <div className="container mt-3 text-center">
                             <img
                                 src="/static/Resources/Product.png"
                                 alt="Product"
-                                className="mx-auto d-block"
-                                style={{ width: '60%', maxWidth: '100%' }}
+                                className=" homepage-carousel-block homepage-carousel-img-3"
                             />
                             <button type="button" className="btn btn-primary">
                                 <a href="/EOB/VLXD" style={{ color: 'white' }}>
@@ -70,6 +67,7 @@ function Carousel() {
                             </button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

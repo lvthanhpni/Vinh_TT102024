@@ -78,6 +78,26 @@ a:hover {
     padding-left: 45px !important;
     padding-right: 0 !important;
   }
+
+  .homepage-carousel-block {
+    margin-left: 5 !important;
+    margin-right: 5 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .homepage-carousel-img-1 {
+    width: 100% !important;
+  }
+
+  .homepage-carousel-img-2 {
+    width: 80% !important;
+  }
+
+  .homepage-carousel-img-3 {
+    width: 80% !important;
+  }
 }
 
 @media (max-width: 750px) {
@@ -119,6 +139,27 @@ a:hover {
   .res_new .row {
     flex-direction: column;
   }
+
+  .homepage-carousel-img-1 {
+    width: 105% !important;
+  }
+
+  .homepage-carousel-img-2 {
+    width: 105% !important;
+  }
+
+  .homepage-carousel-img-3 {
+    width: 105% !important;
+  }
+
+  .homepage-carousel-block {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
 }
 
 /* Homepage Carousel */
@@ -136,6 +177,25 @@ a:hover {
   align-items: center;
   margin: 0 10px;
 }
+
+.homepage-carousel-block {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.homepage-carousel-img-1 {
+  width: 75%;
+}
+
+.homepage-carousel-img-2 {
+  width: 60%;
+}
+
+.homepage-carousel-img-3 {
+  width: 60%;
+}
+
 
 /* Vertical Carousel */
 #vertical-carousel {
