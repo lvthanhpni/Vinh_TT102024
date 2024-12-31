@@ -25,7 +25,7 @@ const Header = () => {
                         <Link to="/EOB" style={{ color: 'white' }}>Công trình tiêu biểu</Link>
                     </div>
                     <div className="res_remove col-sm-1 p-1">
-                        <Link to="/EOB/Folder" style={{ color: 'white' }}>Tin Tức</Link>
+                        <Link to="/EOB/" style={{ color: 'white' }}>Tin Tức</Link>
                     </div>
                 </div>
 

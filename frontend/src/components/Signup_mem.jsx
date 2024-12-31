@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const SignupMem = () => {
     const [memberType, setMemberType] = useState('individual');
     const [messages, setMessages] = useState([]);
+    const [messageType, setMessageType] = useState(null);
     const [formData, setFormData] = useState({
         uname: '',
         c_name: '',
@@ -35,9 +36,11 @@ const SignupMem = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setMessages([]); // Clear previous messages
+        setMessageType(null);
 
         if (formData.pass !== formData.rpass) {
             setMessages(['Passwords do not match.']);
+            setMessageType('error');
             return;
         }
 
@@ -67,12 +70,16 @@ const SignupMem = () => {
         const data = await response.json();
         if (data.error) {
             setMessages([data.error]);
+            setMessageType('error');
         } else {
             setMessages(['Signup successful!']);
+            setMessageType('success');
         }
     };
 
     return (
+
+
         <section style={{ backgroundColor: '#eee' }}>
             <div className="container h-100">
                 <div className="row d-flex justify-content-center align-items-center h-100">
@@ -85,12 +92,17 @@ const SignupMem = () => {
                                             ĐĂNG KÝ THÀNH VIÊN EOB
                                         </p>
                                         <div className="text-center fw-bold">
-                                            {messages.length > 0 &&
-                                                messages.map((message, index) => (
-                                                    <div className="alert alert-danger" role="alert" key={index}>
-                                                        {message}
-                                                    </div>
-                                                ))}
+                                            {messages.length > 0 && (
+                                                <div
+                                                    className={`alert ${messageType === 'success' ? 'alert-success' : 'alert-danger'
+                                                        }`}
+                                                    role="alert"
+                                                >
+                                                    {messages.map((message, index) => (
+                                                        <div key={index}>{message}</div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                         <form onSubmit={handleSubmit} className="mx-1 mx-md-4">
                                             <div className="d-flex flex-row align-items-center mb-4">

@@ -10,6 +10,7 @@ const SignupVLXD = () => {
     });
 
     const [messages, setMessages] = useState([]);
+    const [messageType, setMessageType] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -25,12 +26,14 @@ const SignupVLXD = () => {
 
         if (!formData.checkbox) {
             setMessages(['Bạn cần đồng ý với điều khoản sử dụng.']);
+            setMessageType('error');
             return;
         }
 
         // Additional field validation
         if (!formData.cname || !formData.phone || !formData.email || !formData.job) {
             setMessages(['Vui lòng điền đầy đủ các trường.']);
+            setMessageType('error');
             return;
         }
 
@@ -49,12 +52,14 @@ const SignupVLXD = () => {
             // Check if response is ok (status code 200-299)
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
+                setMessageType('error');
             }
 
             // Check if response is JSON
             const contentType = response.headers.get('Content-Type');
             if (!contentType || !contentType.includes('application/json')) {
                 throw new Error('Expected JSON response');
+                setMessageType('error');
             }
 
             const data = await response.json();
@@ -62,12 +67,15 @@ const SignupVLXD = () => {
             // Handle success message or further actions here
             if (data.error) {
                 setMessages([data.error]); // Display the error returned from the backend (e.g., "Company name or email already exists")
+                setMessageType('error');
             } else {
                 setMessages(['Đăng ký thành công!']);
+                setMessageType('success');
             }
 
         } catch (error) {
             setMessages([error.message || 'Đã có lỗi xảy ra khi gửi dữ liệu.']);
+            setMessageType('error');
         }
     };
 
@@ -84,7 +92,11 @@ const SignupVLXD = () => {
 
                                         <div className="text-center fw-bold">
                                             {messages.length > 0 && (
-                                                <div className="alert alert-danger" role="alert">
+                                                <div
+                                                    className={`alert ${messageType === 'success' ? 'alert-success' : 'alert-danger'
+                                                        }`}
+                                                    role="alert"
+                                                >
                                                     {messages.map((message, index) => (
                                                         <div key={index}>{message}</div>
                                                     ))}

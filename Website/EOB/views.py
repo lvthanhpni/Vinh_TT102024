@@ -398,7 +398,7 @@ def Signup_VLXD(request):
             user.save()
 
             # Create VLXD profile
-            VLXD_User = VLXD.objects.create(c_name=user, phone=phone, email=email, job=job)
+            VLXD_User = VLXD.objects.create(name=user, phone=phone, email=email, job=job)
             VLXD_User.save()
 
             # Return success response
